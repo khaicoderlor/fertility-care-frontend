@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch hẹn IUI/IVF - FertilityCare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-active {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .time-slot {
+            border-left: 4px solid #e5e7eb;
+            transition: all 0.3s ease;
+        }
+        
+        .time-slot.iui {
+            border-left-color: #8b5cf6;
+            background: linear-gradient(90deg, #f3e8ff, #ffffff);
+        }
+        
+        .time-slot.ivf {
+            border-left-color: #3b82f6;
+            background: linear-gradient(90deg, #eff6ff, #ffffff);
+        }
+        
+        .time-slot.completed {
+            border-left-color: #10b981;
+            background: linear-gradient(90deg, #f0fdf4, #ffffff);
+        }
+        
+        .appointment-card {
+            border-radius: 12px;
+            border: 1px solid #f1f5f9;
+            transition: all 0.3s ease;
+        }
+        
+        .appointment-card:hover {
+            border-color: #cbd5e1;
+            transform: translateX(4px);
+        }
+        
+        .status-badge {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        
+        .calendar-nav {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+        
+        .today-highlight {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .iui-gradient {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+        }
+        
+        .ivf-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl">
+        <div class="gradient-bg p-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                    <i class="fas fa-heart text-purple-600 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">FertilityCare</h1>
+                    <p class="text-purple-100 text-sm">Doctor Dashboard</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="mt-6 px-4">
+            <div class="space-y-2">
+                <a href="#dashboard" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-chart-line w-4 mr-3"></i>
+                        Dashboard
+                    </div>
+                </a>
+
+                <a href="#patients" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-users w-4 mr-3"></i>
+                        Bệnh nhân
+                    </div>
+                </a>
+
+                <a href="#doctors" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-md w-4 mr-3"></i>
+                        Bác sĩ
+                    </div>
+                </a>
+
+                <a href="#appointments" class="sidebar-active flex items-center w-full px-4 py-3 text-white rounded-lg group">
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar-alt w-4 mr-3"></i>
+                        Lịch hẹn
+                    </div>
+                </a>
+
+                
+            </div>
+        </nav>
+
+        <div class="absolute bottom-6 left-4 right-4">
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <img src="https://via.placeholder.com/40x40/667eea/ffffff?text=AD" class="w-10 h-10 rounded-full" alt="Admin Avatar">
+                    <div>
+                        <p class="font-semibold text-gray-800">Dr. Nguyễn Văn A</p>
+                        <p class="text-sm text-gray-600">Doctor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Lịch hẹn IUI/IVF</h2>
+                    <p class="text-gray-600 mt-1">Lịch hẹn điều trị IUI và IVF hàng ngày</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>
+                        Lọc
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+
+       
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Tổng ca hôm nay</p>
+                        <p class="text-2xl font-bold text-blue-600">20</p>
+                        <p class="text-xs text-gray-500 mt-1">IUI + IVF</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-calendar-check text-blue-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">IUI hôm nay</p>
+                        <p class="text-2xl font-bold text-purple-600">8</p>
+                        <p class="text-xs text-gray-500 mt-1">40% tổng ca</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-syringe text-purple-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-blue-600">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">IVF hôm nay</p>
+                        <p class="text-2xl font-bold text-blue-600">12</p>
+                        <p class="text-xs text-gray-500 mt-1">60% tổng ca</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-green-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Hoàn thành</p>
+                        <p class="text-2xl font-bold text-green-600">15</p>
+                        <p class="text-xs text-gray-500 mt-1">75% tiến độ</p>
+                    </div>
+                    <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-check-circle text-green-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+ <!-- Date Navigation -->
+        <div class="calendar-nav p-6 rounded-xl mb-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center space-x-4">
+                    <button class="p-2 hover:bg-white rounded-lg transition-colors">
+                        <i class="fas fa-chevron-left text-gray-600"></i>
+                    </button>
+                    <h3 class="text-xl font-semibold text-gray-800">Thứ Hai, 25 tháng 5, 2025</h3>
+                    <button class="p-2 hover:bg-white rounded-lg transition-colors">
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                </div>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-sm bg-white text-gray-700 rounded-lg hover:bg-gray-50">Hôm nay</button>
+                    <button class="today-highlight px-3 py-1 text-sm rounded-lg">Ngày</button>
+                </div>
+            </div>
+            
+            <!-- Quick Date Selector -->
+            <div class="flex space-x-2 overflow-x-auto pb-2">
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">CN</div>
+                    <div class="text-sm font-medium">24</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 today-highlight rounded-lg cursor-pointer">
+                    <div class="text-xs text-purple-100">T2</div>
+                    <div class="text-sm font-medium">25</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">T3</div>
+                    <div class="text-sm font-medium">26</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">T4</div>
+                    <div class="text-sm font-medium">27</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">T5</div>
+                    <div class="text-sm font-medium">28</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">T6</div>
+                    <div class="text-sm font-medium">29</div>
+                </div>
+                <div class="flex-shrink-0 text-center p-3 bg-white rounded-lg cursor-pointer hover:bg-gray-50">
+                    <div class="text-xs text-gray-500">T7</div>
+                    <div class="text-sm font-medium">30</div>
+                </div>
+            </div>
+        </div>
+        <!-- Main Schedule -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+            <!-- Time Schedule -->
+            <div class="lg:col-span-2">
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h3 class="text-lg font-semibold text-gray-800">Lịch trình IUI/IVF hôm nay</h3>
+                        <div class="flex space-x-2">
+                            <span class="inline-flex items-center px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">
+                                <div class="w-2 h-2 bg-purple-500 rounded-full mr-1"></div>
+                                IUI
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">
+                                <div class="w-2 h-2 bg-blue-500 rounded-full mr-1"></div>
+                                IVF
+                            </span>
+                            <span class="inline-flex items-center px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">
+                                <div class="w-2 h-2 bg-green-500 rounded-full mr-1"></div>
+                                Hoàn thành
+                            </span>
+                        </div>
+                    </div>
+
+                    <div class="space-y-4">
+                        <!-- 8:00 AM - IUI Completed -->
+                        <div class="time-slot completed p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">08:00</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-syringe text-purple-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Nguyễn Thị A</h4>
+                                                <p class="text-sm text-gray-600">IUI - Chu kỳ 1</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-green-100 text-green-700">Hoàn thành</span>
+                                    <span class="status-badge bg-purple-100 text-purple-700">IUI</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 8:30 AM - IVF Completed -->
+                        <div class="time-slot completed p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">08:30</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-microscope text-blue-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Trần Văn B</h4>
+                                                <p class="text-sm text-gray-600">IVF - Theo dõi phôi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-green-100 text-green-700">Hoàn thành</span>
+                                    <span class="status-badge bg-blue-100 text-blue-700">IVF</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9:00 AM - IVF In Progress -->
+                        <div class="time-slot ivf p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">09:00</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-microscope text-blue-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Lê Thị C</h4>
+                                                <p class="text-sm text-gray-600">IVF - Siêu âm theo dõi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-yellow-100 text-yellow-700">Đang diễn ra</span>
+                                    <span class="status-badge bg-blue-100 text-blue-700">IVF</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 9:30 AM - IUI Upcoming -->
+                        <div class="time-slot iui p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">09:30</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-syringe text-purple-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Phạm Thị D</h4>
+                                                <p class="text-sm text-gray-600">IUI - Thụ tinh nhân tạo</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-blue-100 text-blue-700">Sắp tới</span>
+                                    <span class="status-badge bg-purple-100 text-purple-700">IUI</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 10:00 AM - Empty Slot -->
+                        <div class="time-slot p-4 rounded-lg border-2 border-dashed border-gray-200">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">10:00</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-plus text-gray-400 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <p class="text-sm text-gray-500">Thời gian trống</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="text-blue-600 hover:text-blue-700 text-sm font-medium">
+                                    + Thêm lịch hẹn
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- 10:30 AM - IVF Upcoming -->
+                        <div class="time-slot ivf p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">10:30</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-microscope text-blue-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Vũ Văn E</h4>
+                                                <p class="text-sm text-gray-600">IVF - Chuyển phôi</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-blue-100 text-blue-700">Sắp tới</span>
+                                    <span class="status-badge bg-blue-100 text-blue-700">IVF</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 11:00 AM - IUI Upcoming -->
+                        <div class="time-slot iui p-4 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center space-x-4">
+                                    <div class="text-sm font-medium text-gray-500 w-16">11:00</div>
+                                    <div class="flex-1">
+                                        <div class="flex items-center space-x-3">
+                                            <div class="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                                                <i class="fas fa-syringe text-purple-600 text-sm"></i>
+                                            </div>
+                                            <div>
+                                                <h4 class="font-medium text-gray-800">Hoàng Thị F</h4>
+                                                <p class="text-sm text-gray-600">IUI - Chu kỳ 2</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2">
+                                    <span class="status-badge bg-blue-100 text-blue-700">Sắp tới</span>
+                                    <span class="status-badge bg-purple-100 text-purple-700">IUI</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Sidebar -->
+            <div class="space-y-6">
+                <!-- Treatment Stats -->
+              
+
+                <!-- Upcoming Appointments -->
+                <div class="bg-white rounded-xl shadow-sm p-6">
+                    <h3 class="text-lg font-semibold text-gray-800 mb-4">Lịch hẹn sắp tới</h3>
+                    <div class="space-y-3">
+                        <div class="appointment-card p-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-8 bg-purple-400 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm">09:30 - Phạm Thị D</p>
+                                    <p class="text-xs text-gray-500">IUI - Thụ tinh nhân tạo</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">IUI</span>
+                            </div>
+                        </div>
+                        <div class="appointment-card p-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-8 bg-blue-400 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm">10:30 - Vũ Văn E</p>
+                                    <p class="text-xs text-gray-500">IVF - Chuyển phôi</p>
+                                </div>
+                                <span class="text-xs bg-blue-100 text-blue-700 px-2 py-1 rounded-full">IVF</span>
+                            </div>
+                        </div>
+                        <div class="appointment-card p-3">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-2 h-8 bg-purple-400 rounded-full"></div>
+                                <div class="flex-1">
+                                    <p class="font-medium text-sm">11:00 - Hoàng Thị F</p>
+                                    <p class="text-xs text-gray-500">IUI - Chu kỳ 2</p>
+                                </div>
+                                <span class="text-xs bg-purple-100 text-purple-700 px-2 py-1 rounded-full">IUI</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Actions -->
+               
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sidebar navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('nav a').forEach(l => l.classList.remove('sidebar-active', 'text-white'));
+                document.querySelectorAll('nav a').forEach(l => l.classList.add('text-gray-700'));
+                this.classList.add('sidebar-active', 'text-white');
+                this.classList.remove('text-gray-700');
+            });
+        });
+
+        // Add animation to cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+
+        // Date navigation
+        document.querySelectorAll('.calendar-nav button').forEach(button => {
+            button.addEventListener('click', function() {
+                if (this.textContent.includes('chevron')) {
+                    console.log('Navigate date');
+                }
+            });
+        });
+
+        // Quick date selector
+        document.querySelectorAll('.calendar-nav .flex-shrink-0').forEach(dateBtn => {
+            dateBtn.addEventListener('click', function() {
+                document.querySelectorAll('.calendar-nav .flex-shrink-0').forEach(btn => {
+                    btn.classList.remove('today-highlight');
+                    btn.classList.add('bg-white', 'hover:bg-gray-50');
+                });
+                this.classList.add('today-highlight');
+                this.classList.remove('bg-white', 'hover:bg-gray-50');
+            });
+        });
+
+        // Time slot interactions
+        document.querySelectorAll('.time-slot').forEach(slot => {
+            slot.addEventListener('click', function() {
+                if (this.classList.contains('border-dashed')) {
+                    console.log('Add new appointment');
+                } else {
+                    console.log('View appointment details');
+                }
+            });
+        });
+
+        // Treatment type filter
+        function filterByTreatment(type) {
+            const slots = document.querySelectorAll('.time-slot');
+            slots.forEach(slot => {
+                if (type === 'all') {
+                    slot.style.display = 'block';
+                } else if (type === 'iui' && !slot.classList.contains('iui') && !slot.classList.contains('border-dashed')) {
+                    slot.style.display = 'none';
+                } else if (type === 'ivf' && !slot.classList.contains('ivf') && !slot.classList.contains('border-dashed')) {
+                    slot.style.display = 'none';
+                } else {
+                    slot.style.display = 'block';
+                }
+            });
+        }
+
+        // Quick action buttons
+        document.querySelectorAll('button').forEach(button => {
+            if (button.textContent.includes('Đặt lịch IUI')) {
+                button.addEventListener('click', function() {
+                    alert('Mở form đặt lịch IUI');
+                });
+            } else if (button.textContent.includes('Đặt lịch IVF')) {
+                button.addEventListener('click', function() {
+                    alert('Mở form đặt lịch IVF');
+                });
+            } else if (button.textContent.includes('Xuất báo cáo')) {
+                button.addEventListener('click', function() {
+                    alert('Xuất báo cáo lịch hẹn IUI/IVF');
+                });
+            }
+        });
+
+        // Real-time updates
+        function updateStats() {
+            // Simulate real-time stat updates
+            const totalElement = document.querySelector('.text-2xl.text-blue-600');
+            const iuiElement = document.querySelector('.text-2xl.text-purple-600');
+            const ivfElement = document.querySelector('.text-2xl.text-blue-600:not(.text-blue-500)');
+            
+            // Update would happen here with real data
+            console.log('Stats updated');
+        }
+
+        // Update stats every 30 seconds
+        setInterval(updateStats, 30000);
+    </script>
+</body>
+</html>
