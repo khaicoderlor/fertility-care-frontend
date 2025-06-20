@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Bệnh nhân - FertilityCare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        .sidebar-active {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .iui-gradient {
+            background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+        }
+        
+        .ivf-gradient {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+        }
+        
+        .stats-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50">
+    <!-- Sidebar -->
+    <div class="fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-xl">
+        <div class="gradient-bg p-6">
+            <div class="flex items-center space-x-3">
+                <div class="w-10 h-10 bg-white rounded-full flex items-center justify-center">
+                    <i class="fas fa-heart text-purple-600 text-lg"></i>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">FertilityCare</h1>
+                    <p class="text-purple-100 text-sm">Doctor Dashboard</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="mt-6 px-4">
+            <div class="space-y-2">
+                <a href="#dashboard" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-chart-line w-4 mr-3"></i>
+                        Dashboard
+                    </div>
+                </a>
+
+                <a href="#patients" class="sidebar-active flex items-center w-full px-4 py-3 text-white rounded-lg group">
+                    <div class="flex items-center">
+                        <i class="fas fa-users w-4 mr-3"></i>
+                        Bệnh nhân
+                    </div>
+                </a>
+
+                <a href="#doctors" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-user-md w-4 mr-3"></i>
+                        Bác sĩ
+                    </div>
+                </a>
+
+                <a href="#appointments" class="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group">
+                    <div class="flex items-center">
+                        <i class="fas fa-calendar-alt w-4 mr-3"></i>
+                        Lịch hẹn
+                    </div>
+                </a>
+
+               
+            </div>
+        </nav>
+
+        <div class="absolute bottom-6 left-4 right-4">
+            <div class="bg-purple-50 p-4 rounded-lg">
+                <div class="flex items-center space-x-3">
+                    <img src="https://via.placeholder.com/40x40/667eea/ffffff?text=AD" class="w-10 h-10 rounded-full" alt="Admin Avatar">
+                    <div>
+                        <p class="font-semibold text-gray-800">Dr. Nguyễn Văn A</p>
+                        <p class="text-sm text-gray-600">Doctor</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-3xl font-bold text-gray-800">Quản lý Bệnh nhân</h2>
+                    <p class="text-gray-600 mt-1">Theo dõi và quản lý bệnh nhân đang điều trị</p>
+                </div>
+                <div class="flex space-x-3">
+                    <button class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-filter mr-2"></i>
+                        Lọc
+                    </button>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Statistics Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+            <div class="stats-card p-6 rounded-xl card-hover animate-fade-in">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">Tổng bệnh nhân</p>
+                        <p class="text-2xl font-bold text-gray-900">156</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-users text-blue-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-purple-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">IUI hôm nay</p>
+                        <p class="text-2xl font-bold text-purple-600">8</p>
+                        <p class="text-xs text-gray-500 mt-1">+2 so với hôm qua</p>
+                    </div>
+                    <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-syringe text-purple-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bg-white p-6 rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-blue-500">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-sm font-medium text-gray-600">IVF hôm nay</p>
+                        <p class="text-2xl font-bold text-blue-600">12</p>
+                        <p class="text-xs text-gray-500 mt-1">+4 so với hôm qua</p>
+                    </div>
+                    <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
+                        <i class="fas fa-microscope text-blue-600 text-lg"></i>
+                    </div>
+                </div>
+            </div>
+
+           
+        </div>
+
+        <!-- Filter and Search -->
+        <div class="bg-white p-6 rounded-xl shadow-sm mb-6">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between space-y-4 md:space-y-0">
+                <div class="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-4">
+                    <div class="relative">
+                        <input type="text" placeholder="Tìm kiếm bệnh nhân..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
+                    </div>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="">Tất cả phác đồ</option>
+                        <option value="iui">IUI</option>
+                        <option value="ivf">IVF</option>
+                    </select>
+                    <select class="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                        <option value="">Trạng thái</option>
+                        <option value="active">Đang điều trị</option>
+                        <option value="completed">Hoàn thành</option>
+                        <option value="paused">Tạm dừng</option>
+                    </select>
+                </div>
+                <div class="text-sm text-gray-600">
+                    Hiển thị <span class="font-semibold">1-20</span> trong <span class="font-semibold">156</span> bệnh nhân
+                </div>
+            </div>
+        </div>
+
+        <!-- Patients Section -->
+        <div class="mb-8">
+            <div class="flex items-center justify-between mb-6">
+                <h3 class="text-xl font-semibold text-gray-800">Bệnh nhân đang điều trị</h3>
+                <div class="flex space-x-2">
+                    <button class="px-3 py-1 text-sm bg-purple-100 text-purple-700 rounded-full hover:bg-purple-200 transition-colors">
+                        IUI (8)
+                    </button>
+                    <button class="px-3 py-1 text-sm bg-blue-100 text-blue-700 rounded-full hover:bg-blue-200 transition-colors">
+                        IVF (12)
+                    </button>
+                </div>
+            </div>
+
+            <!-- Patient Cards Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <!-- IUI Patient 1 -->
+                <div class="bg-white rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-purple-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Phạm Thị D</h4>
+                                    <p class="text-sm text-gray-500">ID: #PT001</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">IUI</span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Phác đồ:</span>
+                                <span class="font-medium text-purple-600">IUI</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Ngày bắt đầu:</span>
+                                <span class="font-medium">25/05/2025</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Bước:</span>
+                                <span class="font-medium">Bước 1</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Trạng thái:</span>
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">Đang điều trị</span>
+                            </div>
+                        </div>
+                        
+                        <button class="iui-gradient w-full text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm font-medium">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+
+                <!-- IVF Patient 1 -->
+                <div class="bg-white rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-blue-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Vũ Văn E</h4>
+                                    <p class="text-sm text-gray-500">ID: #PT002</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">IVF</span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Phác đồ:</span>
+                                <span class="font-medium text-blue-600">IVF</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Ngày bắt đầu:</span>
+                                <span class="font-medium">20/05/2025</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Bước:</span>
+                                <span class="font-medium">Bước 2</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Trạng thái:</span>
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">Đang điều trị</span>
+                            </div>
+                        </div>
+                        
+                        <button class="ivf-gradient w-full text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm font-medium">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional IUI Patient -->
+                <div class="bg-white rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-purple-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-purple-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Nguyễn Thị F</h4>
+                                    <p class="text-sm text-gray-500">ID: #PT003</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs bg-purple-100 text-purple-700 rounded-full">IUI</span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Phác đồ:</span>
+                                <span class="font-medium text-purple-600">IUI</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Ngày bắt đầu:</span>
+                                <span class="font-medium">22/05/2025</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Bước:</span>
+                                <span class="font-medium">Bước 1</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Trạng thái:</span>
+                                <span class="px-2 py-1 text-xs bg-yellow-100 text-yellow-700 rounded-full">Chuẩn bị</span>
+                            </div>
+                        </div>
+                        
+                        <button class="iui-gradient w-full text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm font-medium">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Additional IVF Patient -->
+                <div class="bg-white rounded-xl shadow-sm card-hover animate-fade-in border-l-4 border-blue-500">
+                    <div class="p-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-user text-blue-600"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-semibold text-gray-800">Trần Thị G</h4>
+                                    <p class="text-sm text-gray-500">ID: #PT004</p>
+                                </div>
+                            </div>
+                            <span class="px-2 py-1 text-xs bg-blue-100 text-blue-700 rounded-full">IVF</span>
+                        </div>
+                        
+                        <div class="space-y-2 mb-4">
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Phác đồ:</span>
+                                <span class="font-medium text-blue-600">IVF</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Ngày bắt đầu:</span>
+                                <span class="font-medium">18/05/2025</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Bước:</span>
+                                <span class="font-medium">Bước 1</span>
+                            </div>
+                            <div class="flex justify-between text-sm">
+                                <span class="text-gray-600">Trạng thái:</span>
+                                <span class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded-full">Đang điều trị</span>
+                            </div>
+                        </div>
+                        
+                        <button class="ivf-gradient w-full text-white py-2 px-4 rounded-lg hover:opacity-90 transition-opacity text-sm font-medium">
+                            Xem chi tiết
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More Button -->
+            <div class="text-center mt-8">
+                <button class="bg-white border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors">
+                    <i class="fas fa-chevron-down mr-2"></i>
+                    Xem thêm bệnh nhân
+                </button>
+            </div>
+        </div>
+
+        <!-- Quick Actions -->
+       
+    </div>
+
+    <script>
+        // Sidebar navigation
+        document.querySelectorAll('nav a').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelectorAll('nav a').forEach(l => l.classList.remove('sidebar-active', 'text-white'));
+                document.querySelectorAll('nav a').forEach(l => l.classList.add('text-gray-700'));
+                this.classList.add('sidebar-active', 'text-white');
+                this.classList.remove('text-gray-700');
+            });
+        });
+
+        // Add animation to cards
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.card-hover');
+            cards.forEach((card, index) => {
+                setTimeout(() => {
+                    card.classList.add('animate-fade-in');
+                }, index * 100);
+            });
+        });
+
+        // Filter functionality
+        const treatmentFilter = document.querySelector('select[placeholder="Tất cả phác đồ"]');
+        const statusFilter = document.querySelector('select[placeholder="Trạng thái"]');
+        const searchInput = document.querySelector('input[placeholder="Tìm kiếm bệnh nhân..."]');
+
+        function filterPatients() {
+            const cards = document.querySelectorAll('.grid .bg-white');
+            const searchTerm = searchInput.value.toLowerCase();
+            
+            cards.forEach(card => {
+                const patientName = card.querySelector('h4').textContent.toLowerCase();
+                const treatmentType = card.querySelector('.border-l-4').classList.contains('border-purple-500') ? 'iui' : 'ivf';
+                
+                let showCard = true;
+                
+                // Search filter
+                if (searchTerm && !patientName.includes(searchTerm)) {
+                    showCard = false;
+                }
+                
+                // Treatment filter
+                const selectedTreatment = treatmentFilter.value;
+                if (selectedTreatment && selectedTreatment !== treatmentType) {
+                    showCard = false;
+                }
+                
+                card.style.display = showCard ? 'block' : 'none';
+            });
+        }
+
+        searchInput.addEventListener('input', filterPatients);
+        treatmentFilter.addEventListener('change', filterPatients);
+        statusFilter.addEventListener('change', filterPatients);
+
+        // Patient card interactions
+        document.querySelectorAll('.bg-white button').forEach(button => {
+            if (button.textContent.includes('Xem chi tiết')) {
+                button.addEventListener('click', function() {
+                    const patientName = this.closest('.bg-white').querySelector('h4').textContent;
+                    alert(`Xem chi tiết bệnh nhân: ${patientName}`);
+                });
+            }
+        });
+    </script>
+</body>
+</html>
