@@ -1,0 +1,6 @@
+
+
+export const IUI_ID: string = "55555555-5555-5555-5555-555555555552" 
+
+export const IVF_ID: string = "55555555-5555-5555-5555-555555555551"
+
