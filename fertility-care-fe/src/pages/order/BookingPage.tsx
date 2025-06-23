@@ -6,7 +6,6 @@ import { FaFlask, FaUser, FaHeart } from "react-icons/fa";
 import Header from "../../components/Header";
 import type { Doctor } from "../../models/Doctor";
 import type PersonalInfo from "../../models/PersonalInfo";
-import { getDoctors, getScheduleSlotTime } from "../../apis/DoctorService";
 import axios from "axios";
 import Swal from "sweetalert2";
 import type { SlotSchedule } from "../../models/SlotSchedule";
@@ -14,8 +13,9 @@ import PartOneBooking from "../../components/order/PartOneBooking";
 import PartTwoBooking from "../../components/order/PartTwoBooking";
 import PartThreeBooking from "../../components/order/PartThreeBooking";
 import PartFourBooking from "../../components/order/PartFourBooking";
-import { useAuth } from "../../contexts/AuthContext";
 import axiosInstance from "../../apis/AxiosInstance";
+import { getDoctors, getScheduleSlotTime } from "../../apis/DoctorService";
+import { useAuth } from "../../contexts/AuthContext";
 
 type CreateOrderRequest = {
   firstName?: string;

@@ -5,12 +5,12 @@ import { StepCard } from "../../components/progress/StepCard";
 import { StepDetail } from "../../components/progress/StepDetail";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
-import { useAuth } from "../../contexts/AuthContext";
-import type OrderStep from "../../models/OrderStep";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Patient } from "../../models/Patient";
-import type { Order } from "../../models/Order";
 import { STEP_COMPLETED } from "../../constants/StepStatus";
+import { useAuth } from "../../contexts/AuthContext";
+import type OrderStep from "../../models/OrderStep";
+import type { Order } from "../../models/Order";
 
 export default function PatientProgressPage() {
   const { patientId, orderIds } = useAuth();
