@@ -15,8 +15,9 @@ import {
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import type { Patient } from "../../models/Patient";
-import { ConvertFullName } from "../../functions/CommonFunction";
+
 import { Link } from "react-router-dom";
+import { convertFullName } from "../../functions/CommonFunction";
 
 interface SideBarProps {
   patient: Patient | null,
@@ -44,7 +45,7 @@ export function SideBarPatient({
                 </div>
               </div>
               <div className="text-white flex-1">
-                <h3 className="font-semibold text-lg">{patient?.profile ? ConvertFullName(patient.profile) : ""}</h3>
+                <h3 className="font-semibold text-lg">{patient?.profile ? convertFullName(patient.profile) : ""}</h3>
               </div>
             </>
           )}

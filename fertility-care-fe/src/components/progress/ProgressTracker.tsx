@@ -1,6 +1,6 @@
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
-import type OrderStep from "../../models/OrderStep";
 import { STEP_COMPLETED, STEP_PROGRESS } from "../../constants/StepStatus";
+import type OrderStep from "../../models/OrderStep";
 
 interface ProgressTrackerProps {
   steps: OrderStep[];
