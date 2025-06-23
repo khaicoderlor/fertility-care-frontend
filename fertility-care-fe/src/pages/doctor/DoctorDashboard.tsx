@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Doctor } from "../../models/Doctor";
-import { ConvertFullName } from "../../functions/CommonFunction";
 import type { PatientDashboard } from "../../models/PatientDashboard";
 import { Link } from "react-router-dom";
 import "../../assets/css/DotorDashboardStyle.css"
+import { convertFullName } from "../../functions/CommonFunction";
 
 export default function DoctorDashboard() {
   // fetch all patient kem theo orderId doctor
@@ -124,7 +124,7 @@ export default function DoctorDashboard() {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-800 text-sm truncate">
-                  Bs. {doctor?.profile ? ConvertFullName(doctor.profile) : "Đang tải..."}
+                  Bs. {doctor?.profile ? convertFullName(doctor.profile) : "Đang tải..."}
                 </p>
                 <p className="text-xs text-gray-600 truncate">
                   Chuyên khoa Sản phụ khoa
@@ -143,7 +143,7 @@ export default function DoctorDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 mt-1">Chào mừng trở lại, Bác sĩ {doctor?.profile ? ConvertFullName(doctor.profile) : ""}</p>
+                <p className="text-gray-600 mt-1">Chào mừng trở lại, Bác sĩ {doctor?.profile ?  convertFullName(doctor.profile) : ""}</p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Hôm nay</p>

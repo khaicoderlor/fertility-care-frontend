@@ -18,13 +18,7 @@ import {
 } from "@heroicons/react/24/outline";
 
 import type OrderStep from "../../models/OrderStep";
-import {
-  calculateCompletedPercentage,
-  ConvertFullName,
-  ConvertSlotTime,
-  getStepBySelectedStepDetail,
-  getStepCardBg,
-} from "../../functions/CommonFunction";
+
 import {
   STEP_COMPLETED,
   STEP_FAILED,
@@ -34,15 +28,16 @@ import {
 import axios from "axios";
 import type { Patient } from "../../models/Patient";
 import type { SlotSchedule } from "../../models/SlotSchedule";
-import { getScheduleSlotTime } from "../../apis/DoctorService";
 import Swal from "sweetalert2";
-import { getPatientById } from "../../apis/PatientService";
 import { PAYMENT_COMPLETED } from "../../constants/PaymentStatus";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../apis/AxiosInstance";
 import { FaClock } from "react-icons/fa";
 import { STEP_TAKE_EGG } from "../../constants/IVFConstant";
 import { CubeIcon } from "@heroicons/react/24/solid";
+import { calculateCompletedPercentage, convertFullName, convertSlotTime, getStepBySelectedStepDetail, getStepCardBg } from '../../functions/CommonFunction';
+import { getScheduleSlotTime } from "../../apis/DoctorService";
+import { getPatientById } from "../../apis/PatientService";
 
 export interface CreateAppointmentDailyRequest {
   patientId: string;
@@ -342,7 +337,7 @@ export default function FollowUpPatientProgressPage() {
             </div>
             <div>
               <h2 className="font-bold">
-                {patient?.profile ? ConvertFullName(patient.profile) : ""}
+                {patient?.profile ? convertFullName(patient.profile) : ""}
               </h2>
               <p className="text-sm text-gray-500">
                 {patient?.profile?.dateOfBirth}
@@ -756,7 +751,7 @@ export default function FollowUpPatientProgressPage() {
                             <div className="flex items-center text-sm">
                               <ClockIcon className="mr-2 h-4 w-4 text-gray-500" />
                               <span>
-                                {ConvertSlotTime({
+                                {convertSlotTime({
                                   slotId: -1,
                                   startTime: appointment.startTime ?? "",
                                   endTime: appointment.endTime ?? "",
@@ -834,20 +829,20 @@ export default function FollowUpPatientProgressPage() {
                       <button
                         key={slot.slotId}
                         onClick={() => {
-                          setSelectedTime(ConvertSlotTime(slot));
+                          setSelectedTime(convertSlotTime(slot));
                           setNewAppointment({
                             ...newAppointment,
                             doctorScheduleId: slot.scheduleId,
                           });
                         }}
                         className={`flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border transition-colors duration-200 ${
-                          selectedTime === ConvertSlotTime(slot)
+                          selectedTime === convertSlotTime(slot)
                             ? "bg-blue-600 text-white border-blue-600"
                             : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                         }`}
                       >
                         <FaClock className="w-3 h-3 mr-1" />
-                        {ConvertSlotTime(slot)}
+                        {convertSlotTime(slot)}
                       </button>
                     ))}
                   </div>
