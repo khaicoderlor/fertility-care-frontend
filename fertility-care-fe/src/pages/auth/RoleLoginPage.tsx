@@ -16,9 +16,13 @@ export default function RoleLoginPage() {
     formData: FormData
   ) => {
     e.preventDefault();
-    const resposne = await axiosInstance.post("/auth/login", formData);
-    
-    
+    try {
+      const response = await axiosInstance.post("/auth/login", formData);
+
+      
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
