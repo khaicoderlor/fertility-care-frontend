@@ -5,4 +5,4 @@ export interface EmbryoData {
     eggGrade?: number,
     status?: string,
     isFrozen?: boolean
-}
+}   

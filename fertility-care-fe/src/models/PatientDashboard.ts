@@ -6,5 +6,13 @@ export interface PatientDashboard {
 
     treatmentName?: string,
 
-    orderId?: string
+    orderId?: string,
+
+    startDate?: string,
+
+    endDate?: string,
+
+    status?: string,
+
+    totalEggs?: number
 }

@@ -1,6 +1,8 @@
 import { useState, type FormEvent } from "react";
 import RoleLoginForm from "../../components/auth/RoleLoginForm";
 import axiosInstance from "../../apis/AxiosInstance";
+import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
+import Swal from "sweetalert2";
 
 export interface FormData {
   email: string;
@@ -8,6 +10,7 @@ export interface FormData {
 }
 
 export default function RoleLoginPage() {
+  const { login } = useCompetenceAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
@@ -18,10 +21,26 @@ export default function RoleLoginPage() {
     e.preventDefault();
     try {
       const response = await axiosInstance.post("/auth/login", formData);
+      const authResult = response.data;
+      if (authResult.isSuccess) {
+        const data = authResult.data;
+        const token = data.accessToken;
+        const role = data.role;
+        const userProfileId = data.user.profileId;
 
-      
+        await login(token, userProfileId, role);
+
+        Swal.fire({
+          title: "Đăng nhập thành công",
+          icon: "success",
+        });
+      }
     } catch (error) {
       console.log(error);
+      Swal.fire({
+        title: "Đăng nhập thất bại",
+        icon: "error",
+      });
     }
   };
 

@@ -5,35 +5,31 @@ import type { PatientDashboard } from "../../models/PatientDashboard";
 import { Link } from "react-router-dom";
 import "../../assets/css/DotorDashboardStyle.css"
 import { convertFullName } from "../../functions/CommonFunction";
+import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 
 export default function DoctorDashboard() {
-  // fetch all patient kem theo orderId doctor
-  // xu li button click vao chuyen them du lieu patient, orderId
-
-  const [doctorId, setDoctorId] = useState(
-    "46BA90E4-C329-43DE-AC0C-F799822A5494"
-  );
+  const {doctorId} = useCompetenceAuth();
   const [doctor, setDoctor] = useState<Doctor>();
   const [patients, setPatients] = useState<PatientDashboard[]>();
 
   useEffect(() => {
-    const fetchDoctor = async () => {
+    const fetchDoctor = async (dId: string) => {
       try {
-        const response = await axiosInstance.get(`doctors/${doctorId}`);
+        const response = await axiosInstance.get(`doctors/${dId}`);
         setDoctor(response.data.data);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchDoctor();
-  }, [doctorId, setDoctorId]);
+    fetchDoctor(doctorId??"");
+  }, [doctorId]);
 
   useEffect(() => {
-    const fetchPatients = async () => {
+    const fetchPatients = async (dId: string) => {
       try {
         const response = await axiosInstance.get(
-          `patients/doctors/${doctorId}`
+          `/doctors/${dId}/patients`
         );
 
         setPatients(response.data.data);
@@ -42,8 +38,8 @@ export default function DoctorDashboard() {
       }
     };
 
-    fetchPatients();
-  });
+    fetchPatients(doctorId??"");
+  }, [doctorId]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -71,7 +67,7 @@ export default function DoctorDashboard() {
             >
               <div className="flex items-center">
                 <i className="fas fa-chart-line w-4 mr-3"></i>
-                Dashboard
+                Tổng quát
               </div>
             </a>
 
@@ -234,13 +230,18 @@ export default function DoctorDashboard() {
                       Phác đồ điều trị
                     </th>
                     <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Ngày khám
+                      Ngày bắt đầu
+                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
+                      Ngày kết thúc
                     </th>
                     <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
                       Trạng thái
                     </th>
                     <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Thao tác
+                      Số trứng
+                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
                     </th>
                   </tr>
                 </thead>
@@ -255,33 +256,28 @@ export default function DoctorDashboard() {
                           <div className="flex items-center space-x-3">
                             <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
                               <span className="text-sm font-medium text-blue-700">
-                                {patient.patientName?.charAt(0).toUpperCase() || "?"}
+                                {patient.patientName}
                               </span>
-                            </div>
-                            <div>
-                              <p className="font-medium text-gray-900 text-sm">
-                                {patient.patientName || "Chưa có tên"}
-                              </p>
-                              <p className="text-xs text-gray-500">
-                                ID: #{patient.patientId?.substring(0, 8) || "00000000"}
-                              </p>
                             </div>
                           </div>
                         </td>
                         <td className="py-4 px-6">
                           <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
                             <i className="fas fa-microscope mr-1"></i>
-                            {patient.treatmentName || "IVF"}
+                            {patient.treatmentName}
                           </span>
                         </td>
                         <td className="py-4 px-6 text-sm text-gray-600">
-                          {new Date().toLocaleDateString('vi-VN')}
+                          {patient.startDate}
                         </td>
-                        <td className="py-4 px-6">
-                          <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                            <div className="w-1.5 h-1.5 bg-green-500 rounded-full mr-2"></div>
-                            Đang điều trị
-                          </span>
+                        <td className="py-4 px-6 text-sm text-gray-600">
+                          {patient.endDate}
+                        </td>
+                        <td className="py-4 px-6 text-sm text-gray-600">
+                          {patient.status}
+                        </td>
+                        <td className="py-4 px-6 text-sm text-gray-600">
+                          {patient.totalEggs}
                         </td>
                         <td className="py-4 px-6">
                           <Link
