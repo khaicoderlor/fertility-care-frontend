@@ -35,6 +35,12 @@ export function getStepCardBg(status: string): string {
   }
 }
 
+export function getStepBySelectedStepDetail(
+  steps: OrderStep[],
+  selectedStepDetail: number
+): OrderStep | undefined {
+  return steps.find((x) => x.id === selectedStepDetail);
+}
 
 
 
