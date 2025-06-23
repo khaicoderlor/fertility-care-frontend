@@ -8,7 +8,7 @@ import axiosInstance from "../../apis/AxiosInstance";
 import Swal from "sweetalert2";
 
 export const GoogleLoginButton = () => {
-  const { login, setPatientInfo } = useAuth();
+  const { login, setOrderIdList } = useAuth();
 
   const handleSuccess = async (
     credentialResponse: GoogleCredentialResponse
@@ -19,14 +19,10 @@ export const GoogleLoginButton = () => {
         idToken: credentialResponse.credential,
       });
 
-      const { accessToken, user } = res.data;
-      console.log(user);
-      login(accessToken, user.profileId);
-
-      const info = await axiosInstance.get(`/patients/profile/${user.profileId}`);
-      const res2 =  info.data.data;
-      console.log("res2", res2);
-      setPatientInfo(res2.patientId, res2.orderIds);
+      const { accessToken, refreshToken, user } = res.data;
+      
+      login(accessToken, refreshToken, user.profileId, user.patientId);
+      setOrderIdList(user.orderIds);
 
       Swal.fire({
         title: "Đăng nhập thành công",

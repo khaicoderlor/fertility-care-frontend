@@ -11,14 +11,16 @@ import { STEP_COMPLETED } from "../../constants/StepStatus";
 import { useAuth } from "../../contexts/AuthContext";
 import type OrderStep from "../../models/OrderStep";
 import type { Order } from "../../models/Order";
+import type { OrderInfo } from "../../models/OrderInfo";
 
 export default function PatientProgressPage() {
-  const { patientId, orderIds } = useAuth();
+  const { patientId } = useAuth();
   const [selectedStep, setSelectedStep] = useState<OrderStep | null>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [steps, setSteps] = useState<OrderStep[]>([]);
   const [patient, setPatient] = useState<Patient>();
   const [order, setOrder] = useState<Order>();
+  const [ordersInfo, setOrdersInfo] = useState<OrderInfo[]>();
 
   const completedSteps = steps.filter(
     (step) => step.status === STEP_COMPLETED
@@ -26,21 +28,21 @@ export default function PatientProgressPage() {
 
   const totalSteps = steps.length;
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    const fetchSteps = async () => {
-      try {
-        const response = await axiosInstance.get(`/steps/${orderIds}`);
+  //   const fetchSteps = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`/steps/${orderIds}`);
 
-        const result = response.data.data;
-        setSteps(result);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  //       const result = response.data.data;
+  //       setSteps(result);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-    fetchSteps();
-  }, [patientId, orderIds]);
+  //   fetchSteps();
+  // }, [patientId, orderIds]);
 
   useEffect(() => {
 
@@ -49,31 +51,43 @@ export default function PatientProgressPage() {
         const response = await axiosInstance.get(`/patients/${pId}`);
 
         const result = response.data.data;
-        console.log("Patient" + result);
         setPatient(result);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchPatient(patientId??"" );
+    fetchPatient(patientId??"");
   });
 
   useEffect(() => {
-
-    const fetchOrder = async () => {
+    const fetchOrderByPatientId = async (pId: string) => {
       try {
-        const response = await axiosInstance.get(`/orders/${orderIds}`);
+        const response = await axiosInstance.get(`${pId}/patients`);
 
-        const result = response.data.data;
-        setOrder(result);
-      } catch (error) {
-        console.log(error);
+        setOrdersInfo(response.data.data);
+      } catch(error) {
+        console.log(error)
       }
-    };
+    }
+    fetchOrderByPatientId(patientId??"")
+  }, [patientId])
 
-    fetchOrder();
-  });
+  // useEffect(() => {
+
+  //   const fetchOrder = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(`/orders/${orderIds}`);
+
+  //       const result = response.data.data;
+  //       setOrder(result);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+
+  //   fetchOrder();
+  // });
 
   return (
     <div>
