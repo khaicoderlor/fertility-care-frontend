@@ -13,12 +13,10 @@ interface PartProps {
   selectedTreatment: string;
   selectedDate: string;
   selectedTime: string;
-  specialRequests: string;
   consentGiven: boolean;
   timeSlots: SlotSchedule[];
   onDateChange: (date: string) => void;
   onTimeChange: (time: string) => void;
-  onSpecialRequestsChange: (requests: string) => void;
   onConsentChange: (consent: boolean) => void;
   isCompleted: boolean;
   onScheduleIdChange: (scheduleId: number) => void;
@@ -29,12 +27,10 @@ export default function PartFourBooking({
   selectedTreatment,
   selectedDate,
   selectedTime,
-  specialRequests,
   consentGiven,
   timeSlots,
   onDateChange,
   onTimeChange,
-  onSpecialRequestsChange,
   onConsentChange,
   onScheduleIdChange,
   isCompleted,
@@ -126,23 +122,6 @@ export default function PartFourBooking({
               )}
             </div>
           </div>
-        </div>
-
-        <div className="mt-8">
-          <label
-            htmlFor="specialRequests"
-            className="block text-sm font-medium text-gray-700 mb-1"
-          >
-            Special Requests (Optional)
-          </label>
-          <textarea
-            id="specialRequests"
-            rows={3}
-            value={specialRequests}
-            onChange={(e) => onSpecialRequestsChange(e.target.value)}
-            placeholder="Any special requests or additional information..."
-            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-          />
         </div>
 
         <div className="flex items-center space-x-2 mt-6">

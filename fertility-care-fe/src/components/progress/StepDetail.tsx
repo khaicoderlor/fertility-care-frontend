@@ -17,6 +17,7 @@ import type { Order } from "../../models/Order";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { EmbryoData } from "../../models/EmbryoData";
+import type { EggData } from "../../models/EggData";
 
 interface StepDetailProps {
   step: OrderStep | null;
@@ -25,6 +26,7 @@ interface StepDetailProps {
 
 export function StepDetail({ step, order }: StepDetailProps) {
   const [embryoData, setEmbryoData] = useState<EmbryoData[]>([]);
+  const [eggData, setEggData] = useState<EggData[]>([]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -34,19 +36,32 @@ export function StepDetail({ step, order }: StepDetailProps) {
   };
 
   useEffect(() => {
-    const fetchEmbryos = async () => {
+    const fetchEmbryos = async (oId: string) => {
       try {
-        const response = await axiosInstance.get(`/embryos/${order?.id}`);
+        const response = await axiosInstance.get(`/embryos/${oId}`);
 
-        const result = response.data.data;
-        setEmbryoData(result);
+        setEmbryoData(response.data.datalt);
       } catch (error) {
         console.log(error);
       }
     };
 
-    fetchEmbryos();
-  });
+    fetchEmbryos(order?.id ?? "");
+  }, [order?.id]);
+
+  useEffect(() => {
+    const fetchEggsData = async (oId: string) => {
+      try {
+        const response = await axiosInstance.get(`/eggs/viable/${oId}`);
+
+        setEggData(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchEggsData(order?.id ?? "");
+  }, [order?.id]);
 
   if (!step) {
     return (
@@ -152,7 +167,7 @@ export function StepDetail({ step, order }: StepDetailProps) {
       <AppointmentList appointments={step.appointments ?? []} />
 
       {step.treatmentStep.stepOrder === STEP_TAKE_EGG && order && (
-        <EggDataCard order={order} />
+        <EggDataCard order={order} eggs={eggData} />
       )}
 
       {step.treatmentStep.stepOrder === STEP_EMBRYO && order && (

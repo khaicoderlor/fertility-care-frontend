@@ -2,9 +2,11 @@
 
 import { FaArrowRight } from "react-icons/fa";
 import type PersonalInfo from "../../models/PersonalInfo";
+import type { Patient } from "../../models/Patient";
 
 interface PartProps {
   personal: PersonalInfo;
+  patient: Patient;
   onPersonalInfoChange: (field: string, value: string) => void;
   onNext: () => void;
   isCompleted: boolean;
@@ -12,10 +14,26 @@ interface PartProps {
 
 export default function PartTwoBooking({
   personal,
+  patient,
   onPersonalInfoChange,
   onNext,
   isCompleted,
 }: PartProps) {
+  // personal.firstName = patient?.profile?.firstName ?? "";
+  // personal.middleName = patient?.profile?.middleName ?? "";
+  // personal.lastName = patient?.profile?.lastName ?? "";
+  // personal.dateOfBirth = patient?.profile?.dateOfBirth ?? "";
+  // personal.gender = patient?.profile?.gender ?? "";
+  // personal.medicalHistory = patient?.medicalHistory ?? "";
+  // personal.address = patient?.profile?.address ?? "";
+
+  const convertToInputDateFormat = (dateStr: string): string => {
+    if (!dateStr) return "";
+    const [day, month, year] = dateStr.split("/");
+    if (!day || !month || !year) return ""; 
+    return `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
+  };
+
   return (
     <section id="personal-info" className="scroll-mt-20 pt-20">
       <div className="max-w-4xl mx-auto">
@@ -76,39 +94,6 @@ export default function PartTwoBooking({
                 onChange={(e) =>
                   onPersonalInfoChange("lastName", e.target.value)
                 }
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Email Address
-              </label>
-              <input
-                id="email"
-                type="email"
-                value={personal.email}
-                onChange={(e) => onPersonalInfoChange("email", e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-              />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-4">
-            <div>
-              <label
-                htmlFor="phone"
-                className="block text-sm font-medium text-gray-700 mb-1"
-              >
-                Phone Number
-              </label>
-              <input
-                id="phone"
-                type="tel"
-                value={personal.phone}
-                onChange={(e) => onPersonalInfoChange("phone", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -188,7 +173,7 @@ export default function PartTwoBooking({
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Gender
+                Partner Gender
               </label>
               <div className="flex space-x-6">
                 <div className="flex items-center">

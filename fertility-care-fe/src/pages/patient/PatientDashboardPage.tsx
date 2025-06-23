@@ -4,42 +4,15 @@ import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Patient } from "../../models/Patient";
-import { STEP_COMPLETED } from "../../constants/StepStatus";
 import { useAuth } from "../../contexts/AuthContext";
-import type OrderStep from "../../models/OrderStep";
-import type { Order } from "../../models/Order";
 import type { OrderInfo } from "../../models/OrderInfo";
+import OrderInfoList from "../../components/progress/OrderInfoList";
 
-export default function PatientProgressPage() {
+export default function PatientDashboardPage() {
   const { patientId } = useAuth();
-  const [selectedStep, setSelectedStep] = useState<OrderStep | null>();
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const [steps, setSteps] = useState<OrderStep[]>([]);
   const [patient, setPatient] = useState<Patient>();
-  const [order, setOrder] = useState<Order>();
   const [ordersInfo, setOrdersInfo] = useState<OrderInfo[]>();
-
-  const completedSteps = steps.filter(
-    (step) => step.status === STEP_COMPLETED
-  ).length;
-
-  const totalSteps = steps.length;
-
-  // useEffect(() => {
-
-  //   const fetchSteps = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/steps/${orderIds}`);
-
-  //       const result = response.data.data;
-  //       setSteps(result);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchSteps();
-  // }, [patientId, orderIds]);
 
   useEffect(() => {
 
@@ -70,22 +43,6 @@ export default function PatientProgressPage() {
     fetchOrderByPatientId(patientId??"")
   }, [patientId])
 
-  // useEffect(() => {
-
-  //   const fetchOrder = async () => {
-  //     try {
-  //       const response = await axiosInstance.get(`/orders/${orderIds}`);
-
-  //       const result = response.data.data;
-  //       setOrder(result);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchOrder();
-  // });
-
   return (
     <div>
       <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex">
@@ -110,14 +67,13 @@ export default function PatientProgressPage() {
             </button>
             <div className="flex items-center gap-2">
               <HeartIcon className="w-6 h-6 text-pink-500" />
-              <span className="font-semibold text-gray-900">{order?.treatmentService?.name} progress</span>
+              <span className="font-semibold text-gray-900">Fertility Care</span>
             </div>
             <div className="w-10" />
           </div>
 
           <div className="p-6">
-            
-            
+            <OrderInfoList ordersInfo={ordersInfo??[]}/>
           </div>
         </div>
       </div>

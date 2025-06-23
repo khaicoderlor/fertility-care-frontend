@@ -37,7 +37,12 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
   const [orderIds, setOrderIds] = useState<string[] | null>(() => {
     const stored = localStorage.getItem("orderIds");
-    return stored ? JSON.parse(stored) : null;
+    try {
+      return stored ? JSON.parse(stored) : null;
+    } catch (e) {
+      console.error("Lỗi parse orderIds từ localStorage:", stored, e);
+      return null;
+    }
   });
 
   const login = (

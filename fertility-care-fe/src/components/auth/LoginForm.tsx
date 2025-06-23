@@ -2,9 +2,11 @@ import { useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import axiosInstance from "../../apis/AxiosInstance";
 import Swal from "sweetalert2";
+import { TbLockPassword } from "react-icons/tb";
+import { MdOutlineEmail } from "react-icons/md";
 
 export const LoginForm = () => {
-  const { login, setPatientInfo } = useAuth();
+  const { login, setOrderIdList } = useAuth();
 
   const [email, setEmail] = useState("");
 
@@ -18,14 +20,9 @@ export const LoginForm = () => {
         Password: password,
       });
 
-      const { accessToken, user } = res.data;
-      console.log(user);
-      login(accessToken, user.profileId);
-
-      const info = await axiosInstance.get(`/patients/profile/${user.profileId}`);
-      const res2 =  info.data.data;
-      console.log("res2", res2);
-      setPatientInfo(res2.patientId, res2.orderIds);
+      const { accessToken, refreshToken, user } = res.data;
+      login(accessToken, refreshToken, user.profileId, user.patientId);
+      setOrderIdList(user.orderIds);
 
       Swal.fire({
         title: "Đăng nhập thành công",
@@ -47,19 +44,27 @@ export const LoginForm = () => {
     >
       <div>
         <label
-          htmlFor="username"
+          htmlFor="email"
           className="block text-sm font-medium text-gray-700 mb-1"
         >
-          <i className="fas fa-user mr-2"></i>Email
+          <i className="fas fa-lock mr-2"></i>Email
         </label>
-        <input
-          id="email"
-          type="text"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          placeholder="Nhập tên đăng nhập"
-          className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-        />
+        <div className="relative">
+          <input
+            id="email"
+            type="text"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="Nhập email"
+            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none pr-12"
+          />
+          <button
+            type="button"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+          >
+            <MdOutlineEmail className="fas fa-eye"/>
+          </button>
+        </div>
       </div>
 
       <div>
@@ -82,7 +87,7 @@ export const LoginForm = () => {
             type="button"
             className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
           >
-            <i className="fas fa-eye"></i>
+            <TbLockPassword className="fas fa-eye"/>
           </button>
         </div>
       </div>

@@ -1,5 +1,8 @@
 
 export interface EmbryoData {
+    id: string
     embryoGrade?: string,
-    embryoQuantity?: number,
+    eggGrade?: number,
+    status?: string,
+    isFrozen?: boolean
 }

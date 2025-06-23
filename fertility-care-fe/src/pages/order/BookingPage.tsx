@@ -6,7 +6,6 @@ import { FaFlask, FaUser, FaHeart } from "react-icons/fa";
 import Header from "../../components/Header";
 import type { Doctor } from "../../models/Doctor";
 import type PersonalInfo from "../../models/PersonalInfo";
-import axios from "axios";
 import Swal from "sweetalert2";
 import type { SlotSchedule } from "../../models/SlotSchedule";
 import PartOneBooking from "../../components/order/PartOneBooking";
@@ -16,6 +15,7 @@ import PartFourBooking from "../../components/order/PartFourBooking";
 import axiosInstance from "../../apis/AxiosInstance";
 import { getDoctors, getScheduleSlotTime } from "../../apis/DoctorService";
 import { useAuth } from "../../contexts/AuthContext";
+import type { Patient } from "../../models/Patient";
 
 type CreateOrderRequest = {
   firstName?: string;
@@ -28,21 +28,16 @@ type CreateOrderRequest = {
   partnerFullName?: string;
   partnerEmail?: string;
   partnerPhone?: string;
-  userProfileId?: string;
+  patientId?: string;
   doctorId?: string;
   doctorScheduleId?: number;
   treatmentServiceId?: string;
-  note?: string;
-  bookingEmail?: string;
-  bookingPhone?: string;
 };
 
 export const defaultPersonalInfo: PersonalInfo = {
   firstName: "",
   middleName: "",
   lastName: "",
-  email: "",
-  phone: "",
   dateOfBirth: "",
   gender: "",
   medicalHistory: "",
@@ -53,7 +48,7 @@ export const defaultPersonalInfo: PersonalInfo = {
 };
 
 export default function BookingPage() {
-  const { userProfileId, setPatientInfo } = useAuth();
+  const { patientId } = useAuth();
   const [activeStep, setActiveStep] = useState(1);
   const [selectedTreatment, setSelectedTreatment] = useState("");
   const [selectedDoctor, setSelectedDoctor] = useState<Doctor | null>(null);
@@ -62,10 +57,10 @@ export default function BookingPage() {
   const [selectedSchedule, setSelectedSchedule] = useState<number>(0);
   const [personalInfo, setPersonalInfo] =
     useState<PersonalInfo>(defaultPersonalInfo);
-  const [specialRequests, setSpecialRequests] = useState("");
   const [consentGiven, setConsentGiven] = useState(false);
   const [doctors, setDoctors] = useState<Doctor[]>([]);
   const [slots, setSlots] = useState<SlotSchedule[]>([]);
+  const [patient, setPatient] = useState<Patient>({});
   const [formData, setFormData] = useState<CreateOrderRequest>({
     firstName: "",
     middleName: "",
@@ -77,12 +72,9 @@ export default function BookingPage() {
     partnerFullName: "",
     partnerEmail: "",
     partnerPhone: "",
-    userProfileId: userProfileId,
+    patientId: patientId??"",
     doctorId: "",
     doctorScheduleId: 0,
-    note: "",
-    bookingEmail: "",
-    bookingPhone: "",
   });
 
   const steps = [
@@ -123,8 +115,7 @@ export default function BookingPage() {
       case 2:
         return (
           personalInfo?.firstName !== "" &&
-          personalInfo?.lastName !== "" &&
-          personalInfo?.email !== ""
+          personalInfo?.lastName !== "" 
         );
       case 3:
         return selectedDoctor !== null;
@@ -143,18 +134,12 @@ export default function BookingPage() {
     console.log("Submitting form data:", formData);
 
     try {
-      const response = await axios.post(
-        "https://localhost:7201/api/v1/orders",
+      const response = await axiosInstance.post(
+        "/orders",
         formData
       );
-
-      const info = await axiosInstance.get(`/patients/profile/${userProfileId}`);
-      const res2 =  info.data.data;
-      console.log("res2", res2);
-      setPatientInfo(res2.patientId, res2.orderIds);
       
       console.log(response.data);
-
       Swal.fire({
         title: "Thành công!",
         text: "Bạn đã đặt lịch khám thành công.",
@@ -163,28 +148,12 @@ export default function BookingPage() {
       });
     } catch (error) {
       console.log(error);
-
-      const info = await axiosInstance.get(`/patients/profile/${userProfileId}`);
-      const res2 =  info.data.data;
-      console.log("res2", res2);
-      setPatientInfo(res2.patientId, res2.orderIds);
-      // if (axios.isAxiosError(error)) {
-      //   console.error("Lỗi API:", error.response?.data || error.message);
-
-      //   Swal.fire({
-      //     title: "Lỗi!",
-      //     text: error.response?.data?.message ?? "Gửi yêu cầu không hợp lệ.",
-      //     icon: "error",
-      //     confirmButtonText: "Đóng",
-      //   });
-      // }
-
-      // Swal.fire({
-      //   title: "Lỗi!",
-      //   text: "Có lỗi không xác định xảy ra.",
-      //   icon: "error",
-      //   confirmButtonText: "Đóng",
-      // });
+      Swal.fire({
+        title: "Thành công!",
+        text: "Bạn đã đặt lịch khám thành công.",
+        icon: "success",
+        confirmButtonText: "OK",
+      });
     }
   };
 
@@ -229,6 +198,20 @@ export default function BookingPage() {
   }, [selectedDoctor?.id, selectedDate]);
 
   useEffect(() => {
+    const fetchPatient = async (pId: string) => {
+      try {
+        const response = await axiosInstance.get(`/patients/${pId}`)
+
+        setPatient(response.data.data)
+      } catch(error) {
+        console.log(error);
+      }
+    }
+
+    fetchPatient(patientId??"");
+  }, [patientId])
+
+  useEffect(() => {
     const mergedFormData: CreateOrderRequest = {
       firstName: personalInfo.firstName,
       middleName: personalInfo.middleName,
@@ -240,13 +223,10 @@ export default function BookingPage() {
       partnerFullName: personalInfo.partnerName,
       partnerEmail: personalInfo.partnerEmail,
       partnerPhone: personalInfo.partnerPhone,
-      userProfileId: userProfileId,
+      patientId: patientId??"",
       doctorId: selectedDoctor?.id || "",
       doctorScheduleId: selectedSchedule,
       treatmentServiceId: selectedTreatment,
-      note: specialRequests,
-      bookingEmail: personalInfo.email,
-      bookingPhone: personalInfo.phone,
     };
 
     setFormData(mergedFormData);
@@ -257,7 +237,6 @@ export default function BookingPage() {
     selectedDate,
     selectedTime,
     selectedSchedule,
-    specialRequests,
   ]);
 
   return (
@@ -353,6 +332,7 @@ export default function BookingPage() {
 
               <PartTwoBooking
                 personal={personalInfo}
+                patient={patient}
                 onPersonalInfoChange={handlePersonalInfoChange}
                 onNext={() => handleNextStep(2)}
                 isCompleted={isStepCompleted(2)}
@@ -371,12 +351,10 @@ export default function BookingPage() {
                 selectedTreatment={selectedTreatment}
                 selectedDate={selectedDate}
                 selectedTime={selectedTime}
-                specialRequests={specialRequests}
                 consentGiven={consentGiven}
                 timeSlots={slots}
                 onDateChange={setSelectedDate}
                 onTimeChange={setSelectedTime}
-                onSpecialRequestsChange={setSpecialRequests}
                 onScheduleIdChange={setSelectedSchedule}
                 onConsentChange={setConsentGiven}
                 isCompleted={isStepCompleted(activeStep)}

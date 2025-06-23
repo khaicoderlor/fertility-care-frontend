@@ -1,6 +1,10 @@
 import { GoogleLoginButton } from "../../components/auth/GoogleLoginButton";
 import { LoginForm } from "../../components/auth/LoginForm";
 import "../../assets/css/LoginPageStyle.css";
+import { FaUserDoctor } from "react-icons/fa6";
+import { GiHealthNormal } from "react-icons/gi";
+import { MdOutlineSecurity } from "react-icons/md";
+import { GrLogin } from "react-icons/gr";
 export default function LoginPage() {
   return (
     <div className="min-h-screen flex items-center justify-center p-6 relative">
@@ -59,7 +63,7 @@ export default function LoginPage() {
               <div className="grid sm:grid-cols-3 gap-6 pt-4">
                 <div className="bg-white rounded-xl p-5 border transition hover-lift">
                   <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center mb-3">
-                    <i className="fas fa-user-md text-blue-500 text-lg"></i>
+                    <FaUserDoctor className="fas fa-user-md text-blue-500 text-lg"/>
                   </div>
                   <h3 className="text-gray-800 font-semibold mb-1">
                     Bác sĩ chuyên khoa
@@ -69,23 +73,23 @@ export default function LoginPage() {
 
                 <div className="bg-white rounded-xl p-5 border hover-lift transition">
                   <div className="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center mb-3">
-                    <i className="fas fa-chart-line text-green-500 text-lg"></i>
+                    <GiHealthNormal className="fas fa-chart-line text-green-500 text-lg"/>
                   </div>
                   <h3 className="text-gray-800 font-semibold mb-1">
                     Theo dõi sức khỏe
                   </h3>
                   <p className="text-sm text-gray-600">
-                    AI phân tích thông minh
+                    Luôn hỗ trợ mọi lúc
                   </p>
                 </div>
 
                 <div className="bg-white rounded-xl p-5 border hover-lift transition">
                   <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mb-3">
-                    <i className="fas fa-shield-alt text-purple-500 text-lg"></i>
+                    <MdOutlineSecurity className="fas fa-shield-alt text-purple-500 text-lg"/>
                   </div>
                   <h3 className="text-gray-800 font-semibold mb-1">Bảo mật</h3>
                   <p className="text-sm text-gray-600">
-                    Mã hóa dữ liệu an toàn
+                    Dữ liệu của bạn là bí mật
                   </p>
                 </div>
               </div>
@@ -96,7 +100,7 @@ export default function LoginPage() {
             <div className="glass-effect rounded-xl p-8">
               <div className="text-center mb-6">
                 <div className="w-14 h-14 bg-indigo-100 rounded-xl mx-auto mb-4 flex items-center justify-center">
-                  <i className="fas fa-stethoscope text-indigo-600 text-xl"></i>
+                  <GrLogin className="fas fa-stethoscope text-indigo-600 text-xl"/>
                 </div>
                 <h1 className="text-xl font-bold text-gray-800 mb-1">
                   Đăng nhập
