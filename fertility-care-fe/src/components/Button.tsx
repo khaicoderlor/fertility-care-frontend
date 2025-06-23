@@ -11,7 +11,6 @@ const Button: React.FC<ButtonActionProps> = ({
   label,
   href,
   variant = "solid",
-  color = "primary",
   size = "md",
   icon,
 }) => {

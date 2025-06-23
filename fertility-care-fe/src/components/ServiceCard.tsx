@@ -11,7 +11,6 @@ const ServiceCard: React.FC<ServiceCardProps> = ({
   title,
   description,
   items,
-  iconColorClass,
 }) => {
   return (
     <div className="bg-white rounded-xl shadow-md p-8 hover:shadow-lg transition transform duration-300 ease-in-out hover:shadow-xl hover:-translate-y-2">

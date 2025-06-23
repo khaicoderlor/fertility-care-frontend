@@ -2,7 +2,7 @@ import { useAuth } from "../contexts/AuthContext";
 import Button from "./Button";
 
 export default function Header() {
-  const { isAuthenticated, userProfileId } = useAuth();
+  const { isAuthenticated } = useAuth();
 
 
   return (
