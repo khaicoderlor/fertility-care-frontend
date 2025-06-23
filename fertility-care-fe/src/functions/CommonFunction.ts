@@ -5,8 +5,8 @@ import {
   STEP_FAILED,
   STEP_PROGRESS,
 } from "../constants/StepStatus";
-import type OrderStep from "../models/OrderStep";
 import type Profile from "../models/Profile";
+import type OrderStep from "../models/OrderStep";
 
 export function convertFullName(profile: Profile): string {
   return profile.firstName + " " + profile.middleName + " " + profile.lastName;

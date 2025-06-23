@@ -1,11 +1,12 @@
 "use client";
 
-import { FaClock } from "react-icons/fa";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import type { Doctor } from "../../models/Doctor";
 import type { SlotSchedule } from "../../models/SlotSchedule";
-import { ConvertFullName, ConvertSlotTime } from "../../functions/CommonFunction";
+
 import { IUI_ID } from "../../constants/ApplicationConstant";
+import { convertFullName, convertSlotTime } from "../../functions/CommonFunction";
+import { FaClock } from 'react-icons/fa';
 
 interface PartProps {
   selectedDoctor: Doctor | null;
@@ -58,13 +59,13 @@ export default function PartFourBooking({
                       selectedDoctor.profile.avatarUrl ||
                       "/placeholder.svg?height=48&width=48"
                     }
-                    alt={ConvertFullName(selectedDoctor.profile)}
+                    alt={convertFullName(selectedDoctor.profile)}
                     className="w-full h-full object-cover"
                   />
                 </div>
                 <div>
                   <p className="font-semibold">
-                    {ConvertFullName(selectedDoctor.profile)}
+                    {convertFullName(selectedDoctor.profile)}
                   </p>
                   <p className="text-blue-600 text-sm">
                     {selectedTreatment === IUI_ID ? "IUI" : "IVF"} Treatment
@@ -106,17 +107,17 @@ export default function PartFourBooking({
                     <div
                       key={slot.slotId}
                       onClick={() => {
-                        onTimeChange(ConvertSlotTime(slot));
+                        onTimeChange(convertSlotTime(slot));
                         onScheduleIdChange(slot.scheduleId);
                       }}
                       className={`flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border transition-colors duration-200 ${
-                        selectedTime === ConvertSlotTime(slot)
+                        selectedTime === convertSlotTime(slot)
                           ? "bg-blue-600 text-white border-blue-600"
                           : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
                       }`}
                     >
                       <FaClock className="w-3 h-3 mr-1" />
-                      {ConvertSlotTime(slot)}
+                      {convertSlotTime(slot)}
                     </div>
                   ))}
                 </div>
