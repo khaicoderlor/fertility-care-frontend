@@ -7,11 +7,11 @@ import {
 } from "../constants/StepStatus";
 import type OrderStep from "../models/OrderStep";
 
-export function ConvertFullName(profile: Profile): string {
+export function convertFullName(profile: Profile): string {
   return profile.firstName + " " + profile.middleName + " " + profile.lastName;
 }
 
-export function ConvertSlotTime(slot: SlotSchedule): string {
+export function convertSlotTime(slot: SlotSchedule): string {
   return slot.startTime + " - " + slot.endTime;
 }
 
@@ -22,7 +22,18 @@ export const calculateCompletedPercentage = (steps: OrderStep[]): number => {
   return Math.floor(percentage); 
 };
 
-
+export function getStepCardBg(status: string): string {
+  switch (status) {
+    case STEP_COMPLETED:
+      return "bg-green-50";
+    case STEP_PROGRESS:
+      return "bg-blue-50";
+    case STEP_FAILED:
+      return "bg-red-50";
+    default:
+      return "bg-white";
+  }
+}
 
 
 
