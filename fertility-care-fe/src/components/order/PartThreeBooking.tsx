@@ -2,7 +2,7 @@
 
 import { FaStar, FaArrowRight } from "react-icons/fa";
 import type { Doctor } from "../../models/Doctor";
-import { ConvertFullName } from "../../functions/CommonFunction";
+import { convertFullName } from "../../functions/CommonFunction";
 
 interface PartProps {
   doctors: Doctor[];
@@ -57,7 +57,7 @@ export default function PartThreeBooking({
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-xl font-semibold text-gray-900">
-                        Dr.{ConvertFullName(doctor.profile)}
+                        Dr.{convertFullName(doctor.profile)}
                       </h3>
                       <p className="text-blue-600 font-medium">
                         {doctor.specialization}

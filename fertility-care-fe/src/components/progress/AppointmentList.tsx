@@ -11,7 +11,7 @@ import {
   APPOINTMENT_COMPLETED,
   APPOINTMENT_CANCELLED,
 } from "../../constants/AppointmentStatus";
-import { ConvertSlotTime } from "../../functions/CommonFunction";
+import { convertSlotTime } from "../../functions/CommonFunction";
 
 interface AppointmentListProps {
   appointments: Appointment[];
@@ -105,7 +105,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                   <div className="flex items-center gap-2">
                     <ClockIcon className="w-4 h-4" />
                     <span>
-                      {ConvertSlotTime({
+                      {convertSlotTime({
                         slotId: -1,
                         scheduleId: -1,
                         startTime: appointment.startTime ?? "",
