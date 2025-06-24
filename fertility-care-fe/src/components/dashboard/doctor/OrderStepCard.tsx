@@ -56,7 +56,8 @@ export default function OrderStepCard({
   const [showEmbryoForm, setShowEmbryoForm] = useState(false);
   const [eggData, setEggData] = useState<EggDataInput[]>([]);
   const [embryoData, setEmbryoData] = useState<EmbryoInput[]>([]);
-
+  console.log(eggData);
+  console.log(embryoData);
   const renderStatusBadge = (status: string) => {
     switch (status) {
       case STEP_COMPLETED:
@@ -268,11 +269,10 @@ export default function OrderStepCard({
           onSave={(data) => {
             const fetchEmbryo = async () => {
               try {
-                const response = await axiosInstance.post(
+                await axiosInstance.post(
                   `/embryos/${order.id}`,
                   data
                 );
-                console.log(response);
               } catch (error) {
                 console.log(error);
               }

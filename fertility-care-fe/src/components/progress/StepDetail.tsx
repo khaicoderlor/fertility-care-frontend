@@ -12,7 +12,7 @@ import {
   PAYMENT_COMPLETED,
   PAYMENT_PENDING,
 } from "../../constants/PaymentStatus";
-import { STEP_EMBRYO, STEP_TAKE_EGG } from "../../constants/IVFConstant";
+import { STEP_EMBRYO, STEP_TAKE_EGG, STEP_TRANSFER } from "../../constants/IVFConstant";
 import type { Order } from "../../models/Order";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
@@ -172,6 +172,10 @@ export function StepDetail({ step, order }: StepDetailProps) {
 
       {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_EMBRYO) && (
         <EmbryoDataCard embryoData={embryoData} order={order} />
+      )}
+
+      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TRANSFER) && (
+        
       )}
     </div>
   );

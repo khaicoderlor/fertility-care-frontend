@@ -15,11 +15,12 @@ export default function TransferEmbryoForm({
 }: TransferEmbryoFormProps) {
   const [embryos, setEmbryos] = useState<EmbryoData[]>([]);
   const [embryoId, setEmbryoId] = useState("");
-  const [transferDate, setTransferDate] = useState("");
-  const [transferType, setTransferType] = useState("");
+  const [isFrozenTransfer, setIsFrozenTransfer] = useState(false);
+  //   const [transferDate, setTransferDate] = useState("");
+  //   const [transferType, setTransferType] = useState("");
 
   useEffect(() => {
-    const fetchEmbryos = async () => { 
+    const fetchEmbryos = async () => {
       try {
         const response = await axiosInstance.get(`/embryos/usable/${orderId}`);
         setEmbryos(response.data.data);
@@ -36,12 +37,9 @@ export default function TransferEmbryoForm({
         orderId,
         appointmentId,
         embryoId,
-        transferDate,
-        transferType,
       };
 
-      await axiosInstance.post("/embryos/transfer", payload);
-      alert("Thêm dữ liệu chuyển phôi thành công!");
+      await axiosInstance.post(`/transfers?isFrozen=${isFrozenTransfer}`, payload);
       onClose();
     } catch (error) {
       console.error("Lỗi tạo chuyển phôi:", error);
@@ -63,13 +61,24 @@ export default function TransferEmbryoForm({
             <option value="">-- Chọn phôi --</option>
             {embryos.map((e) => (
               <option key={e.id} value={e.id}>
-                {e.id} - {e.embryoGrade}
+                #{e.id} - {e.embryoGrade} - {e.isFrozen ? "Đông lạnh" : "Tươi"}
               </option>
             ))}
           </select>
         </div>
-
         <div className="mb-3">
+          <label className="block text-sm font-medium mb-1">
+            Chuyển từ phôi đông lạnh
+          </label>
+          <input
+            type="checkbox"
+            checked={isFrozenTransfer}
+            onChange={(e) => setIsFrozenTransfer(e.target.checked)}
+            className="h-4 w-4 text-purple-600 border-gray-300 rounded"
+          />
+        </div>
+
+        {/* <div className="mb-3">
           <label className="block text-sm font-medium">Ngày chuyển</label>
           <input
             type="date"
@@ -77,9 +86,9 @@ export default function TransferEmbryoForm({
             value={transferDate}
             onChange={(e) => setTransferDate(e.target.value)}
           />
-        </div>
+        </div> */}
 
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <label className="block text-sm font-medium">Loại chuyển</label>
           <select
             className="w-full border rounded p-2"
@@ -90,7 +99,7 @@ export default function TransferEmbryoForm({
             <option value="Tươi">Tươi</option>
             <option value="Đông lạnh">Đông lạnh</option>
           </select>
-        </div>
+        </div> */}
 
         <div className="flex justify-end space-x-2">
           <button
