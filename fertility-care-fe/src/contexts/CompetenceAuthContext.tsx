@@ -9,6 +9,7 @@ interface CompetenceAuthContextType {
   doctorId?: string | null;
   login: (token: string, userProfileId: string, role: string) => void;
   logout: () => void;
+  isAuthenticated: boolean;
 }
 
 const CompetenceAuthContext = createContext<
@@ -33,11 +34,15 @@ export const CompetenceAuthProvider = ({
     localStorage.getItem("doctorId")
   );
 
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
+    return localStorage.getItem("accessToken") != null;
+  });
+
   const login = async (t: string, u: string, r: string) => {
     localStorage.setItem("accessToken", t);
     localStorage.setItem("userProfileId", u);
     localStorage.setItem("role", r);
-
+    setIsAuthenticated(true);
     setToken(t);
     setUserProfileId(u);
     setRole(r);
@@ -60,7 +65,15 @@ export const CompetenceAuthProvider = ({
 
   return (
     <CompetenceAuthContext.Provider
-      value={{ token, userProfileId, role, doctorId, login, logout }}
+      value={{
+        token,
+        userProfileId,
+        role,
+        doctorId,
+        login,
+        logout,
+        isAuthenticated,
+      }}
     >
       {children}
     </CompetenceAuthContext.Provider>

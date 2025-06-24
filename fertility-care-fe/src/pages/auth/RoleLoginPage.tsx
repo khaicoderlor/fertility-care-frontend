@@ -3,6 +3,7 @@ import RoleLoginForm from "../../components/auth/RoleLoginForm";
 import axiosInstance from "../../apis/AxiosInstance";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import Swal from "sweetalert2";
+import { FaUserDoctor } from "react-icons/fa6";
 
 export interface FormData {
   email: string;
@@ -22,19 +23,18 @@ export default function RoleLoginPage() {
     try {
       const response = await axiosInstance.post("/auth/login", formData);
       const authResult = response.data;
-      if (authResult.isSuccess) {
-        const data = authResult.data;
-        const token = data.accessToken;
-        const role = data.role;
-        const userProfileId = data.user.profileId;
+      console.log(authResult);
+      const data = authResult;
+      const token = data.accessToken;
+      const role = data.role;
+      const userProfileId = data.user.profileId;
 
-        await login(token, userProfileId, role);
+      await login(token, userProfileId, role);
 
-        Swal.fire({
-          title: "Đăng nhập thành công",
-          icon: "success",
-        });
-      }
+      Swal.fire({
+        title: "Đăng nhập thành công",
+        icon: "success",
+      });
     } catch (error) {
       console.log(error);
       Swal.fire({
@@ -49,7 +49,7 @@ export default function RoleLoginPage() {
       <div className="max-w-md w-full mx-4">
         <div className="text-center mb-8">
           <div className="w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <i className="fas fa-user-md text-white text-2xl"></i>
+            <FaUserDoctor className="fas fa-user-md text-white text-2xl" />
           </div>
           <h1 className="text-3xl font-bold text-gray-800">FertilityCare</h1>
           <p className="text-gray-600 mt-2">

@@ -2,53 +2,33 @@
 
 import { useEffect, useState, type FormEvent } from "react";
 import {
-  CheckIcon,
-  CalendarIcon,
-  ClockIcon,
-  CreditCardIcon,
-  BellIcon,
-  DocumentTextIcon,
   HeartIcon,
-  BanknotesIcon,
-  UserIcon,
-  SparklesIcon,
-  MagnifyingGlassIcon,
-  BeakerIcon,
-  ChartBarIcon,
 } from "@heroicons/react/24/outline";
 
 import type OrderStep from "../../models/OrderStep";
 
 import {
   STEP_COMPLETED,
-  STEP_FAILED,
   STEP_PLANNED,
   STEP_PROGRESS,
 } from "../../constants/StepStatus";
-import axios from "axios";
 import type { Patient } from "../../models/Patient";
 import type { SlotSchedule } from "../../models/SlotSchedule";
 import Swal from "sweetalert2";
-import { PAYMENT_COMPLETED } from "../../constants/PaymentStatus";
 import { useLocation } from "react-router-dom";
 import axiosInstance from "../../apis/AxiosInstance";
-import { FaClock } from "react-icons/fa";
-import { STEP_TAKE_EGG } from "../../constants/IVFConstant";
-import { CubeIcon } from "@heroicons/react/24/solid";
 import {
   calculateCompletedPercentage,
   convertFullName,
-  convertSlotTime,
-  getStepBySelectedStepDetail,
-  getStepCardBg,
 } from "../../functions/CommonFunction";
 import { getScheduleSlotTime } from "../../apis/DoctorService";
 import { getPatientById } from "../../apis/PatientService";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import OrderStepCard from "../../components/dashboard/doctor/OrderStepCard";
-import SelectedCardDetail from '../../components/dashboard/doctor/SelectedCardDetail';
+import SelectedCardDetail from "../../components/dashboard/doctor/SelectedCardDetail";
 import AppointmentForm from "../../components/dashboard/doctor/AppointmentForm";
 import ProgressStep from "../../components/dashboard/doctor/ProgressStep";
+import type { Order } from "../../models/Order";
 
 export interface CreateAppointmentDailyRequest {
   patientId: string;
@@ -71,6 +51,7 @@ export default function FollowUpPatientProgressPage() {
   const orderId = query.get("orderId") ?? "";
   const { doctorId } = useCompetenceAuth();
   const [patient, setPatient] = useState<Patient>();
+  const [order, setOrder] = useState<Order>({});
   const [orderSteps, setOrderSteps] = useState<OrderStep[]>([]);
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [timeSlots, setTimeSlots] = useState<SlotSchedule[]>([]);
@@ -78,7 +59,6 @@ export default function FollowUpPatientProgressPage() {
   const [selectedStepDetail, setSelectedStepDetail] = useState<number | null>(
     null
   );
-  const [totalEgg, setTotalEgg] = useState<number>(0);
 
   const [newAppointment, setNewAppointment] =
     useState<CreateAppointmentDailyRequest>({
@@ -137,73 +117,18 @@ export default function FollowUpPatientProgressPage() {
     fetchSlotTimes();
   }, [newAppointment.date, newAppointment.doctorId]);
 
-  const renderStatusBadge = (status: string) => {
-    switch (status) {
-      case STEP_COMPLETED:
-        return (
-          <span className="rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-800">
-            Hoàn thành
-          </span>
-        );
-      case STEP_PROGRESS:
-        return (
-          <span className="rounded-full bg-blue-100 px-3 py-1 text-xs font-medium text-blue-800">
-            Đang thực hiện
-          </span>
-        );
-      case STEP_FAILED:
-        return (
-          <span className="rounded-full bg-red-100 px-3 py-1 text-xs font-medium text-red-800">
-            Thất bại
-          </span>
-        );
-      default:
-        return (
-          <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
-            Trong kế hoạch
-          </span>
-        );
-    }
-  };
+  useEffect(() => {
+    const fetchOrder = async (oId: string) => {
+      try {
+        const response = await axiosInstance.get(`/orders/${oId}`);
+        setOrder(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const renderStepIcon = (step: OrderStep) => {
-    let bgColor = "bg-gray-300";
-
-    if (step.status === STEP_COMPLETED) {
-      bgColor = "bg-green-500";
-    } else if (step.status === STEP_PROGRESS) {
-      bgColor = "bg-blue-500";
-    } else if (step.status === STEP_FAILED) {
-      bgColor = "bg-red-500";
-    }
-
-    return (
-      <div
-        className={`flex h-14 w-14 items-center justify-center rounded-full ${bgColor}`}
-      >
-        {convertStepIcon(step.treatmentStep.stepOrder)}
-      </div>
-    );
-  };
-
-  const convertStepIcon = (stepOrder: number) => {
-    switch (stepOrder) {
-      case 1:
-        return <DocumentTextIcon className="h-8 w-7 text-white" />;
-      case 2:
-        return <SparklesIcon className="h-8 w-8 text-white" />;
-      case 3:
-        return <MagnifyingGlassIcon className="h-8 w-8 text-white" />;
-      case 4:
-        return <BeakerIcon className="h-8 w-8 text-white" />;
-      case 5:
-        return <HeartIcon className="h-8 w-8 text-white" />;
-      case 6:
-        return <ChartBarIcon className="h-8 w-8 text-white" />;
-      default:
-        return <DocumentTextIcon className="h-8 w-8 text-white" />;
-    }
-  };
+    fetchOrder(orderId);
+  }, [orderId]);
 
   const handleSubmitNewAppointment = async (
     e: FormEvent<HTMLFormElement>,
@@ -216,14 +141,13 @@ export default function FollowUpPatientProgressPage() {
         `/appointments/${orderId}`,
         formData
       );
-
+      console.log(response);
       Swal.fire({
         title: "Lưu lịch hẹn thành công!",
         icon: "success",
         draggable: true,
       });
 
-      // Reset form and close modal
       setShowAppointmentForm(false);
       setNewAppointment({
         ...newAppointment,
@@ -237,11 +161,6 @@ export default function FollowUpPatientProgressPage() {
       setSelectedTime("");
     } catch (error) {
       console.log(error);
-      // Swal.fire({
-      //   title: "Có lỗi xảy ra",
-      //   icon: "error",
-      //   draggable: true,
-      // });
     }
   };
 
@@ -255,42 +174,35 @@ export default function FollowUpPatientProgressPage() {
 
   const handleMarkStatusStep = async (stepId: number, status: string) => {
     try {
-      const response = await axiosInstance.put(
-        `/steps/${stepId}?status=${status}`
-      );
+      await axiosInstance.put(`/steps/${stepId}?status=${status}`);
 
       setOrderSteps((prev) => {
-        const updatedSteps = prev.map((s, index) => {
-          if (s.id === stepId) {
-            return { ...s, status: status };
-          }
+        const updatedSteps = [...prev];
 
-          const currentIndex = prev.findIndex((step) => step.id === stepId);
-          if (
-            index === currentIndex + 1 &&
-            status === STEP_COMPLETED &&
-            s.status === STEP_PLANNED
-          ) {
-            return { ...s, status: STEP_PROGRESS };
-          }
+        const currentIndex = updatedSteps.findIndex(
+          (step) => step.id === stepId
+        );
+        if (currentIndex === -1) return prev;
+        updatedSteps[currentIndex] = {
+          ...updatedSteps[currentIndex],
+          status: status,
+        };
 
-          return s;
-        });
+        if (
+          status === STEP_COMPLETED &&
+          currentIndex + 1 < updatedSteps.length &&
+          updatedSteps[currentIndex + 1].status === STEP_PLANNED
+        ) {
+          updatedSteps[currentIndex + 1] = {
+            ...updatedSteps[currentIndex + 1],
+            status: STEP_PROGRESS,
+          };
+        }
 
         return updatedSteps;
       });
     } catch (error) {
       console.error("Lỗi khi cập nhật bước:", error);
-    }
-  };
-
-  const handleAddTotalEggs = async (totalEgg: number) => {
-    try {
-      const response = await axiosInstance.put(
-        `/orders/${orderId}?totalEgg=${totalEgg}`
-      );
-    } catch (error) {
-      console.log(error);
     }
   };
 
@@ -361,23 +273,41 @@ export default function FollowUpPatientProgressPage() {
           </div>
 
           {/* Progress steps */}
-          <ProgressStep/>
+          <ProgressStep orderSteps={orderSteps} />
         </div>
 
         {/* Treatment steps */}
-        <OrderStepCard />
+        <OrderStepCard
+          orderSteps={orderSteps}
+          setSelectedStepDetail={setSelectedStepDetail}
+          handleAddAppointment={handleAddAppointment}
+          handleMarkStatusStep={handleMarkStatusStep}
+          order={order}
+        />
       </div>
 
       {/*Step detail modal*/}
-      {selectedStepDetail && (
+      {selectedStepDetail !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-          <SelectedCardDetail/>
+          <SelectedCardDetail
+            orderSteps={orderSteps}
+            selectedStepDetail={selectedStepDetail}
+            setSelectedStepDetail={(id: number | null) => setSelectedStepDetail(id)}
+          />
         </div>
       )}
 
       {/* Form thêm lịch hẹn */}
       {showAppointmentForm && (
-        <AppointmentForm/>
+        <AppointmentForm
+          newAppointment={newAppointment}
+          setNewAppointment={setNewAppointment}
+          timeSlots={timeSlots}
+          selectedTime={selectedTime}
+          setSelectedTime={setSelectedTime}
+          onCancel={() => setShowAppointmentForm(false)}
+          handleSubmitNewAppointment={handleSubmitNewAppointment}
+        />
       )}
     </div>
   );

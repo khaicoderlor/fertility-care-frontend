@@ -1,7 +1,31 @@
-export default function AppointmentForm() {
+import type { FormEvent } from "react";
+import type { SlotSchedule } from "../../../models/SlotSchedule";
+import type { CreateAppointmentDailyRequest } from "../../../pages/doctor/FollowUpPatientProgressPage";
+import { convertSlotTime } from "../../../functions/CommonFunction";
+import { FaClock } from "react-icons/fa";
 
+interface AppointmentFormProps {
+  newAppointment: CreateAppointmentDailyRequest;
+  setNewAppointment: (data: CreateAppointmentDailyRequest) => void;
+  timeSlots: SlotSchedule[];
+  selectedTime: string;
+  setSelectedTime: (value: string) => void;
+  onCancel: () => void;
+  handleSubmitNewAppointment: (
+    e: FormEvent<HTMLFormElement>,
+    data: CreateAppointmentDailyRequest
+  ) => void;
+}
 
-    
+export default function AppointmentForm({
+  newAppointment,
+  setNewAppointment,
+  timeSlots,
+  selectedTime,
+  setSelectedTime,
+  onCancel,
+  handleSubmitNewAppointment,
+}: AppointmentFormProps) {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-50 bg-opacity-10 p-4">
       <div className="w-full max-w-md rounded-lg bg-white shadow-xl">
@@ -106,7 +130,7 @@ export default function AppointmentForm() {
             </div>
             <div className="flex justify-end space-x-2 pt-2">
               <button
-                onClick={() => setShowAppointmentForm(false)}
+                onClick={onCancel}
                 className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
               >
                 Hủy

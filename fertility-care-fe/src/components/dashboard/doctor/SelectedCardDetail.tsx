@@ -1,4 +1,57 @@
-export default function SelectedCardDetail() {
+import {
+  BanknotesIcon,
+  BeakerIcon,
+  CalendarIcon,
+  ChartBarIcon,
+  ClockIcon,
+  DocumentTextIcon,
+  HeartIcon,
+  MagnifyingGlassIcon,
+  SparklesIcon,
+  UserIcon,
+} from "@heroicons/react/24/outline";
+import {
+  STEP_COMPLETED,
+  STEP_FAILED,
+  STEP_PROGRESS,
+} from "../../../constants/StepStatus";
+import {
+  convertSlotTime,
+  getStepBySelectedStepDetail,
+} from "../../../functions/CommonFunction";
+import type OrderStep from "../../../models/OrderStep";
+import { PAYMENT_COMPLETED } from "../../../constants/PaymentStatus";
+
+interface SelectedCardDetailProps {
+  orderSteps: OrderStep[];
+  selectedStepDetail: number;
+  setSelectedStepDetail: (selectedStepDetail: number | null) => void;
+}
+
+export default function SelectedCardDetail({
+  orderSteps,
+  selectedStepDetail,
+  setSelectedStepDetail,
+}: SelectedCardDetailProps) {
+  const convertStepIcon = (stepOrder: number) => {
+    switch (stepOrder) {
+      case 1:
+        return <DocumentTextIcon className="h-8 w-7 text-white" />;
+      case 2:
+        return <SparklesIcon className="h-8 w-8 text-white" />;
+      case 3:
+        return <MagnifyingGlassIcon className="h-8 w-8 text-white" />;
+      case 4:
+        return <BeakerIcon className="h-8 w-8 text-white" />;
+      case 5:
+        return <HeartIcon className="h-8 w-8 text-white" />;
+      case 6:
+        return <ChartBarIcon className="h-8 w-8 text-white" />;
+      default:
+        return <DocumentTextIcon className="h-8 w-8 text-white" />;
+    }
+  };
+
   return (
     <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-lg bg-white shadow-xl">
       <div className="border-b p-4">

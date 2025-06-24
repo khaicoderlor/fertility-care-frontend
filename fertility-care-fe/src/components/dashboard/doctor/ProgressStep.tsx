@@ -1,4 +1,14 @@
-export default function ProgressStep() {
+import { CheckIcon } from "@heroicons/react/24/outline";
+import { STEP_COMPLETED, STEP_FAILED, STEP_PROGRESS } from "../../../constants/StepStatus";
+import { calculateCompletedPercentage } from "../../../functions/CommonFunction";
+import type OrderStep from "../../../models/OrderStep";
+
+interface ProgressStepProps { 
+  orderSteps: OrderStep[]
+}
+
+export default function ProgressStep({orderSteps}: ProgressStepProps) {
+
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between">

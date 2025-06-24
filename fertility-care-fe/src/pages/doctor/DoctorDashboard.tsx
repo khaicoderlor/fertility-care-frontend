@@ -3,12 +3,12 @@ import axiosInstance from "../../apis/AxiosInstance";
 import type { Doctor } from "../../models/Doctor";
 import type { PatientDashboard } from "../../models/PatientDashboard";
 import { Link } from "react-router-dom";
-import "../../assets/css/DotorDashboardStyle.css"
+import "../../assets/css/DotorDashboardStyle.css";
 import { convertFullName } from "../../functions/CommonFunction";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 
 export default function DoctorDashboard() {
-  const {doctorId} = useCompetenceAuth();
+  const { doctorId } = useCompetenceAuth();
   const [doctor, setDoctor] = useState<Doctor>();
   const [patients, setPatients] = useState<PatientDashboard[]>();
 
@@ -22,15 +22,13 @@ export default function DoctorDashboard() {
       }
     };
 
-    fetchDoctor(doctorId??"");
+    fetchDoctor(doctorId ?? "");
   }, [doctorId]);
 
   useEffect(() => {
     const fetchPatients = async (dId: string) => {
       try {
-        const response = await axiosInstance.get(
-          `/doctors/${dId}/patients`
-        );
+        const response = await axiosInstance.get(`/doctors/${dId}/patients`);
 
         setPatients(response.data.data);
       } catch (error) {
@@ -38,7 +36,7 @@ export default function DoctorDashboard() {
       }
     };
 
-    fetchPatients(doctorId??"");
+    fetchPatients(doctorId ?? "");
   }, [doctorId]);
 
   return (
@@ -120,7 +118,10 @@ export default function DoctorDashboard() {
               />
               <div className="flex-1 min-w-0">
                 <p className="font-semibold text-gray-800 text-sm truncate">
-                  Bs. {doctor?.profile ? convertFullName(doctor.profile) : "Đang tải..."}
+                  Bs.{" "}
+                  {doctor?.profile
+                    ? convertFullName(doctor.profile)
+                    : "Đang tải..."}
                 </p>
                 <p className="text-xs text-gray-600 truncate">
                   Chuyên khoa Sản phụ khoa
@@ -139,11 +140,16 @@ export default function DoctorDashboard() {
             <div className="flex items-center justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-                <p className="text-gray-600 mt-1">Chào mừng trở lại, Bác sĩ {doctor?.profile ?  convertFullName(doctor.profile) : ""}</p>
+                <p className="text-gray-600 mt-1">
+                  Chào mừng trở lại, Bác sĩ{" "}
+                  {doctor?.profile ? convertFullName(doctor.profile) : ""}
+                </p>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Hôm nay</p>
-                <p className="text-lg font-semibold text-gray-900">{new Date().toLocaleDateString('vi-VN')}</p>
+                <p className="text-lg font-semibold text-gray-900">
+                  {new Date().toLocaleDateString("vi-VN")}
+                </p>
               </div>
             </div>
           </div>
@@ -155,8 +161,12 @@ export default function DoctorDashboard() {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Tổng bệnh nhân</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">{patients?.length || 0}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Tổng bệnh nhân
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 mt-2">
+                    {patients?.length || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
                   <i className="fas fa-users text-blue-600 text-xl"></i>
@@ -167,8 +177,12 @@ export default function DoctorDashboard() {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Đang điều trị</p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">{patients?.filter(p => p.treatmentName).length || 0}</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Đang điều trị
+                  </p>
+                  <p className="text-2xl font-bold text-gray-900 mt-2">
+                    {patients?.filter((p) => p.treatmentName).length || 0}
+                  </p>
                 </div>
                 <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                   <i className="fas fa-heartbeat text-green-600 text-xl"></i>
@@ -179,7 +193,9 @@ export default function DoctorDashboard() {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Lịch hẹn hôm nay</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Lịch hẹn hôm nay
+                  </p>
                   <p className="text-2xl font-bold text-gray-900 mt-2">8</p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
@@ -191,7 +207,9 @@ export default function DoctorDashboard() {
             <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="text-sm font-medium text-gray-600">Thành công tháng này</p>
+                  <p className="text-sm font-medium text-gray-600">
+                    Thành công tháng này
+                  </p>
                   <p className="text-2xl font-bold text-gray-900 mt-2">12</p>
                 </div>
                 <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -241,8 +259,7 @@ export default function DoctorDashboard() {
                     <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
                       Số trứng
                     </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                    </th>
+                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm"></th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
@@ -252,31 +269,18 @@ export default function DoctorDashboard() {
                         className="hover:bg-gray-50 transition-colors duration-150"
                         key={patient.patientId}
                       >
-                        <td className="py-4 px-6">
-                          <div className="flex items-center space-x-3">
-                            <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-purple-100 rounded-full flex items-center justify-center">
-                              <span className="text-sm font-medium text-blue-700">
-                                {patient.patientName}
-                              </span>
-                            </div>
-                          </div>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="inline-flex items-center px-3 py-1 text-xs font-medium bg-blue-100 text-blue-800 rounded-full">
-                            <i className="fas fa-microscope mr-1"></i>
-                            {patient.treatmentName}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-sm text-gray-600">
+                        <td className="py-4 px-6">{patient.patientName}</td>
+                        <td className="py-4 px-6">{patient.treatmentName}</td>
+                        <td className="py-4 px-6 text-sm">
                           {patient.startDate}
                         </td>
-                        <td className="py-4 px-6 text-sm text-gray-600">
-                          {patient.endDate}
+                        <td className="py-4 px-6 text-sm">
+                          {patient.endDate??"-"}
                         </td>
-                        <td className="py-4 px-6 text-sm text-gray-600">
+                        <td className="py-4 px-6 text-sm">
                           {patient.status}
                         </td>
-                        <td className="py-4 px-6 text-sm text-gray-600">
+                        <td className="py-4 px-6 text-sm">
                           {patient.totalEggs}
                         </td>
                         <td className="py-4 px-6">
@@ -297,8 +301,12 @@ export default function DoctorDashboard() {
                           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
                             <i className="fas fa-users text-gray-400 text-2xl"></i>
                           </div>
-                          <p className="text-gray-500 text-sm">Chưa có bệnh nhân nào</p>
-                          <p className="text-gray-400 text-xs mt-1">Danh sách bệnh nhân sẽ hiển thị ở đây</p>
+                          <p className="text-gray-500 text-sm">
+                            Chưa có bệnh nhân nào
+                          </p>
+                          <p className="text-gray-400 text-xs mt-1">
+                            Danh sách bệnh nhân sẽ hiển thị ở đây
+                          </p>
                         </div>
                       </td>
                     </tr>

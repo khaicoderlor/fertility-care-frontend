@@ -8,6 +8,8 @@ import PatientProgressPage from "./pages/patient/PatientDashboardPage";
 import DoctorDashboard from "./pages/doctor/DoctorDashboard";
 import FollowUpPatientProgressPage from "./pages/doctor/FollowUpPatientProgressPage";
 import ProgressPage from "./pages/patient/ProgressPage";
+import { CompetenceAuthProvider } from "./contexts/CompetenceAuthContext";
+import RoleLoginPage from "./pages/auth/RoleLoginPage";
 
 function App() {
   return (
@@ -40,13 +42,19 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/dashboard/doctor" element={<DoctorDashboard />} />
+        </Routes>
+      </AuthProvider>
+
+      <CompetenceAuthProvider >
+        <Routes>
+          <Route path="/competence/login" element={<RoleLoginPage/>}/>
+          <Route path="/doctor" element={<DoctorDashboard />} />
           <Route
             path="/follow-up/patient/progress"
             element={<FollowUpPatientProgressPage />}
           />
         </Routes>
-      </AuthProvider>
+      </CompetenceAuthProvider>
     </>
   );
 }
