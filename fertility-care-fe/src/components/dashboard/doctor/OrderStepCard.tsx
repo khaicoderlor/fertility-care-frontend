@@ -13,12 +13,13 @@ import {
 import { getStepCardBg } from "../../../functions/CommonFunction";
 import type OrderStep from "../../../models/OrderStep";
 import { PAYMENT_COMPLETED } from "../../../constants/PaymentStatus";
-import { STEP_TAKE_EGG } from "../../../constants/IVFConstant";
+import { STEP_EMBRYO, STEP_TAKE_EGG } from "../../../constants/IVFConstant";
 import type { Order } from "../../../models/Order";
 import { renderIconByStep } from "../../progress/StepCard";
 import { useState } from "react";
 import EggInputForm from "./EggInputForm";
 import axiosInstance from "../../../apis/AxiosInstance";
+import EmbryoInputForm from "./EmbryoInputForm";
 
 interface OrderStepCardProps {
   orderSteps: OrderStep[];
@@ -33,6 +34,17 @@ export interface EggDataInput {
   isQualified: boolean;
 }
 
+export interface EggOption {
+  id: string;
+  grade: string;
+}
+
+export interface EmbryoInput {
+  eggId: string;
+  embryoGrade: string;
+  isQualified: boolean;
+}
+
 export default function OrderStepCard({
   orderSteps,
   setSelectedStepDetail,
@@ -41,7 +53,9 @@ export default function OrderStepCard({
   order,
 }: OrderStepCardProps) {
   const [showEggForm, setShowEggForm] = useState(false);
+  const [showEmbryoForm, setShowEmbryoForm] = useState(false);
   const [eggData, setEggData] = useState<EggDataInput[]>([]);
+  const [embryoData, setEmbryoData] = useState<EmbryoInput[]>([]);
 
   const renderStatusBadge = (status: string) => {
     switch (status) {
@@ -162,7 +176,20 @@ export default function OrderStepCard({
                         }}
                         className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100"
                       >
-                        Nhập số trứng
+                        Cập nhật số trứng
+                      </button>
+                    )}
+
+                  {order.treatmentService?.name === "IVF" &&
+                    step.treatmentStep.stepOrder === STEP_EMBRYO && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setShowEmbryoForm(true);
+                        }}
+                        className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100"
+                      >
+                        Cập nhật phôi tạo thành
                       </button>
                     )}
                   <button
@@ -218,16 +245,41 @@ export default function OrderStepCard({
           onClose={() => setShowEggForm(false)}
           onSave={(data) => {
             setEggData(data);
-            console.log("Dữ liệu trứng:", data); 
-            const fetchCreateEgg = async (oId: string, eggDs: EggDataInput[]) => {
+            const fetchCreateEgg = async () => {
               try {
-                const response = await axiosInstance.post(`/eggs/${oId}`, eggDs);
+                const response = await axiosInstance.post(
+                  `/eggs/${order.id}`,
+                  data
+                );
                 console.log(response);
-              } catch(error) {
-                console.log(error)
+              } catch (error) {
+                console.log(error);
               }
-            }
-            fetchCreateEgg(order.id??"", eggData)
+            };
+            fetchCreateEgg();
+            setEggData(data);
+          }}
+        />
+      )}
+
+      {showEmbryoForm && (
+        <EmbryoInputForm
+          orderId={order.id ?? ""}
+          onClose={() => setShowEmbryoForm(false)}
+          onSave={(data) => {
+            const fetchEmbryo = async () => {
+              try {
+                const response = await axiosInstance.post(
+                  `/embryos/${order.id}`,
+                  data
+                );
+                console.log(response);
+              } catch (error) {
+                console.log(error);
+              }
+            };
+            fetchEmbryo();
+            setEmbryoData(data);
           }}
         />
       )}
