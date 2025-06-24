@@ -40,7 +40,7 @@ export function StepDetail({ step, order }: StepDetailProps) {
       try {
         const response = await axiosInstance.get(`/embryos/${oId}`);
 
-        setEmbryoData(response.data.datalt);
+        setEmbryoData(response.data.data);
       } catch (error) {
         console.log(error);
       }
@@ -166,11 +166,11 @@ export function StepDetail({ step, order }: StepDetailProps) {
 
       <AppointmentList appointments={step.appointments ?? []} />
 
-      {step.treatmentStep.stepOrder === STEP_TAKE_EGG && order && (
+      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TAKE_EGG) && (
         <EggDataCard order={order} eggs={eggData} />
       )}
 
-      {step.treatmentStep.stepOrder === STEP_EMBRYO && order && (
+      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_EMBRYO) && (
         <EmbryoDataCard embryoData={embryoData} order={order} />
       )}
     </div>

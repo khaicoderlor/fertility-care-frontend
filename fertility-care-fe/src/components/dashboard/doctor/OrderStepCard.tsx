@@ -176,10 +176,9 @@ export default function OrderStepCard({
                         }}
                         className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100"
                       >
-                        Cập nhật số trứng
+                        Thêm trứng
                       </button>
                     )}
-
                   {order.treatmentService?.name === "IVF" &&
                     step.treatmentStep.stepOrder === STEP_EMBRYO && (
                       <button
@@ -189,7 +188,7 @@ export default function OrderStepCard({
                         }}
                         className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100"
                       >
-                        Cập nhật phôi tạo thành
+                        Thêm phôi
                       </button>
                     )}
                   <button

@@ -1,9 +1,7 @@
 "use client";
 
 import { useEffect, useState, type FormEvent } from "react";
-import {
-  HeartIcon,
-} from "@heroicons/react/24/outline";
+import { HeartIcon } from "@heroicons/react/24/outline";
 
 import type OrderStep from "../../models/OrderStep";
 
@@ -251,7 +249,7 @@ export default function FollowUpPatientProgressPage() {
             </div>
           </div>
           <button className="rounded-md bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-200">
-            Hồ sơ bệnh nhân
+            Báo cáo về quá trình
           </button>
         </div>
 
@@ -290,9 +288,12 @@ export default function FollowUpPatientProgressPage() {
       {selectedStepDetail !== null && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <SelectedCardDetail
+            order={order}
             orderSteps={orderSteps}
             selectedStepDetail={selectedStepDetail}
-            setSelectedStepDetail={(id: number | null) => setSelectedStepDetail(id)}
+            setSelectedStepDetail={(id: number | null) =>
+              setSelectedStepDetail(id)
+            }
           />
         </div>
       )}
