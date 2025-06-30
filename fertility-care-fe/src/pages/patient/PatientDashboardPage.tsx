@@ -5,17 +5,14 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Patient } from "../../models/Patient";
 import { useAuth } from "../../contexts/AuthContext";
-import type { OrderInfo } from "../../models/OrderInfo";
-import OrderInfoList from "../../components/progress/OrderInfoList";
+import { Outlet } from "react-router-dom";
 
 export default function PatientDashboardPage() {
   const { patientId } = useAuth();
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const [patient, setPatient] = useState<Patient>();
-  const [ordersInfo, setOrdersInfo] = useState<OrderInfo[]>();
 
   useEffect(() => {
-
     const fetchPatient = async (pId: string) => {
       try {
         const response = await axiosInstance.get(`/patients/${pId}`);
@@ -27,21 +24,8 @@ export default function PatientDashboardPage() {
       }
     };
 
-    fetchPatient(patientId??"");
-  });
-
-  useEffect(() => {
-    const fetchOrderByPatientId = async (pId: string) => {
-      try {
-        const response = await axiosInstance.get(`/orders/${pId}/patients`);
-
-        setOrdersInfo(response.data.data);
-      } catch(error) {
-        console.log(error)
-      }
-    }
-    fetchOrderByPatientId(patientId??"")
-  }, [patientId])
+    fetchPatient(patientId ?? "");
+  }, [patientId]);
 
   return (
     <div>
@@ -67,13 +51,19 @@ export default function PatientDashboardPage() {
             </button>
             <div className="flex items-center gap-2">
               <HeartIcon className="w-6 h-6 text-pink-500" />
-              <span className="font-semibold text-gray-900">Fertility Care</span>
+              <span className="font-semibold text-gray-900">
+                Fertility Care
+              </span>
             </div>
             <div className="w-10" />
           </div>
 
           <div className="p-6">
-            <OrderInfoList ordersInfo={ordersInfo??[]}/>
+            {patient ? (
+              <Outlet context={patient} />
+            ) : (
+              <div className="text-center py-8">Đang tải thông tin...</div>
+            )}
           </div>
         </div>
       </div>

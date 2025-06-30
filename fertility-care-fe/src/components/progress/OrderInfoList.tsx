@@ -1,7 +1,6 @@
 import type { OrderInfo } from "../../models/OrderInfo";
 import { ORDER_CANCELLED, ORDER_COMPLETED, ORDER_PROGRESS, ORDER_CLOSED } from '../../constants/OrderStatus';
 import { Link } from "react-router-dom";
-// import { Link } from "react-router-dom"; // Commented for demo - replace with actual Link component
 
 export default function OrderInfoList({ ordersInfo }: { ordersInfo: OrderInfo[] }) {
   const getStatusVi = (status: string): string => {
@@ -141,7 +140,7 @@ export default function OrderInfoList({ ordersInfo }: { ordersInfo: OrderInfo[] 
                   <td className="px-6 py-4 text-center">
                     {/* Replace with actual Link component */}
                     <Link
-                      to={`/progress?orderId=${order.id}`}
+                      to={`/patient/orders/progress?orderId=${order.id}`}
                       className="inline-flex items-center px-4 py-2 bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-sm font-medium rounded-lg hover:from-blue-600 hover:to-indigo-700 transform hover:scale-105 transition-all duration-200 shadow-md hover:shadow-lg"
                     >
                       <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

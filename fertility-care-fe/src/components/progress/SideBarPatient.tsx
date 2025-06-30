@@ -12,20 +12,24 @@ import {
   ChevronRightIcon,
   KeyIcon,
   CreditCardIcon,
+  HeartIcon,
 } from "@heroicons/react/24/outline";
 import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import type { Patient } from "../../models/Patient";
+import { useLocation } from "react-router-dom";
 
 import { Link } from "react-router-dom";
 
 interface SideBarProps {
-  patient: Patient | null,
+  patient: Patient | null;
 }
 
-export function SideBarPatient({
-  patient,
-}: SideBarProps) {
+export function SideBarPatient({ patient }: SideBarProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const location = useLocation();
+  const { pathname } = location;
+
+  const isActive = (path: string) => pathname.startsWith(path);
 
   return (
     <div
@@ -44,7 +48,11 @@ export function SideBarPatient({
                 </div>
               </div>
               <div className="text-white flex-1">
-                <h3 className="font-semibold text-lg">{patient?.profile ? `${patient.profile.firstName} ${patient.profile.lastName}` : ""}</h3>
+                <h3 className="font-semibold text-lg">
+                  {patient?.profile
+                    ? `${patient.profile.firstName} ${patient.profile.lastName}`
+                    : ""}
+                </h3>
               </div>
             </>
           )}
@@ -83,55 +91,69 @@ export function SideBarPatient({
           )}
           <nav className={`${sidebarCollapsed ? "px-2" : "px-4"} space-y-1`}>
             <Link
-              to="/profile"
-              className={`flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/profile"
+              state={patient}
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/profile")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
               <HomeIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Hồ sơ</span>}
             </Link>
+
             <Link
-              to="/progress/me"
-              className={`flex items-center gap-3 px-3 py-2 text-pink-600 bg-pink-50 rounded-lg ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/orders"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/orders")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
-              <HeartIconSolid className="w-5 h-5 flex-shrink-0" />
+              <HeartIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Tiến trinh điều trị</span>}
             </Link>
             <Link
-              to="/appointment/me"
-              className={`flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/appointments"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/appointments")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
               <CalendarIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Lịch hẹn</span>}
             </Link>
             <Link
-              to="/change-password"
-              className={`flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/change-password"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/change-password")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
               <KeyIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Đổi mật khẩu</span>}
             </Link>
             <Link
-              to="/prescription/me"
-              className={`flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/prescriptions"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/prescriptions")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
               <DocumentTextIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Đơn thuốc</span>}
             </Link>
             <Link
-              to="/payment/history"
-              className={`flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors ${
-                sidebarCollapsed ? "justify-center" : ""
-              }`}
+              to="/patient/payment/histories"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/payment/histories")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
               <CreditCardIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Lịch sử thanh toán</span>}
@@ -146,21 +168,33 @@ export function SideBarPatient({
               <nav className="space-y-1">
                 <Link
                   to="/support"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                    isActive("/support")
+                      ? "text-pink-600 bg-pink-50"
+                      : "text-gray-700 hover:bg-gray-100"
+                  } ${sidebarCollapsed ? "justify-center" : ""}`}
                 >
                   <ChatBubbleLeftRightIcon className="w-5 h-5" />
                   <span>Hỗ trợ</span>
                 </Link>
                 <Link
-                  to="/explore/our"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  to="/explore"
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                    isActive("/explore")
+                      ? "text-pink-600 bg-pink-50"
+                      : "text-gray-700 hover:bg-gray-100"
+                  } ${sidebarCollapsed ? "justify-center" : ""}`}
                 >
                   <BookOpenIcon className="w-5 h-5" />
                   <span>Tìm hiểu thêm</span>
                 </Link>
                 <Link
                   to="/emergency-contact"
-                  className="flex items-center gap-3 px-3 py-2 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                    isActive("/emergency-contact")
+                      ? "text-pink-600 bg-pink-50"
+                      : "text-gray-700 hover:bg-gray-100"
+                  } ${sidebarCollapsed ? "justify-center" : ""}`}
                 >
                   <PhoneIcon className="w-5 h-5" />
                   <span>Liên lạc khẩn cấp</span>
