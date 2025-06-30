@@ -4,6 +4,7 @@ import axiosInstance from "../../apis/AxiosInstance";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import Swal from "sweetalert2";
 import { FaUserDoctor } from "react-icons/fa6";
+import { useNavigate } from "react-router-dom";
 
 export interface FormData {
   email: string;
@@ -14,6 +15,7 @@ export default function RoleLoginPage() {
   const { login } = useCompetenceAuth();
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const navigate = useNavigate();
 
   const handleLoginWithCompetence = async (
     e: FormEvent<HTMLFormElement>,
@@ -34,6 +36,8 @@ export default function RoleLoginPage() {
       Swal.fire({
         title: "Đăng nhập thành công",
         icon: "success",
+      }).then(()=>{
+        navigate("/doctor")
       });
     } catch (error) {
       console.log(error);

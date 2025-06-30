@@ -10,11 +10,12 @@ import FollowUpPatientProgressPage from "./pages/doctor/FollowUpPatientProgressP
 import ProgressPage from "./pages/patient/ProgressPage";
 import { CompetenceAuthProvider } from "./contexts/CompetenceAuthContext";
 import RoleLoginPage from "./pages/auth/RoleLoginPage";
+import CheckoutPage from "./pages/patient/CheckoutPage";
 
 function App() {
   return (
-    <>
-      <AuthProvider>
+    <AuthProvider>
+      <CompetenceAuthProvider>
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route
@@ -42,12 +43,15 @@ function App() {
               </PrivateRoute>
             }
           />
-        </Routes>
-      </AuthProvider>
-
-      <CompetenceAuthProvider >
-        <Routes>
-          <Route path="/competence/login" element={<RoleLoginPage/>}/>
+          <Route
+            path="/patient/progress/checkout"
+            element={
+              <PrivateRoute>
+                <CheckoutPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/competence/login" element={<RoleLoginPage />} />
           <Route path="/doctor" element={<DoctorDashboard />} />
           <Route
             path="/follow-up/patient/progress"
@@ -55,8 +59,61 @@ function App() {
           />
         </Routes>
       </CompetenceAuthProvider>
-    </>
+    </AuthProvider>
   );
 }
+
+// function App() {
+//   return (
+//     <>
+//       <AuthProvider>
+//         <Routes>
+//           <Route path="/" element={<HomePage />} />
+//           <Route
+//             path="/order"
+//             element={
+//               <PrivateRoute>
+//                 <BookingPage />
+//               </PrivateRoute>
+//             }
+//           />
+//           <Route path="/login" element={<LoginPage />} />
+//           <Route
+//             path="/patient"
+//             element={
+//               <PrivateRoute>
+//                 <PatientProgressPage />
+//               </PrivateRoute>
+//             }
+//           />
+//           <Route
+//             path="/progress"
+//             element={
+//               <PrivateRoute>
+//                 <ProgressPage />
+//               </PrivateRoute>
+//             }
+//           />
+//           <Route path="/patient/progress/checkout" element={
+//             <PrivateRoute>
+//               <CheckoutPage/>
+//             </PrivateRoute>
+//           }/>
+//         </Routes>
+//       </AuthProvider>
+
+//       <CompetenceAuthProvider >
+//         <Routes>
+//           <Route path="/competence/login" element={<RoleLoginPage/>}/>
+//           <Route path="/doctor" element={<DoctorDashboard />} />
+//           <Route
+//             path="/follow-up/patient/progress"
+//             element={<FollowUpPatientProgressPage />}
+//           />
+//         </Routes>
+//       </CompetenceAuthProvider>
+//     </>
+//   );
+// }
 
 export default App;

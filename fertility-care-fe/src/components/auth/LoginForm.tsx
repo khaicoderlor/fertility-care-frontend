@@ -4,10 +4,11 @@ import axiosInstance from "../../apis/AxiosInstance";
 import Swal from "sweetalert2";
 import { TbLockPassword } from "react-icons/tb";
 import { MdOutlineEmail } from "react-icons/md";
+import { useNavigate } from "react-router-dom";
 
 export const LoginForm = () => {
   const { login, setOrderIdList } = useAuth();
-
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
 
   const [password, setPassword] = useState("");
@@ -27,6 +28,8 @@ export const LoginForm = () => {
       Swal.fire({
         title: "Đăng nhập thành công",
         icon: "success",
+      }).then(()=>{
+        navigate("/")
       });
     } catch (error) {
       console.log(error);

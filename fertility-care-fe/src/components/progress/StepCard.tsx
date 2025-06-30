@@ -16,12 +16,14 @@ import {
   STEP_FAILED,
   STEP_PLANNED,
   STEP_PROGRESS,
+  STEP_RETRANSFER,
 } from "../../constants/StepStatus";
 import type OrderStep from "../../models/OrderStep";
 import {
   PAYMENT_COMPLETED,
   PAYMENT_PENDING,
 } from "../../constants/PaymentStatus";
+import { formatCurrency, getStepCardBg } from "../../functions/CommonFunction";
 
 interface StepCardProps {
   step: OrderStep;
@@ -33,9 +35,9 @@ export const renderIconByStep = (step: OrderStep) => {
   const stepOrder = step.treatmentStep.stepOrder;
   switch (stepOrder) {
     case 1:
-      return <DocumentTextIcon className="w-7"/>;
+      return <DocumentTextIcon className="w-7" />;
     case 2:
-      return <SparklesIcon className="w-7"/>;
+      return <SparklesIcon className="w-7" />;
     case 3:
       return <EyeDropperIcon className="w-7" />;
     case 4:
@@ -48,13 +50,6 @@ export const renderIconByStep = (step: OrderStep) => {
 };
 
 export function StepCard({ step, isSelected, onClick }: StepCardProps) {
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    }).format(amount);
-  };
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case STEP_COMPLETED:
@@ -81,6 +76,12 @@ export function StepCard({ step, isSelected, onClick }: StepCardProps) {
             Thất bại
           </span>
         );
+      case STEP_RETRANSFER:
+        return (
+          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-800">
+            Chuyển phôi lại
+          </span>
+        );
       default:
         return (
           <span className="inline-flex items-center rounded-full border border-gray-300 px-2.5 py-0.5 text-xs font-medium text-gray-700">
@@ -92,13 +93,9 @@ export function StepCard({ step, isSelected, onClick }: StepCardProps) {
 
   return (
     <div
-      className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-0 relative rounded-lg ${
-        step.status === STEP_PROGRESS
-          ? "bg-gradient-to-r from-blue-50 to-indigo-50 shadow-md"
-          : step.status === STEP_COMPLETED
-          ? "bg-gradient-to-r from-green-50 to-emerald-50"
-          : "bg-white/80 backdrop-blur-sm"
-      } ${isSelected ? "ring-2 ring-pink-600" : ""}`}
+      className={`cursor-pointer transition-all duration-200 hover:shadow-lg border-0 relative rounded-lg ${getStepCardBg(
+        step.status + ""
+      )} ${isSelected ? "ring-2 ring-pink-600" : ""}`}
       onClick={onClick}
     >
       {/* Appointment Count Badge */}

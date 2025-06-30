@@ -41,119 +41,159 @@ export default function TreatmentReportModal({
   }, [orderId]);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
-      <div className="w-full max-w-6xl bg-white rounded-lg shadow-lg p-6 overflow-y-auto max-h-[90vh]">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-bold">Báo cáo quá trình điều trị</h2>
-          <button
-            onClick={onClose}
-            className="text-sm text-red-600 hover:underline"
-          >
-            Đóng
-          </button>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-60 p-4 backdrop-blur-sm">
+      <div className="w-full max-w-7xl bg-white rounded-xl shadow-2xl overflow-hidden max-h-[90vh] flex flex-col">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6 text-white">
+          <div className="flex justify-between items-center">
+            <h2 className="text-2xl font-bold">Báo cáo quá trình điều trị</h2>
+            <button
+              onClick={onClose}
+              className="bg-white/20 hover:bg-white/30 px-4 py-2 rounded-lg text-white font-medium transition-colors duration-200"
+            >
+              Đóng
+            </button>
+          </div>
         </div>
 
-        <section className="mb-6">
-          <h3 className="text-lg font-semibold mb-2">Danh sách trứng</h3>
-          <table className="w-full table-auto border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-2 py-1">ID</th>
-                <th className="border px-2 py-1">Loại</th>
-                <th className="border px-2 py-1">Đạt tiểu chuẩn</th>
-                <th className="border px-2 py-1">Ngày lấy trứng</th>
-              </tr>
-            </thead>
-            <tbody>
-              {eggs.map((egg) => (
-                <tr key={egg.id}>
-                  <td className="border px-2 py-1">#{egg.id}</td>
-                  <td className="border px-2 py-1">{egg.grade}</td>
-                  <td className="border px-2 py-1">
-                    {egg.isUsable ? (
-                      <TiTick className="px-2 py-1 text-green-500" />
-                    ) : (
-                      <MdDoNotDisturb className="px-2 py-1 text-red-500" />
-                    )}
-                  </td>
-                  <td className="border px-2 py-1">{egg.dateGain}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+        {/* Content */}
+        <div className="flex-1 overflow-y-auto p-8 space-y-12">
+          {/* Eggs Section */}
+          <section className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-1 h-8 bg-gradient-to-b from-green-400 to-green-600 rounded-full"></div>
+              <h3 className="text-2xl font-bold text-gray-800">Danh sách trứng</h3>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-green-50 to-green-100 border-b border-green-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-green-800">ID</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-green-800">Loại</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-green-800">Đạt tiểu chuẩn</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-green-800">Ngày lấy trứng</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {eggs.map((egg, index) => (
+                    <tr key={egg.id} className={`hover:bg-gray-50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">#{egg.id}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{egg.grade}</td>
+                      <td className="px-6 py-4 text-center">
+                        {egg.isUsable ? (
+                          <div className="flex justify-center">
+                            <TiTick className="w-6 h-6 text-green-500" />
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <MdDoNotDisturb className="w-6 h-6 text-red-500" />
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{egg.dateGain}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-        <section className="mb-6">
-          z<h3 className="text-lg font-semibold mb-2">Danh sách phôi</h3>
-          <table className="w-full table-auto border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-2 py-1">ID</th>
-                <th className="border px-2 py-1">Loại phôi</th>
-                <th className="border px-2 py-1">loại trứng</th>
-                <th className="border px-2 py-1">Đạt tiêu chuẩn</th>
-                <th className="border px-2 py-1">Trạng thái</th>
-                <th className="border px-2 py-1">Lưu trữ lạnh</th>
-                <th className="border px-2 py-1">Chuyển phôi</th>
-              </tr>
-            </thead>
-            <tbody>
-              {embryos.map((e) => (
-                <tr key={e.id}>
-                  <td className="border px-2 py-1">#{e.id}</td>
-                  <td className="border px-2 py-1">{e.embryoGrade}</td>
-                  <td className="border px-2 py-1">{e.eggGrade}</td>
-                  <td className="border px-2 py-1">
-                    {e.isViable ? (
-                      <TiTick className="px-2 py-1 text-green-500" />
-                    ) : (
-                      <MdDoNotDisturb className="px-2 py-1 text-red-500" />
-                    )}
-                  </td>
-                  <td className="border px-2 py-1">{e.embryoStatus}</td>
-                  <td className="border px-2 py-1">
-                    {e.isFrozen ? (
-                      <TiTick className="px-2 py-1 text-green-500" />
-                    ) : (
-                      <MdDoNotDisturb className="px-2 py-1 text-red-500" />
-                    )}
-                  </td>
-                  <td className="border px-2 py-1">
-                    {e.isTransferred ? (
-                      <TiTick className="px-2 py-1 text-green-500" />
-                    ) : (
-                      <MdDoNotDisturb className="px-2 py-1 text-red-500" />
-                    )}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+          {/* Embryos Section */}
+          <section className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-1 h-8 bg-gradient-to-b from-purple-400 to-purple-600 rounded-full"></div>
+              <h3 className="text-2xl font-bold text-gray-800">Danh sách phôi</h3>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-purple-50 to-purple-100 border-b border-purple-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-800">ID</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-800">Loại phôi</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-800">Loại trứng</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-purple-800">Đạt tiêu chuẩn</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-purple-800">Trạng thái</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-purple-800">Lưu trữ lạnh</th>
+                    <th className="px-6 py-4 text-center text-sm font-semibold text-purple-800">Chuyển phôi</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {embryos.map((e, index) => (
+                    <tr key={e.id} className={`hover:bg-gray-50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">#{e.id}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{e.embryoGrade}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{e.eggGrade}</td>
+                      <td className="px-6 py-4 text-center">
+                        {e.isViable ? (
+                          <div className="flex justify-center">
+                            <TiTick className="w-6 h-6 text-green-500" />
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <MdDoNotDisturb className="w-6 h-6 text-red-500" />
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{e.embryoStatus}</td>
+                      <td className="px-6 py-4 text-center">
+                        {e.isFrozen ? (
+                          <div className="flex justify-center">
+                            <TiTick className="w-6 h-6 text-green-500" />
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <MdDoNotDisturb className="w-6 h-6 text-red-500" />
+                          </div>
+                        )}
+                      </td>
+                      <td className="px-6 py-4 text-center">
+                        {e.isTransferred ? (
+                          <div className="flex justify-center">
+                            <TiTick className="w-6 h-6 text-green-500" />
+                          </div>
+                        ) : (
+                          <div className="flex justify-center">
+                            <MdDoNotDisturb className="w-6 h-6 text-red-500" />
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
 
-        <section>
-          <h3 className="text-lg font-semibold mb-2">Lịch sử chuyển phôi</h3>
-          <table className="w-full table-auto border text-sm">
-            <thead>
-              <tr className="bg-gray-100">
-                <th className="border px-2 py-1">ID</th>
-                <th className="border px-2 py-1">Loại phôi</th>
-                <th className="border px-2 py-1">Ngày chuyển</th>
-                <th className="border px-2 py-1">Kiểu chuyển</th>
-              </tr>
-            </thead>
-            <tbody>
-              {transfers.map((t) => (
-                <tr key={t.id}>
-                  <td className="border px-2 py-1">#{t.id}</td>
-                  <td className="border px-2 py-1">{t.embryoGrade}</td>
-                  <td className="border px-2 py-1">{t.transferDate}</td>
-                  <td className="border px-2 py-1">{t.transferType}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </section>
+          {/* Transfer History Section */}
+          <section className="space-y-4">
+            <div className="flex items-center space-x-3">
+              <div className="w-1 h-8 bg-gradient-to-b from-blue-400 to-blue-600 rounded-full"></div>
+              <h3 className="text-2xl font-bold text-gray-800">Lịch sử chuyển phôi</h3>
+            </div>
+            <div className="bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden">
+              <table className="w-full">
+                <thead>
+                  <tr className="bg-gradient-to-r from-blue-50 to-blue-100 border-b border-blue-200">
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-blue-800">ID</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-blue-800">Loại phôi</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-blue-800">Ngày chuyển</th>
+                    <th className="px-6 py-4 text-left text-sm font-semibold text-blue-800">Kiểu chuyển</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {transfers.map((t, index) => (
+                    <tr key={t.id} className={`hover:bg-gray-50 transition-colors duration-150 ${index % 2 === 0 ? 'bg-white' : 'bg-gray-50/50'}`}>
+                      <td className="px-6 py-4 text-sm font-medium text-gray-900">#{t.id}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{t.embryoGrade}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{t.transferDate}</td>
+                      <td className="px-6 py-4 text-sm text-gray-700">{t.transferType}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
       </div>
     </div>
   );

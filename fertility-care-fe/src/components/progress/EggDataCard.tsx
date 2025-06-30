@@ -24,7 +24,7 @@ export function EggDataCard({ order, eggs }: EggDataCardProps) {
             {/* Tổng số trứng */}
             Tổng số trứng
             <div className="text-4xl font-extrabold text-pink-600">
-              {order.totalEggs ?? 0}
+              {order.totalEgg ?? 0}
             </div>
             <div className="text-sm text-gray-500 font-medium">
               

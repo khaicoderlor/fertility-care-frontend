@@ -18,7 +18,9 @@ export interface Order {
 
     totalAmount?: number,
 
-    totalEggs?: number,
+    totalEgg?: number,
+
+    isFrozen?: boolean,
 
     updatedAt?: string,
 

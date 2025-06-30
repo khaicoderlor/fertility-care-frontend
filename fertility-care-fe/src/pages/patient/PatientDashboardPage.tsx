@@ -45,7 +45,7 @@ export default function PatientDashboardPage() {
 
   return (
     <div>
-      <div className="min-h-screen bg-gradient-to-br from-pink-50 to-purple-50 flex">
+      <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 flex">
         {/* Sidebar */}
         {sidebarOpen && <SideBarPatient patient={patient ?? null} />}
 

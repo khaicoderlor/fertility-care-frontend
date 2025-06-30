@@ -4,10 +4,12 @@ import Button from "./Button";
 import axiosInstance from "../apis/AxiosInstance";
 import type { Patient } from "../models/Patient";
 import { convertFullName } from "../functions/CommonFunction";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { isAuthenticated, patientId } = useAuth();
   const [patient, setPatient] = useState<Patient>();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchPatient = async (pId: string) => {
@@ -87,7 +89,12 @@ export default function Header() {
         <div className="flex items-center gap-6">
           {isAuthenticated && (
             <>
-              <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 hover:shadow-md transition-all duration-300 cursor-pointer group">
+              <div
+                onClick={() => {
+                  navigate("/patient");
+                }}
+                className="flex items-center gap-3 px-4 py-2 rounded-full bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-100 hover:shadow-md transition-all duration-300 cursor-pointer group"
+              >
                 <div className="relative">
                   <img
                     src={patient?.profile?.avatarUrl}
@@ -108,7 +115,7 @@ export default function Header() {
               </div>
             </>
           )}
-     
+
           <div className="w-px h-8 bg-gray-200"></div>
 
           <Button

@@ -13,7 +13,7 @@ import {
 import type { Patient } from "../../models/Patient";
 import type { SlotSchedule } from "../../models/SlotSchedule";
 import Swal from "sweetalert2";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../apis/AxiosInstance";
 import {
   calculateCompletedPercentage,
@@ -27,6 +27,8 @@ import SelectedCardDetail from "../../components/dashboard/doctor/SelectedCardDe
 import AppointmentForm from "../../components/dashboard/doctor/AppointmentForm";
 import ProgressStep from "../../components/dashboard/doctor/ProgressStep";
 import type { Order } from "../../models/Order";
+import TreatmentReportModal from "../../components/dashboard/doctor/TreatmentReportModal";
+import Footer from "../../components/Footer";
 
 export interface CreateAppointmentDailyRequest {
   patientId: string;
@@ -52,11 +54,13 @@ export default function FollowUpPatientProgressPage() {
   const [order, setOrder] = useState<Order>({});
   const [orderSteps, setOrderSteps] = useState<OrderStep[]>([]);
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
+  const [showProgressReportForm, setShowProgressReportForm] = useState(false);
   const [timeSlots, setTimeSlots] = useState<SlotSchedule[]>([]);
   const [selectedTime, setSelectedTime] = useState("");
   const [selectedStepDetail, setSelectedStepDetail] = useState<number | null>(
     null
   );
+  const navigate = useNavigate()
 
   const [newAppointment, setNewAppointment] =
     useState<CreateAppointmentDailyRequest>({
@@ -205,9 +209,12 @@ export default function FollowUpPatientProgressPage() {
   };
 
   return (
-    <div className="min-h-screen bg-purple-50">
-      {/* Header */}
-      <div className="bg-purple-50 p-6">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}  
+      <div className="bg-gray-50 p-6">
+        <div className="rounded-md bg-green-500 px-4 py-2 w-28 text-center text-sm font-medium text-white hover:bg-green-600">
+          <button onClick={() => navigate(-1)}>Quay lại</button>
+        </div>
         <div className="mx-auto max-w-5xl">
           <div className="flex items-center space-x-4">
             <div className="flex h-16 w-16 items-center justify-center rounded-full bg-purple-600">
@@ -230,7 +237,7 @@ export default function FollowUpPatientProgressPage() {
         {/* Patient info */}
         <div className="mb-6 flex items-center justify-between rounded-lg bg-white p-4 shadow-sm">
           <div className="flex items-center space-x-3">
-            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-purple-100 text-purple-600">
+            <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-purple-600">
               <span className="text-lg font-bold">
                 <img
                   src={patient?.profile?.avatarUrl || ""}
@@ -248,7 +255,10 @@ export default function FollowUpPatientProgressPage() {
               </p>
             </div>
           </div>
-          <button className="rounded-md bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-200">
+          <button
+            onClick={() => setShowProgressReportForm(true)}
+            className="rounded-md bg-purple-100 px-4 py-2 text-sm font-medium text-purple-700 hover:bg-purple-200"
+          >
             Báo cáo về quá trình
           </button>
         </div>
@@ -310,6 +320,15 @@ export default function FollowUpPatientProgressPage() {
           handleSubmitNewAppointment={handleSubmitNewAppointment}
         />
       )}
+
+      {showProgressReportForm && (
+        <TreatmentReportModal
+          orderId={order.id ?? ""}
+          onClose={() => setShowProgressReportForm(false)}
+        />
+      )}
+
+      <Footer />
     </div>
   );
 }

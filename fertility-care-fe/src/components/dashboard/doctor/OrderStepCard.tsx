@@ -3,23 +3,24 @@ import {
   CheckIcon,
   ClockIcon,
   CreditCardIcon,
-  CubeIcon,
 } from "@heroicons/react/24/outline";
 import {
   STEP_COMPLETED,
   STEP_FAILED,
   STEP_PROGRESS,
+  STEP_RETRANSFER,
 } from "../../../constants/StepStatus";
-import { getStepCardBg } from "../../../functions/CommonFunction";
+import { formatCurrency, getStepCardBg } from "../../../functions/CommonFunction";
 import type OrderStep from "../../../models/OrderStep";
 import { PAYMENT_COMPLETED } from "../../../constants/PaymentStatus";
-import { STEP_EMBRYO, STEP_TAKE_EGG } from "../../../constants/IVFConstant";
+import { STEP_EMBRYO, STEP_FOLLOW_UP, STEP_TAKE_EGG } from "../../../constants/IVFConstant";
 import type { Order } from "../../../models/Order";
 import { renderIconByStep } from "../../progress/StepCard";
 import { useState } from "react";
 import EggInputForm from "./EggInputForm";
 import axiosInstance from "../../../apis/AxiosInstance";
 import EmbryoInputForm from "./EmbryoInputForm";
+import Swal from "sweetalert2";
 
 interface OrderStepCardProps {
   orderSteps: OrderStep[];
@@ -35,13 +36,13 @@ export interface EggDataInput {
 }
 
 export interface EggOption {
-  id: string;
+  id: number;
   grade: string;
 }
 
 export interface EmbryoInput {
-  eggId: string;
-  embryoGrade: string;
+  eggId: number | null;
+  grade: string;
   isQualified: boolean;
 }
 
@@ -78,6 +79,12 @@ export default function OrderStepCard({
             Thất bại
           </span>
         );
+      case STEP_RETRANSFER:
+        return (
+          <span className="rounded-full bg-orange-100 px-3 py-1 text-xs font-medium text-orange-800">
+            Chuyển phôi lại 
+          </span>
+        );  
       default:
         return (
           <span className="rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800">
@@ -86,6 +93,16 @@ export default function OrderStepCard({
         );
     }
   };
+
+  const markRetransfer = async () => {
+    try {
+      await axiosInstance.patch(`/transfers/${order.id}`);
+      Swal.fire("Cập nhật thành công!", "", "success");
+    } catch(error) {
+      console.log(error);
+    }
+  }
+
   return (
     <>
       <div className="space-y-4">
@@ -118,7 +135,7 @@ export default function OrderStepCard({
                     {/* Thời gian */}
                     <div className="mt-3 flex items-center space-x-1 text-sm text-gray-500">
                       <ClockIcon className="h-4 w-4" />
-                      <span>{step.treatmentStep.estimatedDurationDays}</span>
+                      <span>{step.treatmentStep.estimatedDurationDays} ngày</span>
                     </div>
 
                     {/* Ngày hoàn thành */}
@@ -133,7 +150,7 @@ export default function OrderStepCard({
                     <div className="mt-2 flex items-center space-x-2">
                       <CreditCardIcon className="h-4 w-4 text-gray-500" />
                       <span className="text-sm font-medium">
-                        {step.treatmentStep.amount}
+                        {formatCurrency(step.treatmentStep.amount?? 0)}
                       </span>
                       {step.paymentStatus === PAYMENT_COMPLETED ? (
                         <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800">
@@ -145,12 +162,6 @@ export default function OrderStepCard({
                         </span>
                       )}
                     </div>
-                    {step.treatmentStep.stepOrder == STEP_TAKE_EGG && (
-                      <div className="mt-3 flex items-center space-x-1 text-sm text-gray-500">
-                        <CubeIcon className="h-4 w-4 text-red-500" />
-                        <span>{order.totalEggs}</span>
-                      </div>
-                    )}
                   </div>
                 </div>
 
@@ -203,7 +214,19 @@ export default function OrderStepCard({
                   >
                     Thêm lịch hẹn
                   </button>
-
+                    {order.treatmentService?.name === "IVF" &&
+                    step.status === STEP_FAILED &&
+                    step.treatmentStep.stepOrder === STEP_FOLLOW_UP && (
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          markRetransfer();
+                        }}
+                        className="rounded-md border text-white border-blue-500 bg-blue-500 px-3 py-1.5 text-sm font-medium transition-colors hover:bg-blue-600"
+                      >
+                        Chuyển phôi lại
+                      </button>
+                    )}
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
@@ -215,7 +238,7 @@ export default function OrderStepCard({
                       step.status === STEP_COMPLETED
                         ? "bg-green-600 text-white hover:bg-green-700"
                         : "border border-green-600 text-green-600 hover:bg-green-100"
-                    }`}
+                    }`} 
                   >
                     Hoàn thành
                   </button>
@@ -246,10 +269,13 @@ export default function OrderStepCard({
           onSave={(data) => {
             setEggData(data);
             const fetchCreateEgg = async () => {
+              const payload = {
+                eggs: data
+              }
               try {
                 const response = await axiosInstance.post(
                   `/eggs/${order.id}`,
-                  data
+                  payload
                 );
                 console.log(response);
               } catch (error) {
@@ -268,10 +294,13 @@ export default function OrderStepCard({
           onClose={() => setShowEmbryoForm(false)}
           onSave={(data) => {
             const fetchEmbryo = async () => {
+              const payload = {
+                embryos: data
+              }
               try {
                 await axiosInstance.post(
                   `/embryos/${order.id}`,
-                  data
+                  payload
                 );
               } catch (error) {
                 console.log(error);

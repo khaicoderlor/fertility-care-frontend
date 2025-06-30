@@ -8,3 +8,6 @@ export const STEP_PROGRESS = "InProgress"
 export const STEP_PLANNED = "Planned"
 
 export const STEP_FAILED = "Failed"
+
+
+export const STEP_RETRANSFER = "ReTransfer"

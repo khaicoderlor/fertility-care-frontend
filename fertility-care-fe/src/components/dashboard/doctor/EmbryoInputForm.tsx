@@ -10,7 +10,11 @@ interface EmbryoInputFormProps {
 
 const embryoTypes: string[] = ["A", "B", "C", "AA", "AB", "BB", "BC", "CC"];
 
-export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInputFormProps) {
+export default function EmbryoInputForm({
+  orderId,
+  onClose,
+  onSave,
+}: EmbryoInputFormProps) {
   const [availableEggs, setAvailableEggs] = useState<EggOption[]>([]);
   const [embryos, setEmbryos] = useState<EmbryoInput[]>([]);
 
@@ -18,7 +22,7 @@ export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInpu
     const fetchEggs = async (oId: string) => {
       try {
         const response = await axiosInstance.get(`/eggs/usable/${oId}`);
-        setAvailableEggs(response.data.data); 
+        setAvailableEggs(response.data.data);
       } catch (error) {
         console.error("Lỗi fetch eggs:", error);
       }
@@ -26,14 +30,18 @@ export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInpu
     fetchEggs(orderId);
   }, [orderId]);
 
-  const handleChange = <K extends keyof EmbryoInput>(index: number, field: K, value: EmbryoInput[K]) => {
+  const handleChange = <K extends keyof EmbryoInput>(
+    index: number,
+    field: K,
+    value: EmbryoInput[K]
+  ) => {
     const updated = [...embryos];
     updated[index][field] = value;
     setEmbryos(updated);
   };
 
   const handleAddRow = () => {
-    setEmbryos([...embryos, { eggId: "", embryoGrade: "", isQualified: false }]);
+    setEmbryos([...embryos, { eggId: null, grade: "", isQualified: false }]);
   };
 
   const handleSubmit = () => {
@@ -42,7 +50,9 @@ export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInpu
   };
 
   const getAvailableEggs = (currentIndex: number): EggOption[] => {
-    const selectedIds = embryos.map((e, i) => i !== currentIndex ? e.eggId : "").filter(Boolean);
+    const selectedIds = embryos
+      .map((e, i) => (i !== currentIndex ? e.eggId : ""))
+      .filter(Boolean);
     return availableEggs.filter((egg) => !selectedIds.includes(egg.id));
   };
 
@@ -53,39 +63,50 @@ export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInpu
 
         {embryos.map((embryo, index) => (
           <div key={index} className="mb-4 flex items-center space-x-3">
+            {/* Chọn loại phôi */}
             <select
-              className="flex-1 border p-2 rounded"
-              value={embryo.embryoGrade}
-              onChange={(e) => handleChange(index, "embryoGrade", e.target.value)}
+              className="flex-1 rounded border p-2"
+              value={embryo.grade}
+              onChange={(e) => handleChange(index, "grade", e.target.value)}
             >
               <option value="">Chọn loại phôi</option>
               {embryoTypes.map((type) => (
-                <option key={type} value={type}>{type}</option>
+                <option key={type} value={type}>
+                  {type}
+                </option>
               ))}
             </select>
 
+            {/* Chọn trứng */}
             <select
-              className="flex-1 border p-2 rounded"
-              value={embryo.eggId}
-              onChange={(e) => handleChange(index, "eggId", e.target.value)}
+              className="flex-1 rounded border p-2"
+              /* dùng eggId, hiển thị '' nếu null */
+              value={embryo.eggId ?? ""}
+              onChange={(e) =>
+                handleChange(index, "eggId", Number(e.target.value) || null)
+              }
             >
               <option value="">Chọn trứng</option>
               {getAvailableEggs(index).map((egg) => (
-                <option key={egg.id} value={egg.id}>{egg.grade}</option>
+                <option key={egg.id} value={egg.id}>
+                  #{egg.id} - {egg.grade}
+                </option>
               ))}
             </select>
 
+            {/* Checkbox đạt tiêu chuẩn */}
             <label className="flex items-center space-x-1">
               <input
                 type="checkbox"
                 checked={embryo.isQualified}
-                onChange={(e) => handleChange(index, "isQualified", e.target.checked)}
+                onChange={(e) =>
+                  handleChange(index, "isQualified", e.target.checked)
+                }
               />
               <span>Đạt</span>
             </label>
           </div>
         ))}
-
         <div className="flex justify-between mt-4">
           <button
             onClick={handleAddRow}
@@ -94,10 +115,16 @@ export default function EmbryoInputForm({ orderId, onClose, onSave }: EmbryoInpu
             + Thêm dòng
           </button>
           <div className="space-x-2">
-            <button onClick={onClose} className="bg-gray-100 px-4 py-2 rounded text-sm hover:bg-gray-200">
+            <button
+              onClick={onClose}
+              className="bg-gray-100 px-4 py-2 rounded text-sm hover:bg-gray-200"
+            >
               Hủy
             </button>
-            <button onClick={handleSubmit} className="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700">
+            <button
+              onClick={handleSubmit}
+              className="bg-purple-600 text-white px-4 py-2 rounded text-sm hover:bg-purple-700"
+            >
               Lưu
             </button>
           </div>

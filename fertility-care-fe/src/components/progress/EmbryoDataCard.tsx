@@ -46,8 +46,8 @@ export function EmbryoDataCard({ embryoData, order }: EmbryoDataCardProps) {
           </div>
           <div className="text-sm opacity-90 mt-1">
             Tỷ lệ thành công:{" "}
-            {(order.totalEggs ?? 0) > 0
-              ? Math.round((totalEmbryos / (order.totalEggs ?? 1)) * 100)
+            {(order.totalEgg ?? 0) > 0
+              ? Math.round((totalEmbryos / (order.totalEgg ?? 1)) * 100)
               : 0}
             %
           </div>

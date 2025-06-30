@@ -55,6 +55,7 @@ export default function AppointmentForm({
               <div className="grid grid-cols-3 gap-2">
                 {timeSlots.map((slot) => (
                   <button
+                    type="button"
                     key={slot.slotId}
                     onClick={() => {
                       setSelectedTime(convertSlotTime(slot));
@@ -63,13 +64,14 @@ export default function AppointmentForm({
                         doctorScheduleId: slot.scheduleId,
                       });
                     }}
-                    className={`flex items-center justify-center px-3 py-2 text-xs font-medium rounded-md border transition-colors duration-200 ${
-                      selectedTime === convertSlotTime(slot)
+                    className={
+                      "flex items-center justify-center rounded-md border px-3 py-2 text-xs font-medium transition-colors duration-200 " +
+                      (selectedTime === convertSlotTime(slot)
                         ? "bg-blue-600 text-white border-blue-600"
-                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50"
-                    }`}
+                        : "bg-white text-gray-700 border-gray-300 hover:bg-gray-50")
+                    }
                   >
-                    <FaClock className="w-3 h-3 mr-1" />
+                    <FaClock className="mr-1 h-3 w-3" />
                     {convertSlotTime(slot)}
                   </button>
                 ))}
@@ -130,6 +132,7 @@ export default function AppointmentForm({
             </div>
             <div className="flex justify-end space-x-2 pt-2">
               <button
+                type="button"
                 onClick={onCancel}
                 className="rounded-md border border-gray-300 px-3 py-1.5 text-sm"
               >

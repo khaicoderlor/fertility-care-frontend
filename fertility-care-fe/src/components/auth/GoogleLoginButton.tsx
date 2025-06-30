@@ -6,9 +6,11 @@ import {
 import { useAuth } from "../../contexts/AuthContext";
 import axiosInstance from "../../apis/AxiosInstance";
 import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 
 export const GoogleLoginButton = () => {
   const { login, setOrderIdList } = useAuth();
+  const navigate = useNavigate();
 
   const handleSuccess = async (
     credentialResponse: GoogleCredentialResponse
@@ -27,7 +29,9 @@ export const GoogleLoginButton = () => {
       Swal.fire({
         title: "Đăng nhập thành công",
         icon: "success",
-      });
+      }).then(()=>{
+        navigate("/")
+      });      
     } catch (error) {
       console.log(error);
       Swal.fire({

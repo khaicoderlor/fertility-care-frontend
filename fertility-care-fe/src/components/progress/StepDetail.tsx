@@ -18,6 +18,9 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { EmbryoData } from "../../models/EmbryoData";
 import type { EggData } from "../../models/EggData";
+import AppointmentForm from "./AppointmentForm";
+import AskAcceptFrozenOrder from "./AskAcceptFrozenOrder";
+import { Link } from "react-router-dom";
 
 interface StepDetailProps {
   step: OrderStep | null;
@@ -156,10 +159,10 @@ export function StepDetail({ step, order }: StepDetailProps) {
           </div>
 
           {step.paymentStatus != PAYMENT_COMPLETED && (
-            <button className="w-full inline-flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+            <Link to={`/patient/progress/checkout`} state={{ step, order }} className="w-full inline-flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
               <CreditCardIcon className="w-4 h-4 mr-2" />
               Thanh toán ngay
-            </button>
+            </Link>
           )}
         </div>
       </div>
@@ -175,7 +178,11 @@ export function StepDetail({ step, order }: StepDetailProps) {
       )}
 
       {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TRANSFER) && (
-        
+        <AppointmentForm order={order} step={step}/>
+      )}
+
+      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TRANSFER && !order.isFrozen) && (
+        <AskAcceptFrozenOrder order={order}/>
       )}
     </div>
   );

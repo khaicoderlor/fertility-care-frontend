@@ -15,7 +15,6 @@ export default function TransferEmbryoForm({
 }: TransferEmbryoFormProps) {
   const [embryos, setEmbryos] = useState<EmbryoData[]>([]);
   const [embryoId, setEmbryoId] = useState("");
-  const [isFrozenTransfer, setIsFrozenTransfer] = useState(false);
   //   const [transferDate, setTransferDate] = useState("");
   //   const [transferType, setTransferType] = useState("");
 
@@ -39,7 +38,7 @@ export default function TransferEmbryoForm({
         embryoId,
       };
 
-      await axiosInstance.post(`/transfers?isFrozen=${isFrozenTransfer}`, payload);
+      await axiosInstance.post(`/transfers`, payload);
       onClose();
     } catch (error) {
       console.error("Lỗi tạo chuyển phôi:", error);
@@ -65,17 +64,6 @@ export default function TransferEmbryoForm({
               </option>
             ))}
           </select>
-        </div>
-        <div className="mb-3">
-          <label className="block text-sm font-medium mb-1">
-            Chuyển từ phôi đông lạnh
-          </label>
-          <input
-            type="checkbox"
-            checked={isFrozenTransfer}
-            onChange={(e) => setIsFrozenTransfer(e.target.checked)}
-            className="h-4 w-4 text-purple-600 border-gray-300 rounded"
-          />
         </div>
 
         {/* <div className="mb-3">
