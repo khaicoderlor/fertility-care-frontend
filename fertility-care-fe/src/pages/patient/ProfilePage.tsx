@@ -4,6 +4,7 @@ import axiosInstance from "../../apis/AxiosInstance";
 import Swal from "sweetalert2";
 import { useOutletContext } from "react-router-dom";
 import type { Patient } from "../../models/Patient";
+import { convertToInputDate } from "../../functions/CommonFunction";
 
 export interface ProfileContact {
   email: string;
@@ -30,14 +31,26 @@ export default function ProfilePage() {
     fetchProfileContact();
   }, [patient.id]);
 
+  useEffect(() => {
+    if (profileContact) {
+      setFormData((prev) => ({
+        ...prev,
+        email: profileContact.email,
+        phone: profileContact.phoneNumber,
+      }));
+    }
+  }, [profileContact]);
+
   const [formData, setFormData] = useState({
     firstName: patient.profile?.firstName || "",
     middleName: patient.profile?.middleName || "",
     lastName: patient.profile?.lastName || "",
     email: profileContact?.email || "",
     phone: profileContact?.phoneNumber || "",
-    gender: patient.profile?.gender || "Male",
-    dateOfBirth: patient.profile?.dateOfBirth || "",
+    gender: patient.profile?.gender || "Female",
+    dateOfBirth: patient.profile?.dateOfBirth
+    ? convertToInputDate(patient.profile.dateOfBirth)
+    : "",
     address: patient.profile?.address || "",
     joinDate: patient.profile?.createdAt || "",
     partnerFullname: patient.partnerFullName || "",
@@ -48,7 +61,9 @@ export default function ProfilePage() {
 
   const [avatar, setAvatar] = useState(patient.profile?.avatarUrl || "");
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
@@ -63,8 +78,18 @@ export default function ProfilePage() {
         setAvatar(result);
       };
 
+      const formData = new FormData();
+      formData.append("file", file);
       try {
-        await axiosInstance.patch(`/patients/${patient.id}/change-avatar`);
+        await axiosInstance.patch(
+          `/patients/${patient.id}/change-avatar`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
       } catch (error) {
         console.log(error);
       }
@@ -74,9 +99,10 @@ export default function ProfilePage() {
   };
 
   const handleUpdateInfoPatient = async () => {
+    console.log(formData)
     try {
-      const response = await axiosInstance.put(`/patients/${patient.id}`);
-
+      const response = await axiosInstance.put(`/patients/${patient.id}`, formData);
+      console.log("uipdate" + response.data)
       if (response.data.data) {
         Swal.fire({
           title: "Cập nhật thành công",
@@ -157,7 +183,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     name="firstName"
-                    value={formData.firstName}
+                    value={formData.lastName}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
                     placeholder="Nhập tên của bạn"
@@ -185,7 +211,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     name="lastName"
-                    value={formData.lastName}
+                    value={formData.firstName}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
                     placeholder="Nhập họ của bạn"
@@ -199,6 +225,7 @@ export default function ProfilePage() {
                   <input
                     type="email"
                     name="email"
+                    disabled
                     value={formData.email}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
@@ -214,6 +241,7 @@ export default function ProfilePage() {
                     type="tel"
                     name="phone"
                     value={formData.phone}
+                    disabled
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
                     placeholder="+84 xxx xxx xxx"
@@ -242,8 +270,8 @@ export default function ProfilePage() {
                       <input
                         type="radio"
                         name="gender"
-                        value="male"
-                        checked={formData.gender === "male"}
+                        value="Male"
+                        checked={formData.gender === "Male"}
                         onChange={handleInputChange}
                         className="w-4 h-4 text-blue-600 border-gray-300 focus:ring-blue-500"
                       />
@@ -253,8 +281,8 @@ export default function ProfilePage() {
                       <input
                         type="radio"
                         name="gender"
-                        value="female"
-                        checked={formData.gender === "female"}
+                        value="Female"
+                        checked={formData.gender === "Female"}
                         onChange={handleInputChange}
                         className="w-4 h-4 text-pink-600 border-gray-300 focus:ring-pink-500"
                       />
@@ -282,7 +310,7 @@ export default function ProfilePage() {
                     Ngày tham gia
                   </label>
                   <input
-                  disabled
+                    disabled
                     type="type"
                     name="joinDate"
                     value={formData.joinDate}
@@ -373,8 +401,8 @@ export default function ProfilePage() {
                 Hủy bỏ
               </button>
               <button
-                type="submit"
-                onSubmit={handleUpdateInfoPatient}
+                type="button"
+                onClick={handleUpdateInfoPatient}
                 className="px-8 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 transition-all duration-300 shadow-lg hover:shadow-xl font-medium"
               >
                 Lưu thay đổi

@@ -59,4 +59,19 @@ export const getTotalExtraFeeOfStep = (appointments: Appointment[]): number => {
   return appointments.reduce((total, x) => total + (x.extraFee || 0), 0)
 }
 
+export const convertDateToInputDate = (date: string): string => {
+  const s: string[] = date.split("/");
+  return `${s[2]}-${s[1]}-${s[0]}`;
+}
+
+export const convertToInputDate = (date: string): string => {
+  const[dd,mm,yyyy] = date.split("/");
+  return `${yyyy}-${mm}-${dd}`;
+}
+
+export const convertToDisplayDate = (date: string): string => {
+  const [yyyy, mm, dd] = date.split("-");
+  return `${dd}/${mm}/${yyyy}`;
+};
+
 
