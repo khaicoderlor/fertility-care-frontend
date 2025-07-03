@@ -25,6 +25,9 @@ import type { Order } from "../../../models/Order";
 import { STEP_TRANSFER } from "../../../constants/IVFConstant";
 import { useState } from "react";
 import TransferEmbryoForm from "./TransferEmbryoForm";
+import axiosInstance from "../../../apis/AxiosInstance";
+import Swal from "sweetalert2";
+import { APPOINTMENT_COMPLETED } from "../../../constants/AppointmentStatus";
 
 interface SelectedCardDetailProps {
   orderSteps: OrderStep[];
@@ -40,6 +43,27 @@ export default function SelectedCardDetail({
   order,
 }: SelectedCardDetailProps) {
   const [showTransferForm, setShowTransferForm] = useState(false);
+
+
+  const handleMarkStatusAppointment = async (a: string, status: string) => {
+    try {
+      const response = await axiosInstance.patch(`appointments/mark-status/${a}?status=${status}`);
+      const res = response.data.data
+      if(res) {
+        Swal.fire({
+          title: "Cập nhật hoàn tất!",
+          icon: "success"
+        })
+      } else {
+        Swal.fire({
+          title: "Cuộc hẹn trước chưa hoàn thành!",
+          icon: "error"
+        })
+      }
+    } catch(error) {
+      console.log(error)
+    }
+  }
 
   const convertStepIcon = (stepOrder: number) => {
     switch (stepOrder) {
@@ -210,12 +234,12 @@ export default function SelectedCardDetail({
                         <h5 className="font-medium">{appointment.type}</h5>
                         <span
                           className={`rounded-full px-2 py-0.5 text-xs font-medium ${
-                            appointment.status === "completed"
+                            appointment.status === APPOINTMENT_COMPLETED
                               ? "bg-green-100 text-green-800"
                               : "bg-blue-100 text-blue-800"
                           }`}
                         >
-                          {appointment.status === "completed"
+                          {appointment.status === APPOINTMENT_COMPLETED
                             ? "Đã hoàn thành"
                             : "Đã hẹn"}
                         </span>
@@ -286,10 +310,19 @@ export default function SelectedCardDetail({
                           Thêm dữ liệu chuyển phôi
                         </button>
                       )}
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleMarkStatusAppointment(appointment.id??"", APPOINTMENT_COMPLETED)
+                      }}
+                      className="rounded-md border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium transition-colors hover:bg-gray-100"
+                    >
+                      Hoàn thành
+                    </button>
                     {showTransferForm && (
                       <TransferEmbryoForm
                         orderId={order.id ?? ""}
-                        appointmentId={appointment.id??null}
+                        appointmentId={appointment.id ?? null}
                         onClose={() => setShowTransferForm(false)}
                       />
                     )}

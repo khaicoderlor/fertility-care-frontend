@@ -2,15 +2,22 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Doctor } from "../../models/Doctor";
 import type { PatientDashboard } from "../../models/PatientDashboard";
-import { Link } from "react-router-dom";
+import { Link, Outlet, useLocation } from "react-router-dom";
 import "../../assets/css/DotorDashboardStyle.css";
 import { convertFullName } from "../../functions/CommonFunction";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
+import { PiUsersThreeFill } from "react-icons/pi";
+import { MdFeedback, MdSpaceDashboard } from "react-icons/md";
+import { RiProfileFill } from "react-icons/ri";
+import { BsCalendarDateFill, BsFillPostcardHeartFill } from "react-icons/bs";
+import { BiLogOut } from "react-icons/bi";
 
 export default function DoctorDashboard() {
   const { doctorId } = useCompetenceAuth();
   const [doctor, setDoctor] = useState<Doctor>();
   const [patients, setPatients] = useState<PatientDashboard[]>();
+  const location = useLocation();
+  const { pathname } = location;
 
   useEffect(() => {
     const fetchDoctor = async (dId: string) => {
@@ -39,6 +46,8 @@ export default function DoctorDashboard() {
     fetchPatients(doctorId ?? "");
   }, [doctorId]);
 
+  const isActive = (path: string) => pathname.startsWith(path);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar */}
@@ -47,88 +56,111 @@ export default function DoctorDashboard() {
         <div className="gradient-bg p-6">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center">
-              <i className="fas fa-heart text-purple-600 text-lg"></i>
+              <img src={doctor?.profile.avatarUrl} className="rounded-full" />
             </div>
             <div>
-              <h1 className="text-white font-bold text-lg">FertilityCare</h1>
-              <p className="text-purple-100 text-sm">Doctor Dashboard</p>
+              <h1 className="text-white font-bold text-lg">
+                Dr.{doctor?.profile.lastName}
+              </h1>
+              <p className="text-purple-100 text-sm">Tổng quan của bác sĩ</p>
             </div>
           </div>
         </div>
-
         {/* Navigation */}
         <nav className="mt-6 px-4">
           <div className="space-y-2">
-            <a
-              href="#dashboard"
-              className="sidebar-active flex items-center w-full px-4 py-3 text-white rounded-lg group"
+            <Link
+              to="/doctor"
+              className={`flex items-center w-full px-4 py-3 text-white rounded-lg group ${
+                isActive("/doctor") ? "sidebar-active" : ""
+              }`}
             >
               <div className="flex items-center">
-                <i className="fas fa-chart-line w-4 mr-3"></i>
-                Tổng quát
+                <MdSpaceDashboard className="w-6 mr-3 font-bold" />
+                Tổng quan
               </div>
-            </a>
+            </Link>
 
-            <a
-              href="#patients"
-              className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200"
+            <Link
+              to="/doctor/my-patients"
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isActive("/doctor/my-patients") ? "sidebar-active" : ""
+              }`}
             >
               <div className="flex items-center">
-                <i className="fas fa-users w-4 mr-3"></i>
+                <PiUsersThreeFill className="w-6 mr-3 font-bold" />
                 Bệnh nhân
               </div>
               <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
                 {patients?.length || 0}
               </span>
-            </a>
+            </Link>
 
-            <a
-              href="#doctors"
-              className="flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200"
+            <Link
+              to="/doctor/my-profile"
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isActive("/doctor/my-profile") ? "sidebar-active" : ""
+              }`}
             >
               <div className="flex items-center">
-                <i className="fas fa-user-md w-4 mr-3"></i>
-                Bác sĩ
+                <RiProfileFill className="w-6 mr-3 font-bold" />
+                Hồ sơ
               </div>
-            </a>
+            </Link>
 
-            <a
-              href="#appointments"
-              className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200"
+            <Link
+              to="/doctor/work-schedules"
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isActive("/doctor/work-schedules") ? "sidebar-active" : ""
+              }`}
             >
               <div className="flex items-center">
-                <i className="fas fa-calendar-alt w-4 mr-3"></i>
-                Lịch hẹn
+                <BsCalendarDateFill className="w-6 mr-3 font-bold" />
+                Lịch làm việc
+              </div>
+            </Link>
+
+            <Link
+              to="/doctor/my-feedback"
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isActive("/doctor/my-feedback") ? "sidebar-active" : ""
+              }`}
+            >
+              <div className="flex items-center">
+                <MdFeedback className="w-6 mr-3 font-bold" />
+                Đánh giá
               </div>
               <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
                 24
               </span>
-            </a>
+            </Link>
+
+            <Link
+              to="/doctor/my-posts"
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isActive("/doctor/my-posts") ? "sidebar-active" : ""
+              }`}
+            >
+              <div className="flex items-center">
+                <BsFillPostcardHeartFill className="w-6 mr-3 font-bold" />
+                Blogs của tôi
+              </div>
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+                24
+              </span>
+            </Link>
           </div>
         </nav>
-
         {/* Doctor Profile */}
         <div className="absolute bottom-6 left-4 right-4">
-          <div className="bg-purple-50 p-4 rounded-lg border border-purple-100">
-            <div className="flex items-center space-x-3">
-              <img
-                src="https://via.placeholder.com/40x40/667eea/ffffff?text=BS"
-                className="w-10 h-10 rounded-full object-cover"
-                alt="Doctor Avatar"
-              />
-              <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800 text-sm truncate">
-                  Bs.{" "}
-                  {doctor?.profile
-                    ? convertFullName(doctor.profile)
-                    : "Đang tải..."}
-                </p>
-                <p className="text-xs text-gray-600 truncate">
-                  Chuyên khoa Sản phụ khoa
-                </p>
-              </div>
+          <button
+            className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200"
+          >
+            <div className="flex items-center">
+              <BiLogOut className="w-6 mr-3 font-bold" />
+              Đăng xuất
             </div>
-          </div>
+          </button>
         </div>
       </div>
 
@@ -139,9 +171,11 @@ export default function DoctorDashboard() {
           <div className="px-8 py-6">
             <div className="flex items-center justify-between">
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Bảng theo dõi
+                </h1>
                 <p className="text-gray-600 mt-1">
-                  Chào mừng trở lại, Bác sĩ{" "}
+                  Chào mừng trở lại, Dr.{" "}
                   {doctor?.profile ? convertFullName(doctor.profile) : ""}
                 </p>
               </div>
@@ -157,164 +191,7 @@ export default function DoctorDashboard() {
 
         {/* Stats Cards */}
         <div className="p-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Tổng bệnh nhân
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {patients?.length || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-users text-blue-600 text-xl"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Đang điều trị
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">
-                    {patients?.filter((p) => p.treatmentName).length || 0}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-heartbeat text-green-600 text-xl"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Lịch hẹn hôm nay
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">8</p>
-                </div>
-                <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-calendar-check text-yellow-600 text-xl"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Thành công tháng này
-                  </p>
-                  <p className="text-2xl font-bold text-gray-900 mt-2">12</p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-trophy text-purple-600 text-xl"></i>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* Patients Table */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100">
-            <div className="p-6 border-b border-gray-200">
-              <div className="flex items-center justify-between">
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-800">
-                    Bệnh nhân của tôi
-                  </h3>
-                  <p className="text-sm text-gray-600 mt-1">
-                    Danh sách bệnh nhân đang theo dõi
-                  </p>
-                </div>
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200">
-                  Xem tất cả
-                </button>
-              </div>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Bệnh nhân
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Phác đồ điều trị
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Ngày bắt đầu
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Ngày kết thúc
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Trạng thái
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm">
-                      Số trứng
-                    </th>
-                    <th className="text-left py-4 px-6 font-medium text-gray-700 text-sm"></th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-200">
-                  {patients && patients.length > 0 ? (
-                    patients.map((patient) => (
-                      <tr
-                        className="hover:bg-gray-50 transition-colors duration-150"
-                        key={patient.patientId}
-                      >
-                        <td className="py-4 px-6">{patient.patientName}</td>
-                        <td className="py-4 px-6">{patient.treatmentName}</td>
-                        <td className="py-4 px-6 text-sm">
-                          {patient.startDate}
-                        </td>
-                        <td className="py-4 px-6 text-sm">
-                          {patient.endDate??"-"}
-                        </td>
-                        <td className="py-4 px-6 text-sm">
-                          {patient.status}
-                        </td>
-                        <td className="py-4 px-6 text-sm">
-                          {patient.totalEggs}
-                        </td>
-                        <td className="py-4 px-6">
-                          <Link
-                            to={`/follow-up/patient/progress?patientId=${patient.patientId}&orderId=${patient.orderId}`}
-                            className="inline-flex items-center text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors duration-200"
-                          >
-                            <i className="fas fa-eye mr-2"></i>
-                            Xem chi tiết
-                          </Link>
-                        </td>
-                      </tr>
-                    ))
-                  ) : (
-                    <tr>
-                      <td colSpan={5} className="py-12 text-center">
-                        <div className="flex flex-col items-center">
-                          <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-                            <i className="fas fa-users text-gray-400 text-2xl"></i>
-                          </div>
-                          <p className="text-gray-500 text-sm">
-                            Chưa có bệnh nhân nào
-                          </p>
-                          <p className="text-gray-400 text-xs mt-1">
-                            Danh sách bệnh nhân sẽ hiển thị ở đây
-                          </p>
-                        </div>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <Outlet />
         </div>
       </div>
     </div>

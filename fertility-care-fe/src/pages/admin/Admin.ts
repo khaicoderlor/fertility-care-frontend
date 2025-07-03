@@ -77,7 +77,7 @@ export interface ChartConfig {
   title: string;
   type: 'bar' | 'line' | 'pie' | 'doughnut';
   data: ChartData;
-  options?: any;
+  options?: Record<string, unknown>;
 }
 
 export interface ChartTab {

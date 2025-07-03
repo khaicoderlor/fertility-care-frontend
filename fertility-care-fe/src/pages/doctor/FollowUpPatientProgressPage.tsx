@@ -60,7 +60,7 @@ export default function FollowUpPatientProgressPage() {
   const [selectedStepDetail, setSelectedStepDetail] = useState<number | null>(
     null
   );
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const [newAppointment, setNewAppointment] =
     useState<CreateAppointmentDailyRequest>({
@@ -176,7 +176,24 @@ export default function FollowUpPatientProgressPage() {
 
   const handleMarkStatusStep = async (stepId: number, status: string) => {
     try {
-      await axiosInstance.put(`/steps/${stepId}?status=${status}`);
+      const response = await axiosInstance.put(
+        `/steps/${stepId}?status=${status}`
+      );
+      
+      const {statusCode} = response.data;
+      console.log(response.data.data);
+      console.log(statusCode)
+      if(statusCode == 1000) {
+        Swal.fire({
+          title: "Bước điều trị trước hoặc cuộc hẹn chưa hoàn thành!",
+          icon: "error"
+        });
+      } else if(statusCode == 1001) {
+         Swal.fire({
+          title: "Bệnh nhân chưa thanh toán cho bước này",
+          icon: "error"
+        });
+      }
 
       setOrderSteps((prev) => {
         const updatedSteps = [...prev];
@@ -210,7 +227,7 @@ export default function FollowUpPatientProgressPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}  
+      {/* Header */}
       <div className="bg-gray-50 p-6">
         <div className="rounded-md bg-green-500 px-4 py-2 w-28 text-center text-sm font-medium text-white hover:bg-green-600">
           <button onClick={() => navigate(-1)}>Quay lại</button>

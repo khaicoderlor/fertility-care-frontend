@@ -13,6 +13,10 @@ import CheckoutPage from "./pages/patient/CheckoutPage";
 import PatientDashboardPage from "./pages/patient/PatientDashboardPage";
 import ProfilePage from "./pages/patient/ProfilePage";
 import OrderInfoListWrapper from "./components/progress/OrderInfoListWrapper";
+import PaymentReturnPage from "./components/progress/PaymentReturnPage";
+import PaymentHistoriesTable from "./components/progress/PaymentHistoriesTable";
+import PatientTable from "./components/dashboard/doctor/PatientTable";
+import DoctorProfile from "./pages/doctor/DoctorProfile";
 
 function App() {
   return (
@@ -26,13 +30,24 @@ function App() {
           <Route
             path="/patient"
             element={
+              <PrivateRoute>
                 <PatientDashboardPage />
+              </PrivateRoute>
             }
           >
             <Route index element={<ProfilePage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="orders" element={<OrderInfoListWrapper />} />
+            <Route
+              path="payment-histories"
+              element={<PaymentHistoriesTable />}
+            />
           </Route>
+
+          <Route
+            path="/payment/payment-return"
+            element={<PaymentReturnPage />}
+          />
 
           <Route
             path="/order"
@@ -59,14 +74,6 @@ function App() {
             }
           />
           <Route
-            path="/doctor"
-            element={
-              <PrivateRoute>
-                <DoctorDashboard />
-              </PrivateRoute>
-            }
-          />
-          <Route
             path="/follow-up/patient/progress"
             element={
               <PrivateRoute>
@@ -74,63 +81,21 @@ function App() {
               </PrivateRoute>
             }
           />
+
+          <Route path="/doctor" element={
+            <PrivateRoute>
+              <DoctorDashboard />
+            </PrivateRoute>
+          }>
+            <Route index />
+            <Route path="my-patients" element={<PatientTable/>}/>
+            <Route path="my-profile" element={<DoctorProfile/>}/>
+            <Route path="work-schedules" element/>
+          </Route>
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>
   );
 }
-
-// function App() {
-//   return (
-//     <>
-//       <AuthProvider>
-//         <Routes>
-//           <Route path="/" element={<HomePage />} />
-//           <Route
-//             path="/order"
-//             element={
-//               <PrivateRoute>
-//                 <BookingPage />
-//               </PrivateRoute>
-//             }
-//           />
-//           <Route path="/login" element={<LoginPage />} />
-//           <Route
-//             path="/patient"
-//             element={
-//               <PrivateRoute>
-//                 <PatientProgressPage />
-//               </PrivateRoute>
-//             }
-//           />
-//           <Route
-//             path="/progress"
-//             element={
-//               <PrivateRoute>
-//                 <ProgressPage />
-//               </PrivateRoute>
-//             }
-//           />
-//           <Route path="/patient/progress/checkout" element={
-//             <PrivateRoute>
-//               <CheckoutPage/>
-//             </PrivateRoute>
-//           }/>
-//         </Routes>
-//       </AuthProvider>
-
-//       <CompetenceAuthProvider >
-//         <Routes>
-//           <Route path="/competence/login" element={<RoleLoginPage/>}/>
-//           <Route path="/doctor" element={<DoctorDashboard />} />
-//           <Route
-//             path="/follow-up/patient/progress"
-//             element={<FollowUpPatientProgressPage />}
-//           />
-//         </Routes>
-//       </CompetenceAuthProvider>
-//     </>
-//   );
-// }
 
 export default App;

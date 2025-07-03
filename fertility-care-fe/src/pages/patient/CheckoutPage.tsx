@@ -18,7 +18,7 @@ export default function CheckoutPage() {
   const [isProcessing, setIsProcessing] = useState(false);
 
   if (!step || !order) {
-    navigate("/patient/progress", { replace: true });
+    navigate("/patient", { replace: true });
     return null;
   }
 
@@ -32,6 +32,7 @@ export default function CheckoutPage() {
       paymentMethod: "Momo",
       treatmentName: order.treatmentService?.name,
       orderInfo: `Thanh_toan_cho_dich_vu_${order.treatmentService?.name}`,
+      extraData: order.id
     };
 
     try {

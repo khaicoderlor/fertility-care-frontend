@@ -24,7 +24,8 @@ interface SideBarProps {
   patient: Patient | null;
 }
 
-export function SideBarPatient({ patient }: SideBarProps) {
+
+export default function SideBarPatient({ patient }: SideBarProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const location = useLocation();
   const { pathname } = location;
@@ -148,7 +149,7 @@ export function SideBarPatient({ patient }: SideBarProps) {
               {!sidebarCollapsed && <span>Đơn thuốc</span>}
             </Link>
             <Link
-              to="/patient/payment/histories"
+              to="/patient/payment-histories"
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
                 isActive("/patient/payment/histories")
                   ? "text-pink-600 bg-pink-50"

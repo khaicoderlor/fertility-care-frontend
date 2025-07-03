@@ -119,7 +119,7 @@ const mockAppointments: Appointment[] = [
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("dashboard");
 
-  const handleEdit = (item: any) => {
+  const handleEdit = (item: Patient | Doctor | Appointment) => {
     console.log("Edit:", item);
   };
 

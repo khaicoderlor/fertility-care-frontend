@@ -1,11 +1,11 @@
 import { Bars3Icon, HeartIcon } from "@heroicons/react/24/solid";
-import { SideBarPatient } from "../../components/progress/SideBarPatient";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type { Patient } from "../../models/Patient";
 import { useAuth } from "../../contexts/AuthContext";
 import { Outlet } from "react-router-dom";
+import SideBarPatient from "../../components/progress/SideBarPatient";
 
 export default function PatientDashboardPage() {
   const { patientId } = useAuth();

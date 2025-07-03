@@ -5,7 +5,7 @@ body {
 }
 
 .gradient-bg {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #252528, #5f9de4 100%);
 }
 
 .card-hover {
@@ -18,7 +18,7 @@ body {
 }
 
 .sidebar-active {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background: linear-gradient(90deg, #252528, #5f9de4);
 }
 
 .animate-fade-in {
@@ -41,7 +41,7 @@ body {
 }
 
 .iui-gradient {
-  background: linear-gradient(135deg, #8b5cf6 0%, #a855f7 100%);
+  background: linear-gradient(135deg, #ee4caa 0%, #f75555 100%);
 }
 
 .ivf-gradient {
