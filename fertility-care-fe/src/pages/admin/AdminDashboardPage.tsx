@@ -1,12 +1,17 @@
 import React, { useState } from "react";
-import Sidebar from "./Sidebar";
-import StatsCard from "./StatsCard";
-import PatientTable from "./PatientTable";
-import DoctorTable from "./DoctorTable";
-import AppointmentTable from "./AppointmentTable";
-import type { StatCard, Patient, Doctor, Appointment } from "./Admin";
-import SimpleChart from "./SimpleChart";
-import RecentPatients from "./RecentPatients";
+import Sidebar from "../../components/dashboard/admin/Sidebar";
+import StatsCard from "../../components/dashboard/admin/StatsCard";
+import PatientTable from "../../components/dashboard/admin/PatientTable";
+import DoctorTable from "../../components/dashboard/admin/DoctorTable";
+import AppointmentTable from "../../components/dashboard/admin/AppointmentTable";
+import type {
+  StatCard,
+  Patient,
+  Doctor,
+  Appointment,
+} from "../../models/Admin";
+import SimpleChart from "../../components/dashboard/admin/SimpleChart";
+import RecentPatients from "../../components/dashboard/admin/RecentPatients";
 import "../../assets/css/StyleAdminDashboard.css";
 
 // Mock data

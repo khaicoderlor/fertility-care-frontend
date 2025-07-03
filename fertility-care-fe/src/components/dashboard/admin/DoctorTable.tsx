@@ -1,5 +1,5 @@
 import React from "react";
-import type { DoctorTableProps } from "./Admin";
+import type { DoctorTableProps } from "../../../models/Admin";
 
 const DoctorTable: React.FC<DoctorTableProps> = ({
   doctors,

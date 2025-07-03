@@ -1,24 +1,25 @@
 import React from "react";
-import type { PatientTableProps } from "./Admin";
+import type { AppointmentTableProps } from "../../../models/Admin";
 
-const PatientTable: React.FC<PatientTableProps> = ({
-  patients,
+const AppointmentTable: React.FC<AppointmentTableProps> = ({
+  appointments,
   onEdit,
   onDelete,
+  onStatusChange,
 }) => {
   const getStatusBadge = (status: string) => {
     const statusClasses = {
-      active: "bg-green-100 text-green-800",
-      inactive: "bg-gray-100 text-gray-800",
-      treatment: "bg-blue-100 text-blue-800",
-      completed: "bg-purple-100 text-purple-800",
+      scheduled: "bg-blue-100 text-blue-800",
+      completed: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
+      "no-show": "bg-yellow-100 text-yellow-800",
     };
 
     const statusLabels = {
-      active: "Hoạt động",
-      inactive: "Không hoạt động",
-      treatment: "Đang điều trị",
+      scheduled: "Đã lên lịch",
       completed: "Hoàn thành",
+      cancelled: "Đã hủy",
+      "no-show": "Không đến",
     };
 
     return (
@@ -32,12 +33,36 @@ const PatientTable: React.FC<PatientTableProps> = ({
     );
   };
 
+  const getTypeBadge = (type: string) => {
+    const typeClasses = {
+      IUI: "bg-purple-100 text-purple-800",
+      IVF: "bg-pink-100 text-pink-800",
+      consultation: "bg-gray-100 text-gray-800",
+    };
+
+    return (
+      <span
+        className={`px-2 py-1 rounded-full text-xs font-medium ${
+          typeClasses[type as keyof typeof typeClasses]
+        }`}
+      >
+        {type}
+      </span>
+    );
+  };
+
   return (
-    <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
       <div className="p-6 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-800">
-          Danh sách bệnh nhân
-        </h3>
+        <div className="flex justify-between items-center">
+          <h3 className="text-lg font-semibold text-gray-800">
+            Danh sách lịch hẹn
+          </h3>
+          <button className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+            <i className="fas fa-plus mr-2"></i>
+            Thêm lịch hẹn
+          </button>
+        </div>
       </div>
 
       <div className="overflow-x-auto">
@@ -48,16 +73,16 @@ const PatientTable: React.FC<PatientTableProps> = ({
                 Bệnh nhân
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Liên hệ
+                Bác sĩ
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Tuổi
+                Ngày & Giờ
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Loại
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Trạng thái
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Điều trị
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Thao tác
@@ -65,49 +90,45 @@ const PatientTable: React.FC<PatientTableProps> = ({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {patients.map((patient) => (
-              <tr key={patient.id} className="hover:bg-gray-50">
+            {appointments.map((appointment) => (
+              <tr key={appointment.id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="flex items-center">
-                    <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                      <span className="text-purple-600 font-medium">
-                        {patient.name.charAt(0)}
-                      </span>
-                    </div>
-                    <div className="ml-4">
-                      <div className="text-sm font-medium text-gray-900">
-                        {patient.name}
-                      </div>
-                      <div className="text-sm text-gray-500">
-                        ID: {patient.id}
-                      </div>
-                    </div>
+                  <div className="text-sm font-medium text-gray-900">
+                    {appointment.patientName}
                   </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  <div className="text-sm text-gray-900">{patient.email}</div>
-                  <div className="text-sm text-gray-500">{patient.phone}</div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {patient.age}
+                  <div className="text-sm text-gray-900">
+                    {appointment.doctorName}
+                  </div>
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap">
-                  {getStatusBadge(patient.status)}
+                  <div className="text-sm text-gray-900">
+                    {appointment.date}
+                  </div>
+                  <div className="text-sm text-gray-500">
+                    {appointment.time}
+                  </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                  {patient.treatment || "Chưa có"}
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {getTypeBadge(appointment.type)}
+                </td>
+                <td className="px-6 py-4 whitespace-nowrap">
+                  {getStatusBadge(appointment.status)}
                 </td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                   <div className="flex space-x-2">
                     <button
-                      onClick={() => onEdit?.(patient)}
+                      onClick={() => onEdit?.(appointment)}
                       className="text-indigo-600 hover:text-indigo-900"
+                      title="Chỉnh sửa"
                     >
                       <i className="fas fa-edit"></i>
                     </button>
                     <button
-                      onClick={() => onDelete?.(patient.id)}
+                      onClick={() => onDelete?.(appointment.id)}
                       className="text-red-600 hover:text-red-900"
+                      title="Xóa"
                     >
                       <i className="fas fa-trash"></i>
                     </button>
@@ -122,4 +143,4 @@ const PatientTable: React.FC<PatientTableProps> = ({
   );
 };
 
-export default PatientTable;
+export default AppointmentTable;

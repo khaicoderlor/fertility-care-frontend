@@ -1,5 +1,5 @@
 import React from "react";
-import type { SidebarProps } from "./Admin";
+import type { SidebarProps } from "../../../models/Admin";
 
 const menuItems = [
   { id: "dashboard", label: "Dashboard", icon: "fas fa-chart-line" },

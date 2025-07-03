@@ -1,5 +1,5 @@
 import React from "react";
-import type { StatsCardProps } from "./Admin";
+import type { StatsCardProps } from "../../../models/Admin";
 
 const StatsCard: React.FC<StatsCardProps> = ({ stat }) => {
   return (
