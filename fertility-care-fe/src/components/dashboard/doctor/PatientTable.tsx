@@ -108,7 +108,7 @@ export default function PatientTable() {
                     {patient.endDate ?? "-"}
                   </td>
                   <td className="py-4 px-6 text-sm">{patient.status}</td>
-                  <td className="py-4 px-6 text-sm">{patient.isFrozen}</td>
+                  <td className="py-4 px-6 text-sm">{patient.isFrozen ? "Có" : "Không"}</td>
                   <td className="py-4 px-6 text-sm">{patient.totalEggs}</td>
                   <td className="py-4 px-6 text-sm">{patient.totalEmbryos}</td>
                   <td className="py-4 px-6">
