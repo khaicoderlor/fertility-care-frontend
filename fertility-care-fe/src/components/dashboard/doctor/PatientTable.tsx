@@ -76,6 +76,8 @@ export default function PatientTable() {
             <tr>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Bệnh nhân</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Phác đồ</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Email</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">Số ĐT</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Bắt đầu</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Kết thúc</th>
               <th className="text-left py-3 px-4 font-medium text-gray-700">Trạng thái</th>
@@ -91,6 +93,8 @@ export default function PatientTable() {
                 <tr key={patient.patientId} className="hover:bg-gray-50">
                   <td className="py-3 px-4 font-medium text-gray-900">{patient.patientName}</td>
                   <td className="py-3 px-4">{patient.treatmentName}</td>
+                  <td className="py-3 px-4">{patient.email}</td>
+                  <td className="py-3 px-4">{patient.phone}</td>
                   <td className="py-3 px-4">{patient.startDate}</td>
                   <td className="py-3 px-4">{patient.endDate ?? "-"}</td>
                   <td className="py-3 px-4">

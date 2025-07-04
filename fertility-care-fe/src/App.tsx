@@ -20,6 +20,7 @@ import DoctorProfile from "./pages/doctor/DoctorProfile";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback";
 import DoctorPost from "./pages/doctor/DoctorPost";
 import DoctorSchedulePage from "./pages/doctor/DoctorSchedulePage";
+import DoctorStatisticChartPage from "./pages/doctor/DoctorStatisticChart";
 
 function App() {
   return (
@@ -90,7 +91,7 @@ function App() {
               <DoctorDashboard />
             </PrivateRoute>
           }>
-            <Route index element={<PatientTable/>}/> 
+            <Route index element={<DoctorStatisticChartPage/>}/> 
             <Route path="my-patients" element={<PatientTable/>}/>
             <Route path="my-profile" element={<DoctorProfile/>}/>
             <Route path="work-schedules" element={<DoctorSchedulePage/>}/>
