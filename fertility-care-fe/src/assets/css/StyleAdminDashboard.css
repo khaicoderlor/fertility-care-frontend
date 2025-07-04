@@ -1,0 +1,107 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Base Styles */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Custom Utility Classes */
+.gradient-bg {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.card-hover {
+  transition: all 0.3s ease;
+}
+
+.card-hover:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+.sidebar-active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.status-success {
+  background: linear-gradient(45deg, #10b981, #059669);
+}
+
+.status-pending {
+  background: linear-gradient(45deg, #f59e0b, #d97706);
+}
+
+.chart-tab {
+  background: #f3f4f6;
+  color: #6b7280;
+}
+
+.chart-tab:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.chart-tab-active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: white;
+}
+
+.settings-tab {
+  background: #f9fafb;
+  color: #6b7280;
+}
+
+.settings-tab:hover {
+  background: #f3f4f6;
+  color: #374151;
+}
+
+.settings-tab-active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: white;
+}
+
+/* Custom scrollbar */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 10px;
+}
+
+.scrollbar-thin::-webkit-scrollbar-thumb:hover {
+  background: #a1a1a1;
+}
+
+/* Firefox scrollbar */
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
+}

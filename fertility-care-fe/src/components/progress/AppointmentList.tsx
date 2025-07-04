@@ -11,7 +11,7 @@ import {
   APPOINTMENT_COMPLETED,
   APPOINTMENT_CANCELLED,
 } from "../../constants/AppointmentStatus";
-import { convertSlotTime } from "../../functions/CommonFunction";
+import { convertSlotTime, formatCurrency } from '../../functions/CommonFunction';
 
 interface AppointmentListProps {
   appointments: Appointment[];
@@ -128,7 +128,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                       </strong>
                     </div>
                     <p className="text-gray-700 text-sm">
-                      {appointment.extraFee}
+                      {formatCurrency(appointment.extraFee??0)}
                       {/* giá tiền thêm của appointment */}
                     </p>
                   </div>

@@ -98,6 +98,7 @@ export default function DoctorDashboard() {
 
             <Link
               to="/doctor/my-profile"
+              state={doctor}
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
                 isActive("/doctor/my-profile") ? "sidebar-active" : ""
               }`}
@@ -110,6 +111,7 @@ export default function DoctorDashboard() {
 
             <Link
               to="/doctor/work-schedules"
+              state={doctor}
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
                 isActive("/doctor/work-schedules") ? "sidebar-active" : ""
               }`}

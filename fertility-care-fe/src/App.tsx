@@ -17,84 +17,91 @@ import PaymentReturnPage from "./components/progress/PaymentReturnPage";
 import PaymentHistoriesTable from "./components/progress/PaymentHistoriesTable";
 import PatientTable from "./components/dashboard/doctor/PatientTable";
 import DoctorProfile from "./pages/doctor/DoctorProfile";
+import DoctorSchedule from "./pages/doctor/DoctorSchedulePage";
+import DoctorFeedback from "./pages/doctor/DoctorFeedback";
+import DoctorPost from "./pages/doctor/DoctorPost";
+import AdminDashboard from "./pages/admin/AdminDashboardPage";
 
 function App() {
   return (
-    <AuthProvider>
-      <CompetenceAuthProvider>
-        <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/competence/login" element={<RoleLoginPage />} />
+    // <AuthProvider>
+    //   <CompetenceAuthProvider>
+    //     <Routes>
+    //       <Route path="/" element={<HomePage />} />
+    //       <Route path="/login" element={<LoginPage />} />
+    //       <Route path="/competence/login" element={<RoleLoginPage />} />
 
-          <Route
-            path="/patient"
-            element={
-              <PrivateRoute>
-                <PatientDashboardPage />
-              </PrivateRoute>
-            }
-          >
-            <Route index element={<ProfilePage />} />
-            <Route path="profile" element={<ProfilePage />} />
-            <Route path="orders" element={<OrderInfoListWrapper />} />
-            <Route
-              path="payment-histories"
-              element={<PaymentHistoriesTable />}
-            />
-          </Route>
+    //       <Route
+    //         path="/patient"
+    //         element={
+    //           <PrivateRoute>
+    //             <PatientDashboardPage />
+    //           </PrivateRoute>
+    //         }
+    //       >
+    //         <Route index element={<ProfilePage />} />
+    //         <Route path="profile" element={<ProfilePage />} />
+    //         <Route path="orders" element={<OrderInfoListWrapper />} />
+    //         <Route
+    //           path="payment-histories"
+    //           element={<PaymentHistoriesTable />}
+    //         />
+    //       </Route>
 
-          <Route
-            path="/payment/payment-return"
-            element={<PaymentReturnPage />}
-          />
+    //       <Route
+    //         path="/payment/payment-return"
+    //         element={<PaymentReturnPage />}
+    //       />
 
-          <Route
-            path="/order"
-            element={
-              <PrivateRoute>
-                <BookingPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/patient/orders/progress"
-            element={
-              <PrivateRoute>
-                <ProgressPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/patient/progress/checkout"
-            element={
-              <PrivateRoute>
-                <CheckoutPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/follow-up/patient/progress"
-            element={
-              <PrivateRoute>
-                <FollowUpPatientProgressPage />
-              </PrivateRoute>
-            }
-          />
+    //       <Route
+    //         path="/order"
+    //         element={
+    //           <PrivateRoute>
+    //             <BookingPage />
+    //           </PrivateRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/patient/orders/progress"
+    //         element={
+    //           <PrivateRoute>
+    //             <ProgressPage />
+    //           </PrivateRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/patient/progress/checkout"
+    //         element={
+    //           <PrivateRoute>
+    //             <CheckoutPage />
+    //           </PrivateRoute>
+    //         }
+    //       />
+    //       <Route
+    //         path="/follow-up/patient/progress"
+    //         element={
+    //           <PrivateRoute>
+    //             <FollowUpPatientProgressPage />
+    //           </PrivateRoute>
+    //         }
+    //       />
 
-          <Route path="/doctor" element={
-            <PrivateRoute>
-              <DoctorDashboard />
-            </PrivateRoute>
-          }>
-            <Route index />
-            <Route path="my-patients" element={<PatientTable/>}/>
-            <Route path="my-profile" element={<DoctorProfile/>}/>
-            <Route path="work-schedules" element/>
-          </Route>
-        </Routes>
-      </CompetenceAuthProvider>
-    </AuthProvider>
+    //       <Route path="/doctor" element={
+    //         <PrivateRoute>
+    //           <DoctorDashboard />
+    //         </PrivateRoute>
+    //       }>
+    //         <Route index /> 
+    //         <Route path="my-patients" element={<PatientTable/>}/>
+    //         <Route path="my-profile" element={<DoctorProfile/>}/>
+    //         <Route path="work-schedules" element={<DoctorSchedule/>}/>
+    //         <Route path="my-feedback" element={<DoctorFeedback/>}/>
+    //         <Route path="my-posts" element={<DoctorPost/>}/>
+    //       </Route>
+    //     </Routes>
+    //   </CompetenceAuthProvider>
+    // </AuthProvider>
+    <DoctorSchedule/>
   );
 }
 
