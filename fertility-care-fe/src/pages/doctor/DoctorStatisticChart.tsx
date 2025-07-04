@@ -7,12 +7,12 @@ import {
   StarIcon,
   CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
-import StatCard from "./StatCard";
-import FeedbackChart from "./FeedbackChart";
-import PatientAppointmentChart from "./PatientAppointmentChart";
-import PatientStatusChart from "./PatientStatusChart";
-import RecentPatientsTable from "./RecentPatientsTable";
-import QuickActions from "./QuickActions";
+import StatCard from "../../components/dashboard/doctor/StatCard";
+import FeedbackChart from "../../components/dashboard/doctor/FeedbackChart";
+import PatientAppointmentChart from "../../components/dashboard/doctor/PatientAppointmentChart";
+import PatientStatusChart from "../../components/dashboard/doctor/PatientStatusChart";
+import RecentPatientsTable from "../../components/dashboard/doctor/RecentPatientsTable";
+import QuickActions from "../../components/dashboard/doctor/QuickActions";
 
 // Mock data - replace with actual API calls
 const monthlyFeedbackData = [
