@@ -46,7 +46,7 @@ export default function DoctorDashboard() {
     fetchPatients(doctorId ?? "");
   }, [doctorId]);
 
-  const isActive = (path: string) => pathname.startsWith(path);
+  const isExactActive = (path: string) => pathname === path;
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -60,7 +60,7 @@ export default function DoctorDashboard() {
             </div>
             <div>
               <h1 className="text-white font-bold text-lg">
-                Dr.{doctor?.profile.lastName}
+                BS. {doctor?.profile.lastName}
               </h1>
               <p className="text-purple-100 text-sm">Tổng quan của bác sĩ</p>
             </div>
@@ -71,8 +71,8 @@ export default function DoctorDashboard() {
           <div className="space-y-2">
             <Link
               to="/doctor"
-              className={`flex items-center w-full px-4 py-3 text-white rounded-lg group ${
-                isActive("/doctor") ? "sidebar-active" : ""
+              className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
+                isExactActive("/doctor") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
@@ -84,14 +84,14 @@ export default function DoctorDashboard() {
             <Link
               to="/doctor/my-patients"
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
-                isActive("/doctor/my-patients") ? "sidebar-active" : ""
+                isExactActive("/doctor/my-patients") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
                 <PiUsersThreeFill className="w-6 mr-3 font-bold" />
                 Bệnh nhân
               </div>
-              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full">
+              <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full ml-3">
                 {patients?.length || 0}
               </span>
             </Link>
@@ -100,7 +100,7 @@ export default function DoctorDashboard() {
               to="/doctor/my-profile"
               state={doctor}
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
-                isActive("/doctor/my-profile") ? "sidebar-active" : ""
+                isExactActive("/doctor/my-profile") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
@@ -113,7 +113,7 @@ export default function DoctorDashboard() {
               to="/doctor/work-schedules"
               state={doctor}
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
-                isActive("/doctor/work-schedules") ? "sidebar-active" : ""
+                isExactActive("/doctor/work-schedules") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
@@ -125,14 +125,14 @@ export default function DoctorDashboard() {
             <Link
               to="/doctor/my-feedback"
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
-                isActive("/doctor/my-feedback") ? "sidebar-active" : ""
+                isExactActive("/doctor/my-feedback") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
                 <MdFeedback className="w-6 mr-3 font-bold" />
                 Đánh giá
               </div>
-              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full ml-3">
                 24
               </span>
             </Link>
@@ -140,14 +140,14 @@ export default function DoctorDashboard() {
             <Link
               to="/doctor/my-posts"
               className={`flex items-center w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200 ${
-                isActive("/doctor/my-posts") ? "sidebar-active" : ""
+                isExactActive("/doctor/my-posts") ? "sidebar-active" : ""
               }`}
             >
               <div className="flex items-center">
                 <BsFillPostcardHeartFill className="w-6 mr-3 font-bold" />
                 Blogs của tôi
               </div>
-              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full">
+              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full ml-3">
                 24
               </span>
             </Link>
@@ -155,9 +155,7 @@ export default function DoctorDashboard() {
         </nav>
         {/* Doctor Profile */}
         <div className="absolute bottom-6 left-4 right-4">
-          <button
-            className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200"
-          >
+          <button className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200">
             <div className="flex items-center">
               <BiLogOut className="w-6 mr-3 font-bold" />
               Đăng xuất
@@ -176,10 +174,10 @@ export default function DoctorDashboard() {
                 <h1 className="text-2xl font-bold text-gray-900">
                   Bảng theo dõi
                 </h1>
-                <p className="text-gray-600 mt-1">
-                  Chào mừng trở lại, Dr.{" "}
-                  {doctor?.profile ? convertFullName(doctor.profile) : ""}
-                </p>
+                <span className="text-gray-600 mt-1">
+                  Chào mừng trở lại,  BS. {" "}
+                  <strong className="text-blue-800">{doctor?.profile ? convertFullName(doctor.profile) : ""}</strong>
+                </span>
               </div>
               <div className="text-right">
                 <p className="text-sm text-gray-500">Hôm nay</p>

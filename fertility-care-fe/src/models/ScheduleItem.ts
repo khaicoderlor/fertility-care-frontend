@@ -1,9 +1,11 @@
 export interface ScheduleItem {
-  date: string;
+  scheduleId: number
+  workDate: string;
   startTime: string;
   endTime: string;
   doctorId: string;
-  doctorName: string;
+  firstName: string;
+  middleName: string;
+  lastName: string;
   shiftType: 'morning' | 'afternoon' | 'evening';
-  note?: string;
 }

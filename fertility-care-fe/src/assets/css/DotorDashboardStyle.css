@@ -18,6 +18,7 @@ body {
 }
 
 .sidebar-active {
+  color: white;
   background: linear-gradient(90deg, #252528, #5f9de4);
 }
 

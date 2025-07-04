@@ -176,52 +176,75 @@ export default function FollowUpPatientProgressPage() {
 
   const handleMarkStatusStep = async (stepId: number, status: string) => {
     try {
-      const response = await axiosInstance.put(
-        `/steps/${stepId}?status=${status}`
-      );
-      
-      const {statusCode} = response.data;
-      console.log(response.data.data);
-      console.log(statusCode)
-      if(statusCode == 1000) {
+      const response = await axiosInstance.put(`/steps/${stepId}`, null, {
+        params: { status },
+      });
+
+      const { statusCode, data } = response.data;
+
+      if (statusCode === 1000) {
         Swal.fire({
-          title: "Bước điều trị trước hoặc cuộc hẹn chưa hoàn thành!",
-          icon: "error"
+          title: "Bước điều trị trước chưa hoàn thành!",
+          icon: "error",
         });
-      } else if(statusCode == 1001) {
-         Swal.fire({
+        return;
+      } else if (statusCode === 1002) {
+        Swal.fire({
+          title: "Các cuộc hẹn trong bước này chưa được hoàn thành!",
+          icon: "error",
+        });
+        return;
+      } else if (statusCode === 1001) {
+        Swal.fire({
           title: "Bệnh nhân chưa thanh toán cho bước này",
-          icon: "error"
+          icon: "error",
         });
+        return;
       }
+
+      const stepDto = data.step;
+      const nextStatus = data.nextStepStatus;
 
       setOrderSteps((prev) => {
         const updatedSteps = [...prev];
-
         const currentIndex = updatedSteps.findIndex(
           (step) => step.id === stepId
         );
         if (currentIndex === -1) return prev;
+
         updatedSteps[currentIndex] = {
           ...updatedSteps[currentIndex],
-          status: status,
+          status: stepDto.status,
+          endDate: stepDto.endDate,
         };
 
         if (
-          status === STEP_COMPLETED &&
+          stepDto.status === STEP_COMPLETED &&
           currentIndex + 1 < updatedSteps.length &&
           updatedSteps[currentIndex + 1].status === STEP_PLANNED
         ) {
           updatedSteps[currentIndex + 1] = {
             ...updatedSteps[currentIndex + 1],
             status: STEP_PROGRESS,
+            startDate:
+              nextStatus === STEP_PROGRESS ? stepDto.endDate : undefined,
           };
         }
 
         return updatedSteps;
       });
+
+      Swal.fire({
+        title: "Cập nhật thành công!",
+        icon: "success",
+      });
     } catch (error) {
       console.error("Lỗi khi cập nhật bước:", error);
+      Swal.fire({
+        title: "Có lỗi xảy ra!",
+        text: "Không thể cập nhật bước điều trị",
+        icon: "error",
+      });
     }
   };
 

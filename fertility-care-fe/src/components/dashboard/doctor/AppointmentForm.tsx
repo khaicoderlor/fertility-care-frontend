@@ -26,6 +26,14 @@ export default function AppointmentForm({
   onCancel,
   handleSubmitNewAppointment,
 }: AppointmentFormProps) {
+  const formatCurrencyVND = (value: number): string => {
+    return value.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+      minimumFractionDigits: 0,
+    });
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black-50 bg-opacity-10 p-4">
       <div className="w-full max-w-md rounded-lg bg-white shadow-xl">
@@ -105,14 +113,21 @@ export default function AppointmentForm({
                 Chi phí thêm (nếu có)
               </label>
               <input
-                type="number"
-                value={newAppointment.extraFee}
-                onChange={(e) =>
+                type="text"
+                value={
+                  newAppointment.extraFee === 0
+                    ? ""
+                    : formatCurrencyVND(newAppointment.extraFee)
+                }
+                onChange={(e) => {
+                  const raw = e.target.value.replace(/[^\d]/g, "");
+                  const number = parseInt(raw || "0", 10);
+
                   setNewAppointment({
                     ...newAppointment,
-                    extraFee: Number(e.target.value),
-                  })
-                }
+                    extraFee: number,
+                  });
+                }}
                 className="w-full rounded-md border border-gray-300 p-2 text-sm"
               />
             </div>

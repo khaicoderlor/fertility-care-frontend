@@ -150,7 +150,7 @@ export default function OrderStepCard({
                     <div className="mt-2 flex items-center space-x-2">
                       <CreditCardIcon className="h-4 w-4 text-gray-500" />
                       <span className="text-sm font-medium">
-                        {formatCurrency(step.treatmentStep.amount?? 0)}
+                        {formatCurrency(step.totalAmount?? 0)}
                       </span>
                       {step.paymentStatus === PAYMENT_COMPLETED ? (
                         <span className="rounded-full bg-green-100 px-2 py-0.5 text-xs text-green-800">
