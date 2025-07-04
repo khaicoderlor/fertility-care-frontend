@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blog Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/heroicons@2.0.16/20/solid/index.js"></script>
+  </head>
+  <body class="bg-gray-100 font-sans">
+    <div class="flex min-h-screen">
+      <!-- Sidebar -->
+      <aside class="w-64 bg-white border-r shadow-sm p-4">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Blog Sidebar</h2>
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded hover:bg-gray-200">
+              <svg class="w-5 h-5 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c1.104 0 2-.896 2-2s-.896-2-2-2-2 .896-2 2 .896 2 2 2zm0 2c-2.21 0-4 1.79-4 4v1h8v-1c0-2.21-1.79-4-4-4z" />
+              </svg>
+              Tác giả 1
+            </a>
+          </li>
+          <li>
+            <a href="#" class="flex items-center p-2 text-gray-700 rounded hover:bg-gray-200">
+              <svg class="w-5 h-5 mr-2 text-gray-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-4H5v4H3v-6h2v2h4v-2h2v6H9zm9-3.5a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z" />
+              </svg>
+              Tác giả 2
+            </a>
+          </li>
+        </ul>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="flex-1 p-6 overflow-y-auto">
+        <div class="flex items-center justify-between mb-6">
+          <h1 class="text-2xl font-bold text-gray-800">Quản lý Blog</h1>
+          <button class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded flex items-center">
+            <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+            </svg>
+            Thêm Blog
+          </button>
+        </div>
+
+        <!-- Blog List -->
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          <div class="bg-white p-4 rounded-lg shadow">
+            <img src="https://via.placeholder.com/400x200" alt="Blog Image" class="rounded mb-3" />
+            <h2 class="text-lg font-semibold text-gray-800">Blog Tiêu đề</h2>
+            <p class="text-sm text-gray-600 mb-2">by Tác giả A</p>
+            <p class="text-gray-700 text-sm mb-4">Nội dung ngắn gọn giới thiệu về blog...</p>
+            <div class="flex justify-between text-sm text-gray-500">
+              <span>Trạng thái: <span class="text-yellow-600">Đang xử lý</span></span>
+              <span>Ngày tạo: 04/07/2025</span>
+            </div>
+          </div>
+          <!-- Thêm nhiều blog cards ở đây tương tự -->
+        </div>
+      </main>
+    </div>
+  </body>
+</html>

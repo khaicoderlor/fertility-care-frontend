@@ -21,6 +21,7 @@ import DoctorSchedule from "./pages/doctor/DoctorSchedulePage";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback";
 import DoctorPost from "./pages/doctor/DoctorPost";
 import AdminDashboard from "./pages/admin/AdminDashboardPage";
+import BlogManagement from "./pages/manager/BlogManagement";
 
 function App() {
   return (
@@ -101,7 +102,7 @@ function App() {
     //     </Routes>
     //   </CompetenceAuthProvider>
     // </AuthProvider>
-    <DoctorSchedule/>
+    <BlogManagement/>
   );
 }
 
