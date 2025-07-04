@@ -92,7 +92,7 @@ export default function DoctorProfile() {
       formData.append("dateOfBirth", profile.dateOfBirth);
       formData.append("address", profile.address);
 
-      await axiosInstance.put("/doctors", formData);
+      await axiosInstance.put(`/doctors/${doctor.id}`, formData);
       Swal.fire({
         title: "Cập nhật thành công",
         icon: "success"
