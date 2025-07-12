@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import axiosSocketInstance from "../apis/AxiosSocketInstance"
 
-export const useUserStats = (userId: string) => {
+export const useUserStatus = (userId: string) => {
     const [online, setOnline] = useState<boolean>(false)
 
     useEffect(() => {
