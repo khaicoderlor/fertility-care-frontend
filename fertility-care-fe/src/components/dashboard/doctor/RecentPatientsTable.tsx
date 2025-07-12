@@ -1,28 +1,47 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import {
+  ORDER_CLOSED,
+  ORDER_COMPLETED,
+  ORDER_PROGRESS,
+} from "../../../constants/OrderStatus";
 
-interface Patient {
+export interface RecentPatient {
   id: number;
   name: string;
-  age: number;
-  condition: string;
+  age: string;
+  treatmentName: string;
   lastVisit: string;
   status: string;
 }
 
 interface RecentPatientsTableProps {
-  patients: Patient[];
+  patients: RecentPatient[];
 }
+
+export const getStatusOrder = (status: string) => {
+    switch (status) {
+      case ORDER_COMPLETED:
+        return "Hoàn thành";
+      case ORDER_PROGRESS:
+        return "Đang tiến hành";
+      case ORDER_CLOSED:
+        return "Đã đóng";
+      default:
+        return "Bị hủy";
+    }
+  };
 
 const RecentPatientsTable: React.FC<RecentPatientsTableProps> = ({
   patients,
 }) => {
   const getStatusStyle = (status: string) => {
     switch (status) {
-      case "Đã khỏi":
+      case ORDER_COMPLETED:
         return "bg-green-100 text-green-800";
-      case "Đang điều trị":
+      case ORDER_PROGRESS:
         return "bg-blue-100 text-blue-800";
-      case "Tái khám":
+      case ORDER_CLOSED:
         return "bg-yellow-100 text-yellow-800";
       default:
         return "bg-red-100 text-red-800";
@@ -35,9 +54,12 @@ const RecentPatientsTable: React.FC<RecentPatientsTableProps> = ({
         <h3 className="text-lg font-semibold text-gray-900">
           Bệnh nhân gần đây
         </h3>
-        <button className="text-blue-600 hover:text-blue-700 text-sm font-medium">
+        <Link
+          to="/doctor/patients"
+          className="text-blue-600 hover:text-blue-700 text-sm font-medium"
+        >
           Xem tất cả
-        </button>
+        </Link>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full">
@@ -47,13 +69,13 @@ const RecentPatientsTable: React.FC<RecentPatientsTableProps> = ({
                 Tên bệnh nhân
               </th>
               <th className="text-left py-3 px-4 font-medium text-gray-600">
+                Phác đồ
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-600">
                 Tuổi
               </th>
               <th className="text-left py-3 px-4 font-medium text-gray-600">
-                Tình trạng
-              </th>
-              <th className="text-left py-3 px-4 font-medium text-gray-600">
-                Lần khám cuối
+                Lần khám gần nhất
               </th>
               <th className="text-left py-3 px-4 font-medium text-gray-600">
                 Trạng thái
@@ -71,18 +93,18 @@ const RecentPatientsTable: React.FC<RecentPatientsTableProps> = ({
                     {patient.name}
                   </div>
                 </td>
-                <td className="py-3 px-4 text-gray-600">{patient.age}</td>
-                <td className="py-3 px-4 text-gray-600">{patient.condition}</td>
-                <td className="py-3 px-4 text-gray-600">
-                  {new Date(patient.lastVisit).toLocaleDateString("vi-VN")}
+               <td className="py-3 px-4 text-gray-600">
+                  {patient.treatmentName}
                 </td>
+                <td className="py-3 px-4 text-gray-600">{patient.age}</td>
+                <td className="py-3 px-4 text-gray-600">{patient.lastVisit}</td>
                 <td className="py-3 px-4">
                   <span
                     className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(
                       patient.status
                     )}`}
                   >
-                    {patient.status}
+                    {getStatusOrder(patient.status)}
                   </span>
                 </td>
               </tr>

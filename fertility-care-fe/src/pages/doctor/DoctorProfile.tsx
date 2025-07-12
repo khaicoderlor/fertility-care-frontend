@@ -1,9 +1,10 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import { useLocation } from "react-router-dom";
 import type { Doctor } from "../../models/Doctor";
 import { convertToInputDate } from "../../functions/CommonFunction";
 import Swal from "sweetalert2";
+import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 
 interface DoctorProfileData {
   degree: string;
@@ -21,24 +22,68 @@ interface DoctorProfileData {
 
 export default function DoctorProfile() {
   const location = useLocation();
-
-  const doctor = location.state as Doctor;
+  const { doctorId } = useCompetenceAuth(); // Giả sử route có param :doctorId
+  const [doctor, setDoctor] = useState<Doctor | null>(location.state as Doctor);
+  const [loading, setLoading] = useState(false);
 
   const [profile, setProfile] = useState<DoctorProfileData>({
-    degree: doctor.degree ?? "-",
-    specialization: doctor.specialization ?? "-",
-    yearsOfExperience: doctor.yearsOfExperience ?? "-",
-    biography: doctor.biography ?? "-",
-    firstName: doctor.profile.firstName ?? "-",
-    middleName: doctor.profile.middleName ?? "-",
-    lastName: doctor.profile.lastName ?? "-",
-    gender: doctor.profile?.gender || "Female",
-    dateOfBirth: doctor.profile?.dateOfBirth
-      ? convertToInputDate(doctor.profile.dateOfBirth)
-      : "",
-    address: doctor.profile.address ?? "-",
-    avatarUrl: doctor.profile.avatarUrl ?? "-",
+    degree: "",
+    specialization: "",
+    yearsOfExperience: "",
+    biography: "",
+    firstName: "",
+    middleName: "",
+    lastName: "",
+    gender: "Female",
+    dateOfBirth: "",
+    address: "",
+    avatarUrl: "",
   });
+
+  // Fetch doctor data từ API
+  const fetchDoctorData = async (id: string) => {
+    setLoading(true);
+    try {
+      const response = await axiosInstance.get(`/doctors/${id}`);
+      const doctorData = response.data;
+      setDoctor(doctorData);
+      updateProfileState(doctorData);
+    } catch (error) {
+      console.error("Lỗi khi tải dữ liệu bác sĩ:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Cập nhật state profile từ doctor data
+  const updateProfileState = (doctorData: Doctor) => {
+    setProfile({
+      degree: doctorData.degree ?? "-",
+      specialization: doctorData.specialization ?? "-",
+      yearsOfExperience: doctorData.yearsOfExperience ?? "-",
+      biography: doctorData.biography ?? "-",
+      firstName: doctorData.profile.firstName ?? "-",
+      middleName: doctorData.profile.middleName ?? "-",
+      lastName: doctorData.profile.lastName ?? "-",
+      gender: doctorData.profile?.gender || "Female",
+      dateOfBirth: doctorData.profile?.dateOfBirth
+        ? convertToInputDate(doctorData.profile.dateOfBirth)
+        : "",
+      address: doctorData.profile.address ?? "-",
+      avatarUrl: doctorData.profile.avatarUrl ?? "-",
+    });
+  };
+
+  useEffect(() => {
+    // Nếu có doctor từ location.state, sử dụng nó
+    if (location.state && location.state.id) {
+      updateProfileState(location.state as Doctor);
+    }
+    // Nếu có doctorId trong params, fetch từ API
+    else if (doctorId) {
+      fetchDoctorData(doctorId);
+    }
+  }, [doctorId, location.state]);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -60,7 +105,7 @@ export default function DoctorProfile() {
     setProfile((prev) => ({ ...prev, avatarUrl: previewUrl }));
 
     const formData = new FormData();
-    formData.append("avatar", file); 
+    formData.append("avatar", file);
 
     try {
       await axiosInstance.patch(
@@ -76,35 +121,55 @@ export default function DoctorProfile() {
   };
 
   const handleSave = async () => {
-    try {
-      const formData = new FormData();
-      formData.append("degree", profile.degree);
-      formData.append("specialization", profile.specialization);
-      formData.append(
-        "yearsOfExperience",
-        profile.yearsOfExperience?.toString() || ""
-      );
-      formData.append("biography", profile.biography);
-      formData.append("firstName", profile.firstName);
-      formData.append("middleName", profile.middleName);
-      formData.append("lastName", profile.lastName);
-      formData.append("gender", profile.gender);
-      formData.append("dateOfBirth", profile.dateOfBirth);
-      formData.append("address", profile.address);
+    if (!doctor?.id) return;
 
-      await axiosInstance.put(`/doctors/${doctor.id}`, formData);
+    const payload = {
+      degree: profile.degree,
+      specialization: profile.specialization,
+      yearsOfExperience: Number(profile.yearsOfExperience),
+      biography: profile.biography,
+      firstName: profile.firstName,
+      middleName: profile.middleName,
+      lastName: profile.lastName,
+      gender: profile.gender,
+      dateOfBirth: profile.dateOfBirth,
+      address: profile.address,
+    };
+
+    try {
+      await axiosInstance.put(`/doctors/${doctor.id}`, payload);
+      
+      // Sau khi lưu thành công, fetch lại dữ liệu mới từ database
+      await fetchDoctorData(doctor.id);
+
       Swal.fire({
         title: "Cập nhật thành công",
-        icon: "success"
-      })
+        icon: "success",
+      });
     } catch (err) {
       console.error(err);
       Swal.fire({
         title: "Cập nhật thất bại",
-        icon: "error"
-      })
+        icon: "error",
+      });
     }
   };
+
+  if (loading) {
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <div className="text-center">Đang tải...</div>
+      </div>
+    );
+  }
+
+  if (!doctor) {
+    return (
+      <div className="max-w-3xl mx-auto p-6">
+        <div className="text-center text-red-500">Không tìm thấy thông tin bác sĩ</div>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-3xl mx-auto p-6 space-y-6">

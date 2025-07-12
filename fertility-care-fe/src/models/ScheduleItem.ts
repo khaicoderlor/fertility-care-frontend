@@ -8,4 +8,5 @@ export interface ScheduleItem {
   middleName: string;
   lastName: string;
   shiftType: 'morning' | 'afternoon' | 'evening';
+  isWorkingDay: boolean
 }

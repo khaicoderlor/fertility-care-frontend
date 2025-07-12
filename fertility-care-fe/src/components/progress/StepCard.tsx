@@ -24,11 +24,17 @@ import {
   PAYMENT_PENDING,
 } from "../../constants/PaymentStatus";
 import { formatCurrency, getStepCardBg } from "../../functions/CommonFunction";
+import { useState } from "react";
+import type { Order } from "../../models/Order";
+import axiosInstance from "../../apis/AxiosInstance";
+import Swal from "sweetalert2";
+import { StarIcon } from "lucide-react";
 
 interface StepCardProps {
   step: OrderStep;
   isSelected: boolean;
   onClick: () => void;
+  order: Order;
 }
 
 export const renderIconByStep = (step: OrderStep) => {
@@ -49,7 +55,11 @@ export const renderIconByStep = (step: OrderStep) => {
   }
 };
 
-export function StepCard({ step, isSelected, onClick }: StepCardProps) {
+export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
+  const [showFeedbackForm, setShowFeedbackForm] = useState(false);
+  const [rating, setRating] = useState(0);
+  const [comment, setComment] = useState("");
+
   const getStatusBadge = (status: string) => {
     switch (status) {
       case STEP_COMPLETED:
@@ -88,6 +98,33 @@ export function StepCard({ step, isSelected, onClick }: StepCardProps) {
             .....
           </span>
         );
+    }
+  };
+
+  const handleSubmitFeedback = async () => {
+    const payload = {
+      patientId: order.patient?.id,
+      doctorId: order.doctor?.id,
+      treatmentServiceId: order.treatmentService?.id,
+      rating,
+      comment,
+    };
+
+    console.log(payload)
+
+    try {
+      await axiosInstance.post("/feedbacks", payload);
+      Swal.fire({
+        title: "Gửi đánh giá thành công!",
+        icon: "success",
+      });
+      setShowFeedbackForm(false);
+    } catch (error) {
+      console.error("Lỗi khi gửi đánh giá", error);
+      Swal.fire({
+        title: "Gửi đánh giá thất bại!",
+        icon: "error",
+      });
     }
   };
 
@@ -175,7 +212,65 @@ export function StepCard({ step, isSelected, onClick }: StepCardProps) {
             </div>
           </div>
         </div>
+        {step.status === STEP_COMPLETED &&
+          step.treatmentStep.stepOrder === 6 && (
+            <div className="absolute bottom-4 right-4">
+              <button
+                className="bg-pink-600 hover:bg-pink-700 text-white text-sm px-4 py-1.5 rounded-lg shadow"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setShowFeedbackForm(true);
+                }}
+              >
+                Đánh giá
+              </button>
+            </div>
+          )}
       </div>
+      {showFeedbackForm && (
+        <div className="absolute bottom-4 right-4 w-80 bg-white border border-gray-300 rounded-xl p-4 shadow-xl z-50">
+          <h4 className="font-semibold mb-2 text-sm text-gray-800">
+            Đánh giá toàn bộ quá trình điều trị
+          </h4>
+
+          {/* Rating */}
+          <div className="flex gap-1 mb-3">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <StarIcon
+                key={star}
+                onClick={() => setRating(star)}
+                className={`w-6 h-6 cursor-pointer ${
+                  star <= rating ? "text-yellow-400" : "text-gray-300"
+                }`}
+              />
+            ))}
+          </div>
+
+          {/* Comment */}
+          <textarea
+            placeholder="Viết nhận xét..."
+            value={comment}
+            onChange={(e) => setComment(e.target.value)}
+            className="w-full h-20 p-2 border border-gray-300 rounded-md text-sm mb-3"
+          />
+
+          {/* Action buttons */}
+          <div className="flex justify-end gap-2">
+            <button
+              className="text-sm px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300"
+              onClick={() => setShowFeedbackForm(false)}
+            >
+              Hủy
+            </button>
+            <button
+              className="text-sm px-3 py-1 rounded-md bg-pink-600 text-white hover:bg-pink-700"
+              onClick={handleSubmitFeedback}
+            >
+              Gửi
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
