@@ -1,11 +1,11 @@
 import axios from "axios";
 
 
-const axiosInstance = axios.create({
+const axiosSocketInstance = axios.create({
     baseURL: "http://localhost:3002"
 });
 
-axiosInstance.interceptors.request.use((config) => {
+axiosSocketInstance.interceptors.request.use((config) => {
     const token = localStorage.getItem("accessToken");
     if(token!=null) {
         config.headers.Authorization = `Bearer ${token}`
@@ -14,4 +14,4 @@ axiosInstance.interceptors.request.use((config) => {
     return config;
 })
 
-export default axiosInstance;
+export default axiosSocketInstance;
