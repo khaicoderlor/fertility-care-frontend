@@ -66,29 +66,6 @@ export default function TransferEmbryoForm({
           </select>
         </div>
 
-        {/* <div className="mb-3">
-          <label className="block text-sm font-medium">Ngày chuyển</label>
-          <input
-            type="date"
-            className="w-full border rounded p-2"
-            value={transferDate}
-            onChange={(e) => setTransferDate(e.target.value)}
-          />
-        </div> */}
-
-        {/* <div className="mb-4">
-          <label className="block text-sm font-medium">Loại chuyển</label>
-          <select
-            className="w-full border rounded p-2"
-            value={transferType}
-            onChange={(e) => setTransferType(e.target.value)}
-          >
-            <option value="">-- Chọn loại --</option>
-            <option value="Tươi">Tươi</option>
-            <option value="Đông lạnh">Đông lạnh</option>
-          </select>
-        </div> */}
-
         <div className="flex justify-end space-x-2">
           <button
             onClick={onClose}

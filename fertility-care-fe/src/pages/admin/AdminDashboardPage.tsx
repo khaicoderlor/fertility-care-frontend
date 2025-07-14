@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/dashboard/admin/Sidebar";
 import StatsCard from "../../components/dashboard/admin/StatsCard";
 import SimpleChart from "../../components/dashboard/admin/SimpleChart";
 import "../../assets/css/StyleAdminDashboard.css";
-import { PatientTable } from "../../components/dashboard/admin/PatientTable";
-import { DoctorTable } from "../../components/dashboard/admin/DoctorTable";
-import AppointmentTable from "../../components/progress/AppointmentTable";
+import { PatientTable, type PatientSideAdminPage } from "../../components/dashboard/admin/PatientTable";
+import { DoctorTable, type DoctorSideAdminPage } from "../../components/dashboard/admin/DoctorTable";
+import { PaymentTable } from "../../components/dashboard/admin/PaymentTable";
+import { ReportProgressPatient, type PatientOrderSideAdmin } from "../../components/dashboard/admin/ReportProgressPatient";
+import type OrderStepPayment from "../../models/OrderStepPayment";
+import axiosInstance from "../../apis/AxiosInstance";
 
 interface StatCard {
   title: string;
@@ -20,6 +23,58 @@ interface StatCard {
 const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState("dashboard")
   const [statCards, setStatCards] = useState<StatCard[]>([]) 
+  const [patients, setPatients] = useState<PatientSideAdminPage[]>([])
+  const [doctors, setDoctors] = useState<DoctorSideAdminPage[]>([])
+  const [payments, setPayments] = useState<OrderStepPayment[]>([])
+  const [reportProgresses, setReportProgresses] = useState<PatientOrderSideAdmin[]>([])
+
+  useEffect(() => {
+    const fetchPatients = async () => {
+      try {
+        const response = await axiosInstance.get(``)
+        setPatients(response.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchPatients()
+  }, [])
+
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axiosInstance.get(``)
+        setDoctors(response.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchDoctors()
+  }, [])
+
+   useEffect(() => {
+    const fetchReports = async () => {
+      try {
+        const response = await axiosInstance.get(``)
+        setReportProgresses(response.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchReports()
+  }, [])
+
+   useEffect(() => {
+    const fetchPayments = async () => {
+      try {
+        const response = await axiosInstance.get(``)
+        setPayments(response.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
+    fetchPayments()
+  }, [])
 
   const renderContent = () => {
     switch (activeTab) {
@@ -50,7 +105,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Bệnh nhân</h2>
               <p className="text-gray-600 mt-1">Quản lý thông tin bệnh nhân</p>
             </div>
-            <PatientTable />
+            <PatientTable patients={patients}/>
           </div>
         );
 
@@ -61,7 +116,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Bác sĩ</h2>
               <p className="text-gray-600 mt-1">Quản lý thông tin bác sĩ</p>
             </div>
-            <DoctorTable />
+            <DoctorTable doctors={doctors}/>
           </div>
         );
 
@@ -72,7 +127,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Lịch hẹn</h2>
               <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
             </div>
-            <AppointmentTable />
+            <ReportProgressPatient patientsOrders={reportProgresses}/>
           </div>
         );
 
@@ -83,7 +138,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Thanh toán</h2>
               <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
             </div>
-            <AppointmentTable />
+            <PaymentTable payments={payments}/>
           </div>
         );
 
