@@ -1,5 +1,4 @@
 import React from "react";
-import type { StatsCardProps } from "../../../models/Admin";
 
 const StatsCard: React.FC<StatsCardProps> = ({ stat }) => {
   return (
@@ -9,7 +8,7 @@ const StatsCard: React.FC<StatsCardProps> = ({ stat }) => {
           <p className="text-gray-600 text-sm">{stat.title}</p>
           <p className="text-3xl font-bold text-gray-800 mt-1">{stat.value}</p>
           {stat.change && (
-            <p
+            <p 
               className={`text-sm mt-1 ${
                 stat.changeType === "increase"
                   ? "text-green-600"

@@ -1,136 +1,25 @@
 import React, { useState } from "react";
 import Sidebar from "../../components/dashboard/admin/Sidebar";
 import StatsCard from "../../components/dashboard/admin/StatsCard";
-import PatientTable from "../../components/dashboard/admin/PatientTable";
-import DoctorTable from "../../components/dashboard/admin/DoctorTable";
-import AppointmentTable from "../../components/dashboard/admin/AppointmentTable";
-import type {
-  StatCard,
-  Patient,
-  Doctor,
-  Appointment,
-} from "../../models/Admin";
 import SimpleChart from "../../components/dashboard/admin/SimpleChart";
-import RecentPatients from "../../components/dashboard/admin/RecentPatients";
 import "../../assets/css/StyleAdminDashboard.css";
+import { PatientTable } from "../../components/dashboard/admin/PatientTable";
+import { DoctorTable } from "../../components/dashboard/admin/DoctorTable";
+import AppointmentTable from "../../components/progress/AppointmentTable";
 
-// Mock data
-const mockStats: StatCard[] = [
-  {
-    title: "Tổng bệnh nhân",
-    value: 247,
-    change: "+12% tháng này",
-    changeType: "increase",
-    icon: "fas fa-users",
-    bgColor: "bg-blue-100",
-    iconColor: "text-blue-600",
-  },
-  {
-    title: "Tổng dịch vụ",
-    value: 89,
-    icon: "fas fa-heart",
-    bgColor: "bg-green-100",
-    iconColor: "text-green-600",
-  },
-  {
-    title: "Thành công",
-    value: "67%",
-    icon: "fas fa-check-circle",
-    bgColor: "bg-purple-100",
-    iconColor: "text-purple-600",
-  },
-  {
-    title: "Doanh thu tháng",
-    value: "2.4B VNĐ",
-    change: "+8% so với tháng trước",
-    changeType: "increase",
-    icon: "fas fa-dollar-sign",
-    bgColor: "bg-yellow-100",
-    iconColor: "text-yellow-600",
-  },
-];
-
-const mockPatients: Patient[] = [
-  {
-    id: "P001",
-    name: "Nguyễn Thị A",
-    email: "nguyenthia@email.com",
-    phone: "0901234567",
-    age: 28,
-    status: "treatment",
-    treatment: "IVF",
-    lastVisit: "2025-07-01",
-  },
-  {
-    id: "P002",
-    name: "Trần Thị B",
-    email: "tranthib@email.com",
-    phone: "0902345678",
-    age: 32,
-    status: "completed",
-    treatment: "IUI",
-    lastVisit: "2025-06-28",
-  },
-];
-
-const mockDoctors: Doctor[] = [
-  {
-    id: "D001",
-    name: "Dr. Nguyễn Văn X",
-    specialty: "Sản phụ khoa",
-    email: "drnguyenx@clinic.com",
-    phone: "0911234567",
-    rating: 4.8,
-    patients: 45,
-    status: "active",
-  },
-  {
-    id: "D002",
-    name: "Dr. Lê Thị Y",
-    specialty: "IVF Specialist",
-    email: "drlethiy@clinic.com",
-    phone: "0912345678",
-    rating: 4.9,
-    patients: 38,
-    status: "active",
-  },
-];
-
-const mockAppointments: Appointment[] = [
-  {
-    id: "A001",
-    patientId: "P001",
-    doctorId: "D001",
-    patientName: "Nguyễn Thị A",
-    doctorName: "Dr. Nguyễn Văn X",
-    date: "2025-07-03",
-    time: "09:00",
-    type: "IVF",
-    status: "scheduled",
-  },
-  {
-    id: "A002",
-    patientId: "P002",
-    doctorId: "D002",
-    patientName: "Trần Thị B",
-    doctorName: "Dr. Lê Thị Y",
-    date: "2025-07-03",
-    time: "10:30",
-    type: "consultation",
-    status: "scheduled",
-  },
-];
+interface StatCard {
+  title: string;
+  value: number;
+  change: string;
+  changeType: string;
+  icon: string;
+  bgColor: string;
+  iconColor: string;
+}
 
 const AdminDashboard: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("dashboard");
-
-  const handleEdit = (item: Patient | Doctor | Appointment) => {
-    console.log("Edit:", item);
-  };
-
-  const handleDelete = (id: string) => {
-    console.log("Delete:", id);
-  };
+  const [activeTab, setActiveTab] = useState("dashboard")
+  const [statCards, setStatCards] = useState<StatCard[]>([]) 
 
   const renderContent = () => {
     switch (activeTab) {
@@ -145,14 +34,12 @@ const AdminDashboard: React.FC = () => {
             </div>
             {/* Stats Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {mockStats.map((stat, index) => (
+              {statCards.map((stat, index) => (
                 <StatsCard key={index} stat={stat} />
               ))}
             </div>{" "}
             {/* Chart Section */}
             <SimpleChart />
-            {/* Recent Patients Section */}
-            <RecentPatients />
           </div>
         );
 
@@ -163,11 +50,7 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Bệnh nhân</h2>
               <p className="text-gray-600 mt-1">Quản lý thông tin bệnh nhân</p>
             </div>
-            <PatientTable
-              patients={mockPatients}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <PatientTable />
           </div>
         );
 
@@ -178,26 +61,29 @@ const AdminDashboard: React.FC = () => {
               <h2 className="text-3xl font-bold text-gray-800">Bác sĩ</h2>
               <p className="text-gray-600 mt-1">Quản lý thông tin bác sĩ</p>
             </div>
-            <DoctorTable
-              doctors={mockDoctors}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <DoctorTable />
           </div>
         );
 
-      case "appointments":
+      case "reports-statistic":
         return (
           <div className="space-y-8">
             <div>
               <h2 className="text-3xl font-bold text-gray-800">Lịch hẹn</h2>
               <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
             </div>
-            <AppointmentTable
-              appointments={mockAppointments}
-              onEdit={handleEdit}
-              onDelete={handleDelete}
-            />
+            <AppointmentTable />
+          </div>
+        );
+
+      case "payments":
+         return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800">Thanh toán</h2>
+              <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
+            </div>
+            <AppointmentTable />
           </div>
         );
 

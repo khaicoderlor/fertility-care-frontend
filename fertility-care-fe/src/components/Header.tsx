@@ -4,7 +4,7 @@ import Button from "./Button";
 import axiosInstance from "../apis/AxiosInstance";
 import type { Patient } from "../models/Patient";
 import { convertFullName } from "../functions/CommonFunction";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Header() {
   const { isAuthenticated, patientId } = useAuth();
@@ -42,11 +42,66 @@ export default function Header() {
         {/* Links ở giữa */}
         <nav>
           <ul className="flex space-x-10">
-            <li><a href="/home" className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors">Trang chủ</a></li>
-            <li><a href="/services" className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors">Dịch vụ</a></li>
-            <li><a href="/blog" className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors">Tìm bác sĩ</a></li>
-            <li><a href="/blog" className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors">Kiến thức</a></li>
-            <li><a href="/profile" className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors">Lộ trình điều trị</a></li>
+            <li>
+              <a
+                href="/home"
+                className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+              >
+                Trang chủ
+              </a>
+            </li>
+            <li>
+              <a
+                href="/services"
+                className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+              >
+                Dịch vụ
+              </a>
+            </li>
+            <li>
+              <a
+                href="/blog"
+                className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+              >
+                Tìm bác sĩ
+              </a>
+            </li>
+            <li>
+              <a
+                href="/blog"
+                className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+              >
+                Kiến thức
+              </a>
+            </li>
+            <li>
+              <a
+                href="/profile"
+                className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+              >
+                Lộ trình điều trị
+              </a>
+            </li>
+            {isAuthenticated && (
+              <li>
+                <Link
+                  to="/messenger"
+                  className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+                >
+                  Tin nhắn
+                </Link>
+              </li>
+            )}
+            {isAuthenticated && (
+              <li>
+                <Link
+                  to="/messenger"
+                  className="px-3 py-2 text-sm font-medium text-gray-800 hover:text-purple-600 transition-colors"
+                >
+                  Bệnh nhân từng điều trị
+                </Link>
+              </li>
+            )}
           </ul>
         </nav>
 
@@ -66,7 +121,9 @@ export default function Header() {
                 <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 rounded-full border-2 border-white shadow-sm"></div>
               </div>
               <div className="flex flex-col">
-                <span className="text-xs text-gray-500 font-medium">Xin chào,</span>
+                <span className="text-xs text-gray-500 font-medium">
+                  Xin chào,
+                </span>
                 <span className="text-sm font-semibold text-gray-800 group-hover:text-purple-700 transition-colors">
                   {convertFullName(patient?.profile ?? {})}
                 </span>

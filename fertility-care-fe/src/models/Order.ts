@@ -22,6 +22,8 @@ export interface Order {
 
     isFrozen?: boolean,
 
+    status: string,
+
     updatedAt?: string,
 
     orderSteps?: OrderStep[]

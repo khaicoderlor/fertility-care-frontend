@@ -115,6 +115,7 @@ function App() {
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>
+    // <MessengerApp/>
   );
 }
 

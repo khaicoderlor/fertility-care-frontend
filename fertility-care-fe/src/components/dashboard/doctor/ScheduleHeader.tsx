@@ -22,11 +22,6 @@ export default function ScheduleHeader() {
         >
           BS. {convertFullName(doctor.profile)}
         </h2>
-        <button
-          className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
-        >
-          + Đơn nghỉ phép
-        </button>
       </div>
     </div>
   );

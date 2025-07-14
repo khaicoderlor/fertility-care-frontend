@@ -36,11 +36,6 @@ const DoctorSchedulePage: React.FC = () => {
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
       <ScheduleHeader />
       <Calendar schedules={schedules} />
-      {/* <ScheduleModal
-        open={showModal}
-        onClose={() => setShowModal(false)}
-        onSave={handleAddSchedule}
-      /> */}
     </div>
   );
 };

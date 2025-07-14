@@ -13,6 +13,10 @@ export function convertFullName(profile: Profile): string {
   return profile.firstName + " " + profile.middleName + " " + profile.lastName;
 }
 
+export function convertName(profile: Profile | null): string {
+  return profile?.firstName + " " + profile?.lastName
+}
+
 export function convertSlotTime(slot: SlotSchedule): string {
   return slot.startTime + " - " + slot.endTime;
 }

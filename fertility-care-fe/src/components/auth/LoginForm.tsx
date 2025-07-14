@@ -22,7 +22,7 @@ export const LoginForm = () => {
       });
 
       const { accessToken, refreshToken, user } = res.data;
-      login(accessToken, refreshToken, user.profileId, user.patientId);
+      login(accessToken, refreshToken, user.profileId, user.patientId, user.id);
       setOrderIdList(user.orderIds);
 
       Swal.fire({

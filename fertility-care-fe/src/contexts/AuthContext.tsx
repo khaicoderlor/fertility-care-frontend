@@ -6,11 +6,13 @@ interface AuthContextType {
     newToken: string,
     refreshToken: string,
     userProfileId: string,
-    patientId: string
+    patientId: string,
+    currentUserId: string
   ) => void;
   logout: () => void;
   patientId?: string | null;
   userProfileId?: string;
+  currentUserId?: string;
   orderIds?: string[] | null;
   isAuthenticated: boolean;
   setOrderIdList: (orderIds: string[]) => void;
@@ -31,6 +33,10 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     return localStorage.getItem("userProfileId") ?? "";
   });
 
+  const [currentUserId, setCurrentUserId] = useState<string>(() => {
+    return localStorage.getItem("currentUserId") ?? "";
+  });
+
   const [patientId, setPatientId] = useState<string | null>(() => {
     return localStorage.getItem("patientId");
   });
@@ -49,15 +55,18 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     newToken: string,
     refreshToken: string,
     userProfileId: string,
-    patientId: string
+    patientId: string,
+    currentUserId: string
   ) => {
     localStorage.setItem("accessToken", newToken);
     localStorage.setItem("refreshToken", refreshToken);
     localStorage.setItem("userProfileId", userProfileId);
     localStorage.setItem("patientId", patientId);
+    localStorage.setItem("currentUserId", currentUserId)
     setToken(newToken);
     setUserProfileId(userProfileId);
     setPatientId(patientId);
+    setCurrentUserId(currentUserId)
     setIsAuthenticated(true);
   };
 
@@ -67,6 +76,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     setPatientId(null);
     setOrderIds(null);
     setUserProfileId("");
+    setCurrentUserId("")
     setIsAuthenticated(false);
   };
 
@@ -83,6 +93,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         logout,
         patientId,
         userProfileId,
+        currentUserId,
         orderIds,
         isAuthenticated,
         setOrderIdList,

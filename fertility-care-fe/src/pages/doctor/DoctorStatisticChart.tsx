@@ -1,6 +1,5 @@
 "use client";
 
-import type React from "react";
 import {
   UsersIcon,
   CalendarDaysIcon,
@@ -34,9 +33,6 @@ const monthlyFeedbackData = [
   { month: "Nov", rating: 4.9, reviews: 35 },
   { month: "Dec", rating: 4.8, reviews: 40 },
 ];
-
-
-
 
 export default function DoctorStatisticChartPage() {
   const { doctorId } = useCompetenceAuth();
