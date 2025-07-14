@@ -10,8 +10,12 @@ import FeedbackChart from "../../components/dashboard/doctor/FeedbackChart";
 import PatientAppointmentChart, {
   type PatientData,
 } from "../../components/dashboard/doctor/PatientAppointmentChart";
-import PatientStatusChart, { type PatientStatusData } from "../../components/dashboard/doctor/PatientStatusChart";
-import RecentPatientsTable, { type RecentPatient } from "../../components/dashboard/doctor/RecentPatientsTable";
+import PatientStatusChart, {
+  type PatientStatusData,
+} from "../../components/dashboard/doctor/PatientStatusChart";
+import RecentPatientsTable, {
+  type RecentPatient,
+} from "../../components/dashboard/doctor/RecentPatientsTable";
 import QuickActions from "../../components/dashboard/doctor/QuickActions";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import { useEffect, useState } from "react";
@@ -39,8 +43,9 @@ export default function DoctorStatisticChartPage() {
   const [doctorStatisticOverall, setDoctorStatisticOverall] =
     useState<DoctorStatisticOverall>();
   const [patientsData, setPatientsData] = useState<PatientData[]>();
-  const [recentPatients, setRecentPatients] = useState<RecentPatient[]>()
-  const [patientStatusData, setPatientStatusData] = useState<PatientStatusData[]>();
+  const [recentPatients, setRecentPatients] = useState<RecentPatient[]>();
+  const [patientStatusData, setPatientStatusData] =
+    useState<PatientStatusData[]>();
 
   useEffect(() => {
     const fetchOverallStatistic = async () => {
@@ -77,28 +82,32 @@ export default function DoctorStatisticChartPage() {
   useEffect(() => {
     const s = async () => {
       try {
-        const response = await axiosInstance.get(`/doctors/${doctorId}/recent-patients`);
-        setRecentPatients(response.data.data)
+        const response = await axiosInstance.get(
+          `/doctors/${doctorId}/recent-patients`
+        );
+        setRecentPatients(response.data.data);
       } catch (error) {
         console.log(error);
       }
     };
-    s()
+    s();
   }, [doctorId]);
 
   useEffect(() => {
     const g = async () => {
       try {
-        const response = await axiosInstance.get(`/statistics/orders-status/${doctorId}/overall`);
+        const response = await axiosInstance.get(
+          `/statistics/orders-status/${doctorId}/overall`
+        );
 
-        setPatientStatusData(response.data.data)
-      } catch(error) {
+        setPatientStatusData(response.data.data);
+      } catch (error) {
         console.log(error);
       }
-    }
+    };
 
     g();
-  }, [doctorId])
+  }, [doctorId]);
 
   const getChangeType = (s: number): "increase" | "decrease" => {
     if (s < 0) {
@@ -152,8 +161,8 @@ export default function DoctorStatisticChartPage() {
 
       {/* Patient Status and Recent Patients */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <PatientStatusChart data={patientStatusData??[]} />
-        <RecentPatientsTable patients={recentPatients??[]} />
+        <PatientStatusChart data={patientStatusData ?? []} />
+        <RecentPatientsTable patients={recentPatients ?? []} />
       </div>
 
       {/* Quick Actions */}
