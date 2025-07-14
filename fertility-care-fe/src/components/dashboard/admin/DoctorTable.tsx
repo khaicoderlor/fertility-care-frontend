@@ -10,7 +10,7 @@ import type { Doctor } from "../../../models/Doctor";
 import type { Order } from "../../../models/Order";
 
 export interface DoctorSideAdminPage {
-  doctor: Doctor;
+  doctor: Doctor; 
   orders: Order[];
   doctorEmail: string;
   doctorPhone: string;

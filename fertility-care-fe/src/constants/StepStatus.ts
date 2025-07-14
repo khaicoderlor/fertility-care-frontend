@@ -9,5 +9,4 @@ export const STEP_PLANNED = "Planned"
 
 export const STEP_FAILED = "Failed"
 
-
 export const STEP_RETRANSFER = "ReTransfer"

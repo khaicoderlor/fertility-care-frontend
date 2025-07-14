@@ -6,6 +6,7 @@ import type { Order } from "../../../models/Order";
 import type { Patient } from "../../../models/Patient";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
+import type { PatientSideAdminPage } from "./PatientTable";
 
 export interface PatientOrderSideAdmin {
   patient: Patient;
@@ -20,7 +21,7 @@ interface ReportProgressPatientSide {
 }
 
 interface ReportProgressPatientProps {
-  patientsOrders: PatientOrderSideAdmin[];
+  patientsOrders: PatientSideAdminPage[];
 }
 
 export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientProps) => {
@@ -61,7 +62,7 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
           </thead>
           <tbody>
             {patientsOrders.map((po) =>
-              po.order.map((ord) => (
+              (po.orders ?? []).map((ord: Order) => (
                 <tr key={ord.id} className="border-t hover:bg-gray-50">
                   <td className="px-4 py-2">{ord.id}</td>
                   <td className="px-4 py-2">{ord.treatmentService?.name}</td>

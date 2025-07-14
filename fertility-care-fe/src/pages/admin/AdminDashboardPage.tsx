@@ -6,9 +6,9 @@ import "../../assets/css/StyleAdminDashboard.css";
 import { PatientTable, type PatientSideAdminPage } from "../../components/dashboard/admin/PatientTable";
 import { DoctorTable, type DoctorSideAdminPage } from "../../components/dashboard/admin/DoctorTable";
 import { PaymentTable } from "../../components/dashboard/admin/PaymentTable";
-import { ReportProgressPatient, type PatientOrderSideAdmin } from "../../components/dashboard/admin/ReportProgressPatient";
 import type OrderStepPayment from "../../models/OrderStepPayment";
 import axiosInstance from "../../apis/AxiosInstance";
+import { ReportProgressPatient } from "../../components/dashboard/admin/ReportProgressPatient";
 
 interface StatCard {
   title: string;
@@ -26,12 +26,12 @@ const AdminDashboard: React.FC = () => {
   const [patients, setPatients] = useState<PatientSideAdminPage[]>([])
   const [doctors, setDoctors] = useState<DoctorSideAdminPage[]>([])
   const [payments, setPayments] = useState<OrderStepPayment[]>([])
-  const [reportProgresses, setReportProgresses] = useState<PatientOrderSideAdmin[]>([])
+  const [reportProgresses, setReportProgresses] = useState<PatientSideAdminPage[]>([])
 
   useEffect(() => {
     const fetchPatients = async () => {
       try {
-        const response = await axiosInstance.get(``)
+        const response = await axiosInstance.get(`/patients/admin-sides`)
         setPatients(response.data.data)
       } catch(error) {
         console.log(error)
@@ -43,7 +43,7 @@ const AdminDashboard: React.FC = () => {
   useEffect(() => {
     const fetchDoctors = async () => {
       try {
-        const response = await axiosInstance.get(``)
+        const response = await axiosInstance.get(`/doctors/admin-sides`)
         setDoctors(response.data.data)
       } catch(error) {
         console.log(error)
@@ -55,7 +55,7 @@ const AdminDashboard: React.FC = () => {
    useEffect(() => {
     const fetchReports = async () => {
       try {
-        const response = await axiosInstance.get(``)
+        const response = await axiosInstance.get(`/patients/admin-sides`)
         setReportProgresses(response.data.data)
       } catch(error) {
         console.log(error)
@@ -67,7 +67,7 @@ const AdminDashboard: React.FC = () => {
    useEffect(() => {
     const fetchPayments = async () => {
       try {
-        const response = await axiosInstance.get(``)
+        const response = await axiosInstance.get(`/payments/admin-sides`)
         setPayments(response.data.data)
       } catch(error) {
         console.log(error)
