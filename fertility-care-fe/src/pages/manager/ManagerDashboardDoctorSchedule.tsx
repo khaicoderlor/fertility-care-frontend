@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import ManagerSidebar from "../../components/dashboard/manager/ManagerSidebar";
-import DoctorScheduleManagement from "../../components/dashboard/admin/DoctorScheduleManagement";
+import DoctorScheduleManagement from "../../components/dashboard/manager/DoctorScheduleManagement";
 import { allDoctors, scheduleData } from "../../data/DataAdminDoctorPage";
 import type { ScheduleSlot } from "../../data/DataAdminDoctorPage";
 import "../../assets/css/StyleManagerDashboardDoctorSchedule.css";
