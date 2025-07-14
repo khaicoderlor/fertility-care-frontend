@@ -51,7 +51,7 @@ export default function FollowUpPatientProgressPage() {
   const orderId = query.get("orderId") ?? "";
   const { doctorId } = useCompetenceAuth();
   const [patient, setPatient] = useState<Patient>();
-  const [order, setOrder] = useState<Order>({});
+  const [order, setOrder] = useState<Order>();
   const [orderSteps, setOrderSteps] = useState<OrderStep[]>([]);
   const [showAppointmentForm, setShowAppointmentForm] = useState(false);
   const [showProgressReportForm, setShowProgressReportForm] = useState(false);
@@ -325,17 +325,19 @@ export default function FollowUpPatientProgressPage() {
         </div>
 
         {/* Treatment steps */}
-        <OrderStepCard
-          orderSteps={orderSteps}
-          setSelectedStepDetail={setSelectedStepDetail}
-          handleAddAppointment={handleAddAppointment}
-          handleMarkStatusStep={handleMarkStatusStep}
-          order={order}
-        />
+        {order && (
+          <OrderStepCard
+            orderSteps={orderSteps}
+            setSelectedStepDetail={setSelectedStepDetail}
+            handleAddAppointment={handleAddAppointment}
+            handleMarkStatusStep={handleMarkStatusStep}
+            order={order}
+          />
+        )}
       </div>
 
       {/*Step detail modal*/}
-      {selectedStepDetail !== null && (
+      {selectedStepDetail !== null && order && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 p-4">
           <SelectedCardDetail
             order={order}
@@ -363,7 +365,7 @@ export default function FollowUpPatientProgressPage() {
 
       {showProgressReportForm && (
         <TreatmentReportModal
-          orderId={order.id ?? ""}
+          orderId={order?.id ?? ""}
           onClose={() => setShowProgressReportForm(false)}
         />
       )}

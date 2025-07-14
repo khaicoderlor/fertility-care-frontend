@@ -16,7 +16,6 @@ import PatientStatusChart, {
 import RecentPatientsTable, {
   type RecentPatient,
 } from "../../components/dashboard/doctor/RecentPatientsTable";
-import QuickActions from "../../components/dashboard/doctor/QuickActions";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
@@ -165,8 +164,8 @@ export default function DoctorStatisticChartPage() {
         <RecentPatientsTable patients={recentPatients ?? []} />
       </div>
 
-      {/* Quick Actions */}
-      <QuickActions />
+      {/* Quick Actions
+      <QuickActions /> */}
     </div>
   );
 }
