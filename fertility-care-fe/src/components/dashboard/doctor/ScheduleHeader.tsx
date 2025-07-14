@@ -2,13 +2,12 @@ import React from "react";
 import { useLocation } from "react-router-dom";
 import type { Doctor } from "../../../models/Doctor";
 import { convertFullName } from "../../../functions/CommonFunction";
-import { MdWorkOff } from "react-icons/md";
 
-interface Props {
-  onOpenModal: () => void;
-}
+// interface Props {
+//   onOpenModal: () => void;
+// }
 
-const ScheduleHeader: React.FC<Props> = ({ onOpenModal }) => {
+export default function ScheduleHeader() {
   const location = useLocation();
   const doctor = location.state as Doctor
 
@@ -24,14 +23,12 @@ const ScheduleHeader: React.FC<Props> = ({ onOpenModal }) => {
           BS. {convertFullName(doctor.profile)}
         </h2>
         <button
-          onClick={onOpenModal}
           className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
         >
-          <MdWorkOff className="mr-2 w-6"/>Xin nghỉ phép
+          + Đơn nghỉ phép
         </button>
       </div>
     </div>
   );
 };
 
-export default ScheduleHeader;

@@ -5,6 +5,7 @@ import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import Swal from "sweetalert2";
 import { FaUserDoctor } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { ROLE_ADMIN, ROLE_DOCTOR, ROLE_MANAGER } from "../../constants/ApplicationConstant";
 
 export interface FormData {
   email: string;
@@ -37,7 +38,13 @@ export default function RoleLoginPage() {
         title: "Đăng nhập thành công",
         icon: "success",
       }).then(()=>{
-        navigate("/doctor")
+        if(role === ROLE_DOCTOR) {
+          navigate("/doctor")
+        } else if(role === ROLE_ADMIN) {
+          navigate("/admin")
+        } else if(role === ROLE_MANAGER) {
+          navigate("/manager")
+        }
       });
     } catch (error) {
       console.log(error);

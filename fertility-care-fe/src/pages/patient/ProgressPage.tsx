@@ -85,12 +85,13 @@ export default function ProgressPage() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 p-10">
         {/* Steps Timeline */}
         <div className="lg:col-span-2 space-y-4">
-          {steps?.map((step) => (
+          {order && steps?.map((step) => (
             <StepCard
               key={step.id}
               step={step}
               isSelected={selectedStep?.id === step.id}
               onClick={() => setSelectedStep(step)}
+              order={order}
             />
           ))}
         </div>

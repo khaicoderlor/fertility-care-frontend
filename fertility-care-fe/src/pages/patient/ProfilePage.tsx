@@ -183,7 +183,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     name="firstName"
-                    value={formData.lastName}
+                    value={formData.firstName}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
                     placeholder="Nhập tên của bạn"
@@ -211,7 +211,7 @@ export default function ProfilePage() {
                   <input
                     type="text"
                     name="lastName"
-                    value={formData.firstName}
+                    value={formData.lastName}
                     onChange={handleInputChange}
                     className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 hover:border-gray-300"
                     placeholder="Nhập họ của bạn"

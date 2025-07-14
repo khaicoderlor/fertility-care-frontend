@@ -20,6 +20,10 @@ import DoctorProfile from "./pages/doctor/DoctorProfile";
 import DoctorFeedback from "./pages/doctor/DoctorFeedback";
 import DoctorPost from "./pages/doctor/DoctorPost";
 import DoctorSchedulePage from "./pages/doctor/DoctorSchedulePage";
+import DoctorStatisticChartPage from "./pages/doctor/DoctorStatisticChart";
+import AdminDashboard from "./pages/admin/AdminDashboardPage";
+import PrivateRouteCompetence from "./routes/PrivateRouteCompetence";
+import AppointmentTable from "./components/progress/AppointmentTable";
 
 function App() {
   return (
@@ -41,6 +45,7 @@ function App() {
             <Route index element={<ProfilePage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="orders" element={<OrderInfoListWrapper />} />
+            <Route path="appointments" element={<AppointmentTable/>}/>
             <Route
               path="payment-histories"
               element={<PaymentHistoriesTable />}
@@ -85,18 +90,28 @@ function App() {
             }
           />
 
-          <Route path="/doctor" element={
-            <PrivateRoute>
-              <DoctorDashboard />
-            </PrivateRoute>
-          }>
-            <Route index element={<PatientTable/>}/> 
-            <Route path="my-patients" element={<PatientTable/>}/>
-            <Route path="my-profile" element={<DoctorProfile/>}/>
-            <Route path="work-schedules" element={<DoctorSchedulePage/>}/>
-            <Route path="my-feedback" element={<DoctorFeedback/>}/>
-            <Route path="my-posts" element={<DoctorPost/>}/>
+          <Route
+            path="/doctor"
+            element={
+                <DoctorDashboard />
+            }
+          >
+            <Route index element={<DoctorStatisticChartPage />} />
+            <Route path="my-patients" element={<PatientTable />} />
+            <Route path="my-profile" element={<DoctorProfile />} />
+            <Route path="work-schedules" element={<DoctorSchedulePage />} />
+            <Route path="my-feedback" element={<DoctorFeedback />} />
+            <Route path="my-posts" element={<DoctorPost />} />
           </Route>
+
+          <Route
+            path="/admin"
+            element={
+              <PrivateRouteCompetence>
+                <AdminDashboard />
+              </PrivateRouteCompetence>
+            }
+          ></Route>
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>

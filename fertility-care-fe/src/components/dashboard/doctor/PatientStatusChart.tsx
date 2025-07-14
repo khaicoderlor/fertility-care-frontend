@@ -1,7 +1,12 @@
 import React from "react";
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import {
+  ORDER_CLOSED,
+  ORDER_COMPLETED,
+  ORDER_PROGRESS,
+} from "../../../constants/OrderStatus";
 
-interface PatientStatusData {
+export interface PatientStatusData {
   name: string;
   value: number;
   color: string;
@@ -12,10 +17,23 @@ interface PatientStatusChartProps {
 }
 
 const PatientStatusChart: React.FC<PatientStatusChartProps> = ({ data }) => {
+  const getStatusOrder = (status: string) => {
+    switch (status) {
+      case ORDER_COMPLETED:
+        return "Hoàn thành";
+      case ORDER_PROGRESS:
+        return "Đang tiến hành";
+      case ORDER_CLOSED:
+        return "Đã đóng";
+      default:
+        return "Bị hủy";
+    }
+  };
+
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-6">
-        Tình trạng bệnh nhân
+        Tình trạng điều trị của bệnh nhân
       </h3>
       <div className="h-64">
         <ResponsiveContainer width="100%" height="100%">
@@ -45,7 +63,9 @@ const PatientStatusChart: React.FC<PatientStatusChartProps> = ({ data }) => {
                 className="w-3 h-3 rounded-full mr-2"
                 style={{ backgroundColor: item.color }}
               ></div>
-              <span className="text-sm text-gray-600">{item.name}</span>
+              <span className="text-sm text-gray-600">
+                {getStatusOrder(item.name)}
+              </span>
             </div>
             <span className="text-sm font-medium text-gray-900">
               {item.value}

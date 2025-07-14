@@ -10,7 +10,7 @@ import {
 } from "recharts";
 import CustomTooltip from "./CustomTooltip";
 
-interface PatientData {
+export interface PatientData {
   month: string;
   patients: number;
   appointments: number;

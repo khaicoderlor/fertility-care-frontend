@@ -3,7 +3,7 @@ import axiosInstance from "../../apis/AxiosInstance";
 import type { Doctor } from "../../models/Doctor";
 import type { PatientDashboard } from "../../models/PatientDashboard";
 import { Link, Outlet, useLocation } from "react-router-dom";
-import "../../assets/css/DotorDashboardStyle.css";
+import "../../assets/css/DoctorDashboardStyle.css";
 import { convertFullName } from "../../functions/CommonFunction";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import { PiUsersThreeFill } from "react-icons/pi";

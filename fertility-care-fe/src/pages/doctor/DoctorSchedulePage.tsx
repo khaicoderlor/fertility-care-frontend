@@ -6,19 +6,20 @@ import axiosInstance from "../../apis/AxiosInstance";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 
 const DoctorSchedulePage: React.FC = () => {
-  const {doctorId} = useCompetenceAuth();
+  const { doctorId } = useCompetenceAuth();
   const [schedules, setSchedules] = useState<ScheduleItem[]>([]);
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
 
-   useEffect(() => {
+  useEffect(() => {
     const fetchWeeklyWorking = async () => {
       try {
         const today = new Date();
-        const weekDate = today.toISOString().split("T")[0]; 
+        const weekDate = today.toISOString().split("T")[0];
 
-        const response = await axiosInstance.get(`/doctors/${doctorId}/weekly-schedules`, {
-          params: { weekDate },
-        });
+        console.log(weekDate);
+        const response = await axiosInstance.get(
+          `/doctor-schedules/${doctorId}/weekly-schedules?weekDate=${weekDate}`
+        );
 
         setSchedules(response.data.data);
       } catch (error) {
@@ -33,10 +34,8 @@ const DoctorSchedulePage: React.FC = () => {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 mb-8">
-      <ScheduleHeader onOpenModal={() => setShowModal(true)} />
-      <Calendar
-        schedules={schedules}
-      />
+      <ScheduleHeader />
+      <Calendar schedules={schedules} />
       {/* <ScheduleModal
         open={showModal}
         onClose={() => setShowModal(false)}

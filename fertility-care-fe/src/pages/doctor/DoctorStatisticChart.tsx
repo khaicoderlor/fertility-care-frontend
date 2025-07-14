@@ -5,14 +5,23 @@ import {
   UsersIcon,
   CalendarDaysIcon,
   StarIcon,
-  CurrencyDollarIcon,
 } from "@heroicons/react/24/outline";
 import StatCard from "../../components/dashboard/doctor/StatCard";
 import FeedbackChart from "../../components/dashboard/doctor/FeedbackChart";
-import PatientAppointmentChart from "../../components/dashboard/doctor/PatientAppointmentChart";
-import PatientStatusChart from "../../components/dashboard/doctor/PatientStatusChart";
-import RecentPatientsTable from "../../components/dashboard/doctor/RecentPatientsTable";
+import PatientAppointmentChart, {
+  type PatientData,
+} from "../../components/dashboard/doctor/PatientAppointmentChart";
+import PatientStatusChart, {
+  type PatientStatusData,
+} from "../../components/dashboard/doctor/PatientStatusChart";
+import RecentPatientsTable, {
+  type RecentPatient,
+} from "../../components/dashboard/doctor/RecentPatientsTable";
 import QuickActions from "../../components/dashboard/doctor/QuickActions";
+import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
+import { useEffect, useState } from "react";
+import axiosInstance from "../../apis/AxiosInstance";
+import type DoctorStatisticOverall from "../../models/statistics/DoctorStatisticOverall";
 
 // Mock data - replace with actual API calls
 const monthlyFeedbackData = [
@@ -30,123 +39,131 @@ const monthlyFeedbackData = [
   { month: "Dec", rating: 4.8, reviews: 40 },
 ];
 
-const monthlyPatientData = [
-  { month: "Jan", patients: 45, appointments: 120 },
-  { month: "Feb", patients: 52, appointments: 135 },
-  { month: "Mar", patients: 48, appointments: 128 },
-  { month: "Apr", patients: 65, appointments: 165 },
-  { month: "May", patients: 58, appointments: 145 },
-  { month: "Jun", patients: 72, appointments: 180 },
-  { month: "Jul", patients: 68, appointments: 175 },
-  { month: "Aug", patients: 55, appointments: 140 },
-  { month: "Sep", patients: 62, appointments: 155 },
-  { month: "Oct", patients: 70, appointments: 170 },
-  { month: "Nov", patients: 75, appointments: 190 },
-  { month: "Dec", patients: 80, appointments: 200 },
-];
+export default function DoctorStatisticChartPage() {
+  const { doctorId } = useCompetenceAuth();
+  const [doctorStatisticOverall, setDoctorStatisticOverall] =
+    useState<DoctorStatisticOverall>();
+  const [patientsData, setPatientsData] = useState<PatientData[]>();
+  const [recentPatients, setRecentPatients] = useState<RecentPatient[]>();
+  const [patientStatusData, setPatientStatusData] =
+    useState<PatientStatusData[]>();
 
-const patientStatusData = [
-  { name: "Đang điều trị", value: 45, color: "#3B82F6" },
-  { name: "Đã khỏi", value: 120, color: "#10B981" },
-  { name: "Tái khám", value: 35, color: "#F59E0B" },
-  { name: "Chờ kết quả", value: 20, color: "#EF4444" },
-];
+  useEffect(() => {
+    const fetchOverallStatistic = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/statistics/doctors/${doctorId}/overall`
+        );
 
-const recentPatients = [
-  {
-    id: 1,
-    name: "Nguyễn Văn A",
-    age: 35,
-    condition: "Cao huyết áp",
-    lastVisit: "2024-01-15",
-    status: "Đang điều trị",
-  },
-  {
-    id: 2,
-    name: "Trần Thị B",
-    age: 42,
-    condition: "Tiểu đường",
-    lastVisit: "2024-01-14",
-    status: "Tái khám",
-  },
-  {
-    id: 3,
-    name: "Lê Văn C",
-    age: 28,
-    condition: "Viêm họng",
-    lastVisit: "2024-01-13",
-    status: "Đã khỏi",
-  },
-  {
-    id: 4,
-    name: "Phạm Thị D",
-    age: 55,
-    condition: "Đau khớp",
-    lastVisit: "2024-01-12",
-    status: "Đang điều trị",
-  },
-  {
-    id: 5,
-    name: "Hoàng Văn E",
-    age: 38,
-    condition: "Dạ dày",
-    lastVisit: "2024-01-11",
-    status: "Chờ kết quả",
-  },
-];
+        setDoctorStatisticOverall(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-export default function DoctorDashboard() {
+    fetchOverallStatistic();
+  }, [doctorId]);
+
+  useEffect(() => {
+    const fetchPatientsAppointmentsMonthly = async () => {
+      const date = new Date();
+      try {
+        const response = await axiosInstance.get(
+          `/statistics/patients-appointments/${doctorId}/monthly?year=${date.getFullYear()}`
+        );
+        setPatientsData(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchPatientsAppointmentsMonthly();
+  }, [doctorId]);
+
+  useEffect(() => {
+    const s = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/doctors/${doctorId}/recent-patients`
+        );
+        setRecentPatients(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    s();
+  }, [doctorId]);
+
+  useEffect(() => {
+    const g = async () => {
+      try {
+        const response = await axiosInstance.get(
+          `/statistics/orders-status/${doctorId}/overall`
+        );
+
+        setPatientStatusData(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    g();
+  }, [doctorId]);
+
+  const getChangeType = (s: number): "increase" | "decrease" => {
+    if (s < 0) {
+      return "decrease";
+    } else return "increase";
+  };
+
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Tổng bệnh nhân"
-          value="220"
-          change="+12%"
-          changeType="increase"
+          value={doctorStatisticOverall?.totalPatients ?? 0}
+          change={`${doctorStatisticOverall?.comparingPatientsPreviousMonth}%`}
+          changeType={getChangeType(
+            doctorStatisticOverall?.comparingPatientsPreviousMonth ?? -1
+          )}
           icon={<UsersIcon className="w-6 h-6 text-white" />}
           color="bg-blue-500"
         />
 
         <StatCard
           title="Cuộc hẹn tháng này"
-          value="85"
-          change="+8%"
-          changeType="increase"
+          value={doctorStatisticOverall?.totalAppointments ?? 0}
+          change={`${doctorStatisticOverall?.comparingAppointmentsPreviousMonth}%`}
+          changeType={getChangeType(
+            doctorStatisticOverall?.comparingAppointmentsPreviousMonth ?? -1
+          )}
           icon={<CalendarDaysIcon className="w-6 h-6 text-white" />}
           color="bg-green-500"
         />
 
         <StatCard
           title="Đánh giá trung bình"
-          value="4.8"
-          change="+0.2"
-          changeType="increase"
+          value={doctorStatisticOverall?.totalRate ?? 0}
+          change={`${doctorStatisticOverall?.comparingRatePreviousMonth}%`}
+          changeType={getChangeType(
+            doctorStatisticOverall?.comparingRatePreviousMonth ?? -1
+          )}
           icon={<StarIcon className="w-6 h-6 text-white" />}
           color="bg-yellow-500"
-        />
-
-        <StatCard
-          title="Doanh thu tháng"
-          value="₫45.2M"
-          change="+15%"
-          changeType="increase"
-          icon={<CurrencyDollarIcon className="w-6 h-6 text-white" />}
-          color="bg-purple-500"
         />
       </div>
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <FeedbackChart data={monthlyFeedbackData} />
-        <PatientAppointmentChart data={monthlyPatientData} />
+        <PatientAppointmentChart data={patientsData ?? []} />
       </div>
 
       {/* Patient Status and Recent Patients */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <PatientStatusChart data={patientStatusData} />
-        <RecentPatientsTable patients={recentPatients} />
+        <PatientStatusChart data={patientStatusData ?? []} />
+        <RecentPatientsTable patients={recentPatients ?? []} />
       </div>
 
       {/* Quick Actions */}
