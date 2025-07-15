@@ -57,12 +57,12 @@ export default function DoctorFeedback() {
     }
 
     return stars
-  }
+  } 
 
   useEffect(() => {
     const fetchFeedbacks = async () => {
       try {
-        const response = await axiosInstance.get(`/doctors/${doctorId}`)
+        const response = await axiosInstance.get(`/feedbacks/${doctorId}/doctor-sides`)
         setFeedbacks(response.data.data)
       } catch(error) {
         console.log(error)
