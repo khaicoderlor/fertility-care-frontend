@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import Sidebar from "../../components/dashboard/admin/Sidebar";
 import StatsCard from "../../components/dashboard/admin/StatsCard";
@@ -9,6 +10,7 @@ import { PaymentTable } from "../../components/dashboard/admin/PaymentTable";
 import type OrderStepPayment from "../../models/OrderStepPayment";
 import axiosInstance from "../../apis/AxiosInstance";
 import { ReportProgressPatient } from "../../components/dashboard/admin/ReportProgressPatient";
+import { UserTable } from "../../components/dashboard/admin/UserTable";
 
 interface StatCard {
   title: string;
@@ -98,6 +100,26 @@ const AdminDashboard: React.FC = () => {
           </div>
         );
 
+      case "users":
+        return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
+              <p className="text-gray-600 mt-1">
+                Tổng quan hoạt động phòng khám
+              </p>
+            </div>
+            {/* Stats Cards */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {statCards.map((stat, index) => (
+                <StatsCard key={index} stat={stat} />
+              ))}
+            </div>{" "}
+            {/* Chart Section */}
+            <UserTable />
+          </div>
+        );  
+
       case "patients":
         return (
           <div className="space-y-8">
@@ -124,8 +146,8 @@ const AdminDashboard: React.FC = () => {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-800">Lịch hẹn</h2>
-              <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
+              <h2 className="text-3xl font-bold text-gray-800">Theo dõi các quá trình điều trị</h2>
+              <p className="text-gray-600 mt-1">Quản lý báo cáo điều trị bệnh nhân</p>
             </div>
             <ReportProgressPatient patientsOrders={reportProgresses}/>
           </div>

@@ -1,50 +1,76 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ManagerSidebar from "../../components/dashboard/manager/ManagerSidebar";
 import DoctorFeedbackManagement from "../../components/dashboard/manager/DoctorFeedbackManagement";
-import {
-  doctorFeedbackData,
-  getDoctorFeedbackSummary,
-} from "../../data/DataManagerFeedbackDoctor";
-import type { DoctorFeedback } from "../../data/DataManagerFeedbackDoctor";
 import "../../assets/css/StyleManagerFeedbackDoctor.css";
+import type { Patient } from "../../models/Patient";
+import type { Doctor } from "../../models/Doctor";
+import type { TreatmentService } from "../../models/TreatmentService";
+import type Feedback from "../../models/Feedback";
+import axiosInstance from "../../apis/AxiosInstance";
+import { convertFullName } from '../../functions/CommonFunction';
+import { RiFeedbackFill } from "react-icons/ri";
+import { TbAlarmAverage } from "react-icons/tb";
+
+export interface FeedbackSideManager {
+  patient: Patient;
+  doctor: Doctor;
+  treatmentService: TreatmentService;
+  feedback: Feedback;
+}
+
+interface BestRateDoctor {
+  doctor: Doctor
+  rating: number
+  totalFeedbacks: number
+}
 
 const ManagerDashboardFeedbackDoctor: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("doctor-feedback");
-  const summaryData = getDoctorFeedbackSummary();
-
-  const handleViewDetails = (feedback: DoctorFeedback) => {
-    console.log("Viewing feedback details:", feedback);
-    // TODO: Implement view details functionality (modal, detail page, etc.)
-  };
-
-  const handleVerifyFeedback = (feedbackId: string) => {
-    console.log("Verifying feedback:", feedbackId);
-    // TODO: Implement feedback verification functionality
-  };
-
-  // Calculate overall stats
-  const totalFeedbacks = doctorFeedbackData.length;
+  const [feedbacksData, setFeedbacksData] = useState<FeedbackSideManager[]>([])
+  const [bestRateDoctor, setBestRateDoctor] = useState<BestRateDoctor>()
+  const totalFeedbacks = feedbacksData.length;
   const averageRating =
-    doctorFeedbackData.reduce((sum, feedback) => sum + feedback.rating, 0) /
+    feedbacksData.reduce((sum, feedback) => sum + feedback.feedback.rating, 0) /
     totalFeedbacks;
-  const verifiedCount = doctorFeedbackData.filter((f) => f.isVerified).length;
-  const unverifiedCount = doctorFeedbackData.filter(
-    (f) => !f.isVerified
-  ).length;
 
   const ratingCounts = {
-    star5: doctorFeedbackData.filter((f) => f.rating === 5).length,
-    star4: doctorFeedbackData.filter((f) => f.rating === 4).length,
-    star3: doctorFeedbackData.filter((f) => f.rating === 3).length,
-    star2: doctorFeedbackData.filter((f) => f.rating === 2).length,
-    star1: doctorFeedbackData.filter((f) => f.rating === 1).length,
+    star5: feedbacksData.filter((f) => f.feedback.rating === 5).length,
+    star4: feedbacksData.filter((f) => f.feedback.rating === 4).length,
+    star3: feedbacksData.filter((f) => f.feedback.rating === 3).length,
+    star2: feedbacksData.filter((f) => f.feedback.rating === 2).length,
+    star1: feedbacksData.filter((f) => f.feedback.rating === 1).length,
   };
 
-  const topRatedDoctor = summaryData.length > 0 ? summaryData[0] : null;
+  useEffect(() => {
+    const fetchBestRateDoctor = async () => {
+      try {
+        const response = await axiosInstance.get('/feedbacks/best-rate')
+
+        setBestRateDoctor(response.data.data)
+      } catch(error) {  
+        console.log(error)
+      }
+    }
+
+    fetchBestRateDoctor()
+  }, [])
+
+  useEffect(() => {
+    const fetchFeedbackData = async () => {
+      try {
+        const response = await axiosInstance.get("/feedbacks/full-details");
+
+        setFeedbacksData(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchFeedbackData();
+  }, []);
 
   return (
     <div className="manager-dashboard">
-      <ManagerSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <ManagerSidebar />
 
       <div className="manager-main-content">
         <div className="manager-dashboard-header">
@@ -71,7 +97,7 @@ const ManagerDashboardFeedbackDoctor: React.FC = () => {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-star text-blue-600"></i>
+                  <RiFeedbackFill className="w-5 h-5"/>
                 </div>
               </div>
             </div>
@@ -87,39 +113,7 @@ const ManagerDashboardFeedbackDoctor: React.FC = () => {
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-chart-line text-yellow-600"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Đã xác thực
-                  </p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {verifiedCount}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-check-circle text-green-600"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Chờ xác thực
-                  </p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    {unverifiedCount}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-clock text-orange-600"></i>
+                  <TbAlarmAverage className="w-7 h-7"/>
                 </div>
               </div>
             </div>
@@ -167,24 +161,24 @@ const ManagerDashboardFeedbackDoctor: React.FC = () => {
               <h3 className="text-lg font-semibold text-gray-800 mb-4">
                 Bác sĩ được đánh giá cao nhất
               </h3>
-              {topRatedDoctor ? (
+              {bestRateDoctor ? (
                 <div className="flex items-center">
                   <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                    <i className="fas fa-user-md text-blue-600 text-xl"></i>
+                    <img src={bestRateDoctor.doctor.profile.avatarUrl} className="rounded-full text-blue-600 text-xl"/>
                   </div>
                   <div className="flex-1">
                     <h4 className="font-semibold text-gray-900">
-                      {topRatedDoctor.doctorName}
+                      {convertFullName(bestRateDoctor.doctor.profile)}
                     </h4>
                     <p className="text-sm text-gray-600 mb-2">
-                      {topRatedDoctor.specialization}
+                      {bestRateDoctor.doctor.specialization}
                     </p>
                     <div className="flex items-center">
                       <span className="text-2xl font-bold text-yellow-600 mr-2">
-                        {topRatedDoctor.averageRating.toFixed(1)}★
+                        {bestRateDoctor.rating.toFixed(1)}★
                       </span>
                       <span className="text-sm text-gray-600">
-                        ({topRatedDoctor.totalFeedbacks} đánh giá)
+                        ({bestRateDoctor.totalFeedbacks} đánh giá)
                       </span>
                     </div>
                   </div>
@@ -197,12 +191,7 @@ const ManagerDashboardFeedbackDoctor: React.FC = () => {
 
           {/* Feedback Management */}
           <div className="feedback-management-container">
-            <DoctorFeedbackManagement
-              feedbackData={doctorFeedbackData}
-              summaryData={summaryData}
-              onViewDetails={handleViewDetails}
-              onVerifyFeedback={handleVerifyFeedback}
-            />
+            <DoctorFeedbackManagement feedbackData={feedbacksData} />
           </div>
         </div>
       </div>

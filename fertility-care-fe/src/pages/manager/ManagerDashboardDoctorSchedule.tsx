@@ -1,26 +1,52 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import ManagerSidebar from "../../components/dashboard/manager/ManagerSidebar";
-import DoctorScheduleManagement from "../../components/dashboard/manager/DoctorScheduleManagement";
-import { allDoctors, scheduleData } from "../../data/DataAdminDoctorPage";
-import type { ScheduleSlot } from "../../data/DataAdminDoctorPage";
+import DoctorScheduleManagement, {
+  type DoctorScheduleSideManager,
+} from "../../components/dashboard/manager/DoctorScheduleManagement";
 import "../../assets/css/StyleManagerDashboardDoctorSchedule.css";
+import { MdDateRange } from "react-icons/md";
+import { FaUserDoctor } from "react-icons/fa6";
+import type { Doctor } from "../../models/Doctor";
+import axiosInstance from "../../apis/AxiosInstance";
 
 const ManagerDashboardDoctorSchedule: React.FC = () => {
-  const [activeTab, setActiveTab] = useState("doctor-schedule");
-  const [schedules, setSchedules] = useState<ScheduleSlot[]>(scheduleData);
+  const [doctors, setDoctors] = useState<Doctor[]>([]);
+  const [doctorsSchedules, setDoctorsSchedules] = useState<
+    DoctorScheduleSideManager[]
+  >([]);
 
-  const handleAddSchedule = (newSchedule: Omit<ScheduleSlot, "id">) => {
-    const scheduleWithId: ScheduleSlot = {
-      ...newSchedule,
-      id: `schedule_${Date.now()}`,
+  useEffect(() => {
+    const fetchDoctors = async () => {
+      try {
+        const response = await axiosInstance.get("/doctors");
+
+        setDoctors(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
     };
-    setSchedules((prev) => [...prev, scheduleWithId]);
-    console.log("Added new schedule:", scheduleWithId);
-  };
+
+    fetchDoctors();
+  }, []);
+
+  useEffect(() => {
+    const fetchDoctorSchedules = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "/doctor-schedules/manager-sides"
+        );
+
+        setDoctorsSchedules(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDoctorSchedules();
+  }, []);
 
   return (
     <div className="manager-dashboard">
-      <ManagerSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+      <ManagerSidebar />
 
       <div className="manager-main-content">
         <div className="manager-dashboard-header">
@@ -42,31 +68,14 @@ const ManagerDashboardDoctorSchedule: React.FC = () => {
                     Tổng bác sĩ
                   </p>
                   <p className="text-2xl font-bold text-gray-900">
-                    {allDoctors.length}
+                    {doctors.length}
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-user-md text-blue-600"></i>
+                  <FaUserDoctor className="w-6 h-6 text-blue-600" />
                 </div>
               </div>
             </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">
-                    Đang hoạt động
-                  </p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {allDoctors.filter((d) => d.status === "active").length}
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-check-circle text-green-600"></i>
-                </div>
-              </div>
-            </div>
-
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
               <div className="flex items-center justify-between">
                 <div>
@@ -75,133 +84,28 @@ const ManagerDashboardDoctorSchedule: React.FC = () => {
                   </p>
                   <p className="text-2xl font-bold text-yellow-600">
                     {
-                      schedules.filter((s) => {
-                        const today = new Date().toISOString().split("T")[0];
-                        return s.date === today;
-                      }).length
+                      doctorsSchedules
+                        .flatMap((entry) => entry.schedules)
+                        .filter((s) => {
+                          const today = new Date().toISOString().split("T")[0];
+                          return s.workDate === today;
+                        }).length
                     }
                   </p>
                 </div>
                 <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-calendar-day text-yellow-600"></i>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-sm font-medium text-gray-600">Tuần này</p>
-                  <p className="text-2xl font-bold text-purple-600">
-                    {
-                      schedules.filter((s) => {
-                        const scheduleDate = new Date(s.date);
-                        const today = new Date();
-                        const startOfWeek = new Date(today);
-                        const day = today.getDay();
-                        const diff =
-                          today.getDate() - day + (day === 0 ? -6 : 1);
-                        startOfWeek.setDate(diff);
-                        startOfWeek.setHours(0, 0, 0, 0);
-
-                        const endOfWeek = new Date(startOfWeek);
-                        endOfWeek.setDate(startOfWeek.getDate() + 6);
-                        endOfWeek.setHours(23, 59, 59, 999);
-
-                        return (
-                          scheduleDate >= startOfWeek &&
-                          scheduleDate <= endOfWeek
-                        );
-                      }).length
-                    }
-                  </p>
-                </div>
-                <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <i className="fas fa-calendar-week text-purple-600"></i>
+                  <MdDateRange className="w-6 h-6 text-yellow-600" />
                 </div>
               </div>
             </div>
           </div>
 
           {/* Doctor Schedule Management */}
-          <div className="schedule-management-container">
-            <DoctorScheduleManagement
-              doctors={allDoctors}
-              schedules={schedules}
-              onAddSchedule={handleAddSchedule}
-            />
-          </div>
-
-          {/* Recent Activities */}
-          <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h3 className="text-lg font-semibold text-gray-800">
-                Hoạt động gần đây
-              </h3>
-              <button className="btn btn-outline">
-                <i className="fas fa-external-link-alt"></i>
-                Xem tất cả
-              </button>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex items-center p-4 bg-blue-50 rounded-lg">
-                <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <i className="fas fa-calendar-plus text-blue-600"></i>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">
-                    <strong>BS. Nguyễn A</strong> đã thêm lịch làm việc
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Ca sáng 15/01/2024 - 2 giờ trước
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center p-4 bg-green-50 rounded-lg">
-                <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center mr-4">
-                  <i className="fas fa-user-check text-green-600"></i>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">
-                    <strong>BS. Lê B</strong> đã hoàn thành ca làm việc
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Ca chiều 14/01/2024 - 4 giờ trước
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center p-4 bg-yellow-50 rounded-lg">
-                <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
-                  <i className="fas fa-calendar-edit text-yellow-600"></i>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">
-                    <strong>BS. Hoàng C</strong> đã thay đổi lịch làm việc
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Ca tối 16/01/2024 - 6 giờ trước
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-center p-4 bg-red-50 rounded-lg">
-                <div className="w-10 h-10 bg-red-100 rounded-full flex items-center justify-center mr-4">
-                  <i className="fas fa-calendar-times text-red-600"></i>
-                </div>
-                <div className="flex-1">
-                  <p className="font-medium text-gray-900">
-                    <strong>BS. Đặng D</strong> đã hủy lịch làm việc
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    Ca sáng 17/01/2024 - 8 giờ trước
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
+          <DoctorScheduleManagement
+            doctors={doctors}
+            doctorSchedules={doctorsSchedules}
+            setDoctorSchedules={setDoctorsSchedules}
+          />
         </div>
       </div>
     </div>

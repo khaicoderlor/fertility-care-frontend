@@ -5,7 +5,7 @@ import { IoFilterSharp } from "react-icons/io5";
 import { IoMdCheckmark } from "react-icons/io";
 import { IoBanOutline } from "react-icons/io5";
 import { useState } from "react";
-import { convertName } from "../../../functions/CommonFunction";
+import { convertFullName, convertName } from "../../../functions/CommonFunction";
 import type { Doctor } from "../../../models/Doctor";
 import type { Order } from "../../../models/Order";
 
@@ -148,7 +148,7 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
             />
             <div>
               <h4 className="text-lg font-bold">
-                {convertName(selectedDoctor.doctor.profile)}
+                {convertFullName(selectedDoctor.doctor.profile)}
               </h4>
               <p className="text-sm text-gray-600">
                 {selectedDoctor.doctor.degree} •{" "}
@@ -210,7 +210,7 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
                   <tr key={o.id} className="hover:bg-gray-50">
                     <td className="px-4 py-3">{o.id}</td>
                     <td className="px-4 py-3">
-                      {convertName(o.patient?.profile ?? {})}
+                      {convertFullName(o.patient?.profile ?? {})}
                     </td>
                     <td className="px-4 py-3">
                       {o.treatmentService?.name ?? "-"}

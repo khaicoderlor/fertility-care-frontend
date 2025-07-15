@@ -1,53 +1,54 @@
-import React, { useState, useMemo } from "react";
-import type {
-  DoctorFeedback,
-  DoctorFeedbackSummary,
-} from "../../../data/DataManagerFeedbackDoctor";
+import React, { useState, useMemo, useEffect } from "react";
 import {
-  formatDate,
   renderStars,
   getRatingColor,
   ratingFilterOptions,
-  verificationFilterOptions,
 } from "../../../data/DataManagerFeedbackDoctor";
+import type { FeedbackLatestSideManager } from "../../../models/FeedbackLatest";
+import axiosInstance from "../../../apis/AxiosInstance";
+import { convertFullName } from "../../../functions/CommonFunction";
+import { TbListDetails } from "react-icons/tb";
+import type { FeedbackSideManager } from "../../../pages/manager/ManagerDashboardFeedbackDoctor";
+import { IoSearch } from "react-icons/io5";
 
 interface DoctorFeedbackManagementProps {
-  feedbackData: DoctorFeedback[];
-  summaryData: DoctorFeedbackSummary[];
-  onViewDetails?: (feedback: DoctorFeedback) => void;
-  onVerifyFeedback?: (feedbackId: string) => void;
+  feedbackData: FeedbackSideManager[];
 }
 
 const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
   feedbackData,
-  summaryData,
-  onViewDetails,
-  onVerifyFeedback,
 }) => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [selectedFeedback, setSelectedFeedback] =
+    useState<FeedbackSideManager | null>(null);
   const [doctorFilter, setDoctorFilter] = useState("");
   const [ratingFilter, setRatingFilter] = useState("all");
-  const [verificationFilter, setVerificationFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const [viewMode, setViewMode] = useState<"summary" | "detailed">("summary");
+  const [feedbacksLatest, setFeedbacksLatest] = useState<
+    FeedbackLatestSideManager[]
+  >([]);
   const itemsPerPage = 10;
 
-  // Get unique doctors for filter
   const doctors = useMemo(() => {
-    const uniqueDoctors = feedbackData.reduce((acc, feedback) => {
-      if (!acc.includes(feedback.doctorName)) {
-        acc.push(feedback.doctorName);
-      }
-      return acc;
-    }, [] as string[]);
+    const uniqueDoctors = feedbackData
+      .map((x) => x.doctor)
+      .reduce((acc, doctor) => {
+        if (!acc.includes(convertFullName(doctor.profile))) {
+          acc.push(convertFullName(doctor.profile));
+        }
+        return acc;
+      }, [] as string[]);
     return uniqueDoctors.sort();
   }, [feedbackData]);
 
   // Filter data for detailed view
   const filteredFeedbacks = useMemo(() => {
     return feedbackData.filter((feedback) => {
-      const doctorName = feedback.doctorName.toLowerCase();
-      const patientName = feedback.patientName.toLowerCase();
+      const doctorName = convertFullName(feedback.doctor.profile).toLowerCase();
+      const patientName = convertFullName(
+        feedback.patient.profile ?? {}
+      ).toLowerCase();
       const searchLower = searchTerm.toLowerCase();
 
       const matchesSearch =
@@ -55,28 +56,17 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
       const matchesDoctor =
         !doctorFilter || doctorName.includes(doctorFilter.toLowerCase());
       const matchesRating =
-        ratingFilter === "all" || feedback.rating.toString() === ratingFilter;
-      const matchesVerification =
-        verificationFilter === "all" ||
-        (verificationFilter === "verified" && feedback.isVerified) ||
-        (verificationFilter === "unverified" && !feedback.isVerified);
+        ratingFilter === "all" ||
+        feedback.feedback.rating.toString() === ratingFilter;
 
-      return (
-        matchesSearch && matchesDoctor && matchesRating && matchesVerification
-      );
+      return matchesSearch && matchesDoctor && matchesRating;
     });
-  }, [
-    feedbackData,
-    searchTerm,
-    doctorFilter,
-    ratingFilter,
-    verificationFilter,
-  ]);
+  }, [feedbackData, searchTerm, doctorFilter, ratingFilter]);
 
   // Filter summary data
   const filteredSummary = useMemo(() => {
-    return summaryData.filter((summary) => {
-      const doctorName = summary.doctorName.toLowerCase();
+    return feedbacksLatest.filter((summary) => {
+      const doctorName = convertFullName(summary.doctor.profile).toLowerCase();
       const searchLower = searchTerm.toLowerCase();
 
       const matchesSearch = doctorName.includes(searchLower);
@@ -85,7 +75,7 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
 
       return matchesSearch && matchesDoctor;
     });
-  }, [summaryData, searchTerm, doctorFilter]);
+  }, [feedbacksLatest, searchTerm, doctorFilter]);
 
   // Pagination for detailed view
   const totalPages = Math.ceil(filteredFeedbacks.length / itemsPerPage);
@@ -94,17 +84,23 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleViewDetails = (feedback: DoctorFeedback) => {
-    if (onViewDetails) {
-      onViewDetails(feedback);
-    }
+  const handleViewDetails = (feedback: FeedbackSideManager) => {
+    setSelectedFeedback(feedback);
   };
 
-  const handleVerifyFeedback = (feedbackId: string) => {
-    if (onVerifyFeedback) {
-      onVerifyFeedback(feedbackId);
-    }
-  };
+  useEffect(() => {
+    const fetchFeedbacksLatest = async () => {
+      try {
+        const response = await axiosInstance.get(
+          "/feedbacks/second/latest/manager-sides"
+        );
+        setFeedbacksLatest(response.data.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchFeedbacksLatest();
+  }, []);
 
   return (
     <div className="doctor-feedback-management">
@@ -129,7 +125,6 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <i className="fas fa-chart-bar mr-2"></i>
             Tổng quan
           </button>
           <button
@@ -140,7 +135,6 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
                 : "text-gray-600 hover:text-gray-900"
             }`}
           >
-            <i className="fas fa-list mr-2"></i>
             Chi tiết
           </button>
         </div>
@@ -172,7 +166,7 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
                 }
                 className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
-              <i className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+              <IoSearch className="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"/>
             </div>
           </div>
 
@@ -214,26 +208,6 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
               </select>
             </div>
           )}
-
-          {/* Verification Filter - Only show in detailed view */}
-          {viewMode === "detailed" && (
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Trạng thái xác thực
-              </label>
-              <select
-                value={verificationFilter}
-                onChange={(e) => setVerificationFilter(e.target.value)}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
-                {verificationFilterOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
         </div>
       </div>
 
@@ -243,53 +217,65 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
         <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
           {filteredSummary.map((summary) => (
             <div
-              key={summary.doctorId}
+              key={summary.doctor.id}
               className="bg-white rounded-xl shadow-sm border border-gray-200 p-6"
             >
               {/* Doctor Info */}
               <div className="flex items-center mb-4">
                 <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
-                  <i className="fas fa-user-md text-blue-600"></i>
+                  <img src={summary.doctor.profile.avatarUrl} className="rounded-full"/>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900">
-                    {summary.doctorName}
+                    {convertFullName(summary.doctor.profile)}
                   </h3>
                   <p className="text-sm text-gray-600">
-                    {summary.specialization}
+                    {summary.doctor.specialization}
                   </p>
                 </div>
               </div>
 
               {/* Rating Summary */}
               <div className="mb-4">
+                {/* Average rating: Tính từ feedbacks */}
                 <div className="flex items-center mb-2">
-                  <span
-                    className={`text-2xl font-bold ${getRatingColor(
-                      summary.averageRating
-                    )} mr-2`}
-                  >
-                    {summary.averageRating.toFixed(1)}
-                  </span>
-                  <div className="text-yellow-400 text-lg mr-2">
-                    {renderStars(Math.round(summary.averageRating))}
-                  </div>
-                  <span className="text-sm text-gray-600">
-                    ({summary.totalFeedbacks} đánh giá)
-                  </span>
+                  {(() => {
+                    const total = summary.feedbacks.length;
+                    const avg =
+                      total > 0
+                        ? summary.feedbacks.reduce(
+                            (sum, f) => sum + f.rating,
+                            0
+                          ) / total
+                        : 0;
+                    return (
+                      <>
+                        <span
+                          className={`text-2xl font-bold ${getRatingColor(
+                            avg
+                          )} mr-2`}
+                        >
+                          {avg.toFixed(1)}
+                        </span>
+                        <div className="text-yellow-400 text-lg mr-2">
+                          {renderStars(Math.round(avg))}
+                        </div>
+                        <span className="text-sm text-gray-600">
+                          ({total} đánh giá)
+                        </span>
+                      </>
+                    );
+                  })()}
                 </div>
 
-                {/* Rating Distribution */}
+                {/* Rating distribution */}
                 <div className="space-y-1">
                   {[5, 4, 3, 2, 1].map((star) => {
-                    const count =
-                      summary.ratingDistribution[
-                        `star${star}` as keyof typeof summary.ratingDistribution
-                      ];
-                    const percentage =
-                      summary.totalFeedbacks > 0
-                        ? (count / summary.totalFeedbacks) * 100
-                        : 0;
+                    const count = summary.feedbacks.filter(
+                      (f) => Math.round(f.rating) === star
+                    ).length;
+                    const total = summary.feedbacks.length;
+                    const percentage = total > 0 ? (count / total) * 100 : 0;
 
                     return (
                       <div key={star} className="flex items-center text-sm">
@@ -315,24 +301,21 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
                   Đánh giá gần đây
                 </h4>
                 <div className="space-y-2">
-                  {summary.recentFeedbacks.slice(0, 2).map((feedback) => (
-                    <div
-                      key={feedback.id}
-                      className="bg-gray-50 rounded-lg p-3"
-                    >
+                  {summary.feedbacks.slice(0, 2).map((feedback, index) => (
+                    <div key={index} className="bg-gray-50 rounded-lg p-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-yellow-400 text-sm">
                           {renderStars(feedback.rating)}
                         </span>
                         <span className="text-xs text-gray-500">
-                          {formatDate(feedback.feedbackDate)}
+                          {feedback.createdAt}
                         </span>
                       </div>
                       <p className="text-sm text-gray-700 line-clamp-2">
-                        {feedback.comment}
+                        {feedback.content}
                       </p>
                       <p className="text-xs text-gray-500 mt-1">
-                        - {feedback.patientName}
+                        - {convertFullName(feedback.patient.profile ?? {})}
                       </p>
                     </div>
                   ))}
@@ -370,24 +353,21 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 {paginatedFeedbacks.map((feedback) => (
-                  <tr key={feedback.id} className="hover:bg-gray-50">
+                  <tr key={feedback.feedback.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div>
                         <div className="text-sm font-medium text-gray-900">
-                          {feedback.doctorName}
+                          {convertFullName(feedback.doctor.profile)}
                         </div>
                         <div className="text-sm text-gray-500">
-                          {feedback.doctorSpecialization}
+                          {feedback.doctor.specialization}
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center">
-                        {feedback.isAnonymous && (
-                          <i className="fas fa-user-secret text-gray-400 mr-2"></i>
-                        )}
                         <div className="text-sm text-gray-900">
-                          {feedback.patientName}
+                          {convertFullName(feedback.patient.profile ?? {})}
                         </div>
                       </div>
                     </td>
@@ -395,42 +375,34 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
                       <div className="flex items-center">
                         <span
                           className={`text-lg font-semibold ${getRatingColor(
-                            feedback.rating
+                            feedback.feedback.rating
                           )} mr-2`}
                         >
-                          {feedback.rating}
+                          {feedback.feedback.rating}
                         </span>
                         <span className="text-yellow-400">
-                          {renderStars(feedback.rating)}
+                          {renderStars(feedback.feedback.rating)}
                         </span>
                       </div>
                       <div className="text-xs text-gray-500">
-                        {feedback.treatmentType}
+                        {feedback.treatmentService.name}
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div className="text-sm text-gray-900 max-w-xs truncate">
-                        {feedback.comment}
+                        {feedback.feedback.comment}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {formatDate(feedback.feedbackDate)}
+                      {feedback.feedback.createdAt}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <button
                         onClick={() => handleViewDetails(feedback)}
                         className="text-blue-600 hover:text-blue-900 mr-3"
                       >
-                        <i className="fas fa-eye"></i> Xem
+                        <TbListDetails className="w-3 h-3" /> Xem
                       </button>
-                      {!feedback.isVerified && (
-                        <button
-                          onClick={() => handleVerifyFeedback(feedback.id)}
-                          className="text-green-600 hover:text-green-900"
-                        >
-                          <i className="fas fa-check"></i> Xác thực
-                        </button>
-                      )}
                     </td>
                   </tr>
                 ))}
@@ -521,6 +493,69 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({
               </div>
             </div>
           )}
+        </div>
+      )}
+
+      {selectedFeedback && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg relative">
+            <button
+              onClick={() => setSelectedFeedback(null)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+            >
+              X
+            </button>
+            <h3 className="text-lg font-bold text-gray-900 mb-4">
+              Chi tiết đánh giá
+            </h3>
+            <div className="space-y-2">
+              <div>
+                <p className="text-sm text-gray-500">Bác sĩ:</p>
+                <p className="font-medium text-gray-900">
+                  {convertFullName(selectedFeedback.doctor.profile)}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Bệnh nhân:</p>
+                <p className="font-medium text-gray-900">
+                  {convertFullName(selectedFeedback.patient.profile ?? {})}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Dịch vụ điều trị:</p>
+                <p className="font-medium text-gray-900">
+                  {selectedFeedback.treatmentService.name}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Đánh giá:</p>
+                <div className="flex items-center gap-2">
+                  <span
+                    className={`font-bold ${getRatingColor(
+                      selectedFeedback.feedback.rating
+                    )}`}
+                  >
+                    {selectedFeedback.feedback.rating}
+                  </span>
+                  <span className="text-yellow-400">
+                    {renderStars(selectedFeedback.feedback.rating)}
+                  </span>
+                </div>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Nhận xét:</p>
+                <p className="text-gray-800">
+                  {selectedFeedback.feedback.comment}
+                </p>
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">Ngày đánh giá:</p>
+                <p className="text-gray-800">
+                  {selectedFeedback.feedback.createdAt}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 

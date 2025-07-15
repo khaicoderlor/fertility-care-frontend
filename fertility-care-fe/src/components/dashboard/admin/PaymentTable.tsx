@@ -126,9 +126,9 @@ export const PaymentTable = ({ payments }: PaymentTableProps) => {
             <div><strong>Bước:</strong> {selectedPayment.orderStep.treatmentStep.stepOrder} - {selectedPayment.orderStep.treatmentStep.stepName}</div>
             <div><strong>Mã thanh toán:</strong> {selectedPayment.paymentCode}</div>
             <div><strong>Mã giao dịch:</strong> {selectedPayment.transactionCode}</div>
-            <div><strong>Tổng tiền:</strong> {formatCurrency(selectedPayment.totalAmount)}₫</div>
-            <div><strong>Giá cơ bản:</strong> {formatCurrency(selectedPayment.orderStep.treatmentStep.amount)}₫</div>
-            <div><strong>Chi phí thêm:</strong> {formatCurrency(sumExtraFeeByOrderStep(selectedPayment.orderStep.appointments??[]))}₫</div>
+            <div><strong>Tổng tiền:</strong> {formatCurrency(selectedPayment.totalAmount)}</div>
+            <div><strong>Giá cơ bản:</strong> {formatCurrency(selectedPayment.orderStep.treatmentStep.amount)}</div>
+            <div><strong>Chi phí thêm:</strong> {formatCurrency(sumExtraFeeByOrderStep(selectedPayment.orderStep.appointments??[]))}</div>
             <div><strong>Phương thức:</strong> {selectedPayment.paymentMethod}</div>
             <div><strong>Ngày thanh toán:</strong> {selectedPayment.paymentDate}</div>
             <div><strong>Trạng thái:</strong> {selectedPayment.paymentStatus}</div>

@@ -10,7 +10,6 @@ import {
   ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  KeyIcon,
   CreditCardIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
@@ -34,7 +33,7 @@ export default function SideBarPatient({ patient }: SideBarProps) {
 
   return (
     <div
-      className={`fixed inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      className={` inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
         sidebarCollapsed ? "w-16" : "w-64"
       } translate-x-0`}
     >
@@ -125,17 +124,6 @@ export default function SideBarPatient({ patient }: SideBarProps) {
             >
               <CalendarIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Lịch hẹn</span>}
-            </Link>
-            <Link
-              to="/patient/change-password"
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                isActive("/patient/change-password")
-                  ? "text-pink-600 bg-pink-50"
-                  : "text-gray-700 hover:bg-gray-100"
-              } ${sidebarCollapsed ? "justify-center" : ""}`}
-            >
-              <KeyIcon className="w-5 h-5 flex-shrink-0" />
-              {!sidebarCollapsed && <span>Đổi mật khẩu</span>}
             </Link>
             <Link
               to="/patient/prescriptions"

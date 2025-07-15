@@ -24,6 +24,10 @@ import DoctorStatisticChartPage from "./pages/doctor/DoctorStatisticChart";
 import AdminDashboard from "./pages/admin/AdminDashboardPage";
 import PrivateRouteCompetence from "./routes/PrivateRouteCompetence";
 import AppointmentTable from "./components/progress/AppointmentTable";
+import { ManagerDashboardPage } from "./pages/manager/ManagerDashboardPage";
+import ManagerDashboardDoctorSchedule from "./pages/manager/ManagerDashboardDoctorSchedule";
+import ManagerDashboardFeedbackDoctor from "./pages/manager/ManagerDashboardFeedbackDoctor";
+import ManagerDashboardProgressPatient from "./pages/manager/ManagerDashboardProgressPatient";
 
 function App() {
   return (
@@ -112,10 +116,18 @@ function App() {
               </PrivateRouteCompetence>
             }
           ></Route>
+
+          <Route path="/manager" element={<ManagerDashboardPage />}>
+            <Route index element={<ManagerDashboardDoctorSchedule/>}/>
+            <Route path="schedules" element={<ManagerDashboardDoctorSchedule/>}/>
+            <Route path="feedbacks" element={<ManagerDashboardFeedbackDoctor/>}/>
+            <Route path="patients" element={<ManagerDashboardProgressPatient/>}/>
+          </Route>
+
+          
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>
-    // <MessengerApp/>
   );
 }
 

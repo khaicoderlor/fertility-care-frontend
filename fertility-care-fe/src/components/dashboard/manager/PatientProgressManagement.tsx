@@ -3,9 +3,10 @@ import type { PatientProgress } from "../../../data/DataManagerProgressPatient";
 import {
   getStatusColor,
   getStatusText,
-  formatDate,
   statusFilterOptions,
 } from "../../../data/DataManagerProgressPatient";
+import { convertFullName } from "../../../functions/CommonFunction";
+import { BiDetail } from "react-icons/bi";
 
 interface PatientProgressManagementProps {
   progressData: PatientProgress[];
@@ -20,12 +21,12 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
   const [doctorFilter, setDoctorFilter] = useState("");
   const [statusFilter, setStatusFilter] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  const itemsPerPage = 8;
 
   // Get unique doctors for filter
   const doctors = useMemo(() => {
     const uniqueDoctors = progressData.reduce((acc, progress) => {
-      const doctorName = progress.doctorName || "";
+      const doctorName = convertFullName(progress.doctor.profile??{}) || "";
       if (doctorName && !acc.includes(doctorName)) {
         acc.push(doctorName);
       }
@@ -37,8 +38,8 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
   // Filter data
   const filteredData = useMemo(() => {
     return progressData.filter((progress) => {
-      const patientName = progress.patientName?.toLowerCase() || "";
-      const doctorName = progress.doctorName?.toLowerCase() || "";
+      const patientName = convertFullName(progress.patient.profile??{})?.toLowerCase() || "";
+      const doctorName = convertFullName(progress.doctor.profile??{})?.toLowerCase() || "";
       const searchLower = searchTerm.toLowerCase();
 
       const matchesSearch =
@@ -176,6 +177,9 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                   Ngày bắt đầu
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Ngày kết thúc
+                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Trạng thái
                 </th>
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -185,24 +189,16 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {paginatedData.map((progress) => (
-                <tr key={progress.id} className="hover:bg-gray-50">
+                <tr key={progress.order.id} className="hover:bg-gray-50">
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="flex items-center">
-                      <div className="flex-shrink-0 h-10 w-10">
-                        <div className="h-10 w-10 rounded-full bg-blue-100 flex items-center justify-center">
-                          <i className="fas fa-user text-blue-600"></i>
-                        </div>
-                      </div>
-                      <div className="ml-4">
+                   
                         <div className="text-sm font-medium text-gray-900">
-                          {progress.patientName}
+                          {convertFullName(progress.patient.profile??{})}
                         </div>
-                      </div>
-                    </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm font-medium text-gray-900">
-                      {progress.doctorName}
+                      {convertFullName(progress.doctor.profile)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -237,7 +233,10 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {formatDate(progress.startDate)}
+                    {progress.startDate}
+                  </td>
+                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    {progress.endDate ?? " - "}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span
@@ -251,9 +250,9 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <button
                       onClick={() => handleViewDetails(progress)}
-                      className="text-blue-600 hover:text-blue-900 mr-3"
+                      className="text-blue-600 hover:text-blue-900 mr-3 items-center flex"
                     >
-                      <i className="fas fa-eye"></i> Xem chi tiết
+                      <BiDetail className="w-4 h-4 mr-2"/>Xem chi tiết
                     </button>
                   </td>
                 </tr>

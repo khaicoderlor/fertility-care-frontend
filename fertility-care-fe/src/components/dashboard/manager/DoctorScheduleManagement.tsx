@@ -1,51 +1,70 @@
+/* eslint-disable @typescript-eslint/no-empty-object-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState } from "react";
-import type { Doctor, ScheduleSlot } from "../../../data/DataAdminDoctorPage";
 import { shiftTypes } from "../../../data/DataAdminDoctorPage";
+import { MdDateRange } from "react-icons/md";
+import type { Doctor } from "../../../models/Doctor";
+import { convertFullName } from "../../../functions/CommonFunction";
+import { FaHeartCircleXmark } from "react-icons/fa6";
+import axiosInstance from "../../../apis/AxiosInstance";
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import type { DoctorSchedule } from "../../../models/DoctorSchedule";
+import type { Slot } from "../../../models/Slot";
 
 interface ScheduleManagementProps {
   doctors: Doctor[];
-  schedules: ScheduleSlot[];
-  onAddSchedule?: (schedule: Omit<ScheduleSlot, "id">) => void;
+  doctorSchedules: DoctorScheduleSideManager[];
+  setDoctorSchedules: React.Dispatch<
+    React.SetStateAction<DoctorScheduleSideManager[]>
+  >;
+}
+
+export interface DoctorScheduleSideManager {
+  doctor: Doctor;
+  schedules: DoctorSchedule[];
 }
 
 const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
   doctors,
-  schedules,
-  onAddSchedule,
+  doctorSchedules,
+  setDoctorSchedules,
 }) => {
   const [selectedDoctor, setSelectedDoctor] = useState("");
   const [showModal, setShowModal] = useState(false);
   const [currentWeek, setCurrentWeek] = useState(new Date());
 
-  // Modal form state
   const [formData, setFormData] = useState({
     doctorId: "",
     date: "",
     startTime: "",
     endTime: "",
+    maxAppointment: 0,
+    note: "",
     shiftType: "morning" as "morning" | "afternoon" | "evening",
   });
 
-  // Generate week dates
   const getWeekDates = (date: Date) => {
-    const week = [];
-    const startOfWeek = new Date(date);
-    const day = startOfWeek.getDay();
-    const diff = startOfWeek.getDate() - day + (day === 0 ? -6 : 1); // adjust for Sunday
-    startOfWeek.setDate(diff);
+    const week: Date[] = [];
+    const temp = new Date(date);
+    const day = temp.getDay(); // 0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7
+
+    // Tìm ngày Thứ 2 của tuần hiện tại
+    const monday = new Date(temp);
+    monday.setDate(temp.getDate() - (day === 0 ? 6 : day - 1));
 
     for (let i = 0; i < 7; i++) {
-      const currentDate = new Date(startOfWeek);
-      currentDate.setDate(startOfWeek.getDate() + i);
-      week.push(currentDate);
+      const d = new Date(monday);
+      d.setDate(monday.getDate() + i);
+      week.push(new Date(d.getFullYear(), d.getMonth(), d.getDate())); // reset giờ về 00:00
     }
+
     return week;
   };
 
   const weekDates = getWeekDates(currentWeek);
 
-  const formatDate = (date: Date) => {
-    return date.toISOString().split("T")[0];
+  const formatDate = (date: Date): string => {
+    return date.toLocaleDateString("en-CA"); // ✅ yyyy-MM-dd không bị UTC ảnh hưởng
   };
 
   const formatDisplayDate = (date: Date) => {
@@ -55,13 +74,38 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
     });
   };
 
+  const getShiftTypeFromSlot = (
+    slot: Slot
+  ): "morning" | "afternoon" | "evening" => {
+    const hour = slot.startTime.split(":")[0];
+    switch (hour) {
+      case "08":
+        return "morning";
+      case "13":
+        return "afternoon";
+      case "18":
+        return "evening";
+      default:
+        return "morning";
+    }
+  };
+
   const getSchedulesForDate = (date: Date) => {
     const dateString = formatDate(date);
-    return schedules.filter(
-      (schedule) =>
-        schedule.date === dateString &&
-        (selectedDoctor === "" || schedule.doctorId === selectedDoctor)
-    );
+
+    return doctorSchedules
+      .filter(
+        (entry) => selectedDoctor === "" || entry.doctor.id === selectedDoctor
+      )
+      .flatMap((entry) =>
+        entry.schedules
+          .filter((schedule) => schedule.workDate === dateString)
+          .map((schedule) => ({
+            ...schedule,
+            doctorName: convertFullName(entry.doctor.profile),
+            shiftType: getShiftTypeFromSlot(schedule.slot),
+          }))
+      );
   };
 
   const getShiftColor = (shiftType: string) => {
@@ -77,46 +121,71 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.doctorId ||
-      !formData.date ||
-      !formData.startTime ||
-      !formData.endTime
-    ) {
-      alert("Vui lòng điền đầy đủ thông tin bắt buộc");
-      return;
-    }
-
-    if (formData.startTime >= formData.endTime) {
-      alert("Giờ kết thúc phải sau giờ bắt đầu");
-      return;
-    }
-
-    const doctor = doctors.find((d) => d.id === formData.doctorId);
-    const newSchedule: Omit<ScheduleSlot, "id"> = {
-      ...formData,
-      doctorName: doctor?.name || "",
-      status: "available",
-    };
-
-    onAddSchedule?.(newSchedule);
-    setShowModal(false);
-    setFormData({
-      doctorId: "",
-      date: "",
-      startTime: "",
-      endTime: "",
-      shiftType: "morning",
-    });
-  };
-
   const navigateWeek = (direction: "prev" | "next") => {
     const newDate = new Date(currentWeek);
     newDate.setDate(currentWeek.getDate() + (direction === "next" ? 7 : -7));
     setCurrentWeek(newDate);
+  };
+
+  const handleCreateSchedule = async () => {
+    try {
+      let startTime = "";
+      let endTime = "";
+
+      switch (formData.shiftType) {
+        case "morning":
+          startTime = "08:00:00.0000000";
+          endTime = "12:00:00.0000000";
+          break;
+        case "afternoon":
+          startTime = "13:00:00.0000000";
+          endTime = "17:00:00.0000000";
+          break;
+        case "evening":
+          startTime = "18:00:00.0000000";
+          endTime = "22:00:00.0000000";
+          break;
+      }
+
+      const payload = {
+        doctorId: formData.doctorId,
+        date: formData.date,
+        startTime,
+        endTime,
+        maxAppointment: formData.maxAppointment,
+        note: formData.note,
+      };
+
+      console.log(payload);
+      const response = await axiosInstance.post("/doctor-schedules", payload);
+      const res: DoctorSchedule = response.data.data;
+
+      const updatedSchedules = doctorSchedules.map((entry) => {
+        if (entry.doctor.id === res.doctorId) {
+          return {
+            ...entry,
+            schedules: [...entry.schedules, res],
+          };
+        }
+        return entry;
+      });
+
+      console.log(updatedSchedules);
+
+      setDoctorSchedules(updatedSchedules);
+      setFormData({
+        doctorId: "",
+        date: "",
+        startTime: "",
+        endTime: "",
+        maxAppointment: 0,
+        note: "",
+        shiftType: "morning" as "morning" | "afternoon" | "evening",
+      });
+      setShowModal(false);
+    } catch (error) {
+      console.error("Failed to create schedule:", error);
+    }
   };
 
   return (
@@ -134,16 +203,15 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
             <option value="">Tất cả bác sĩ</option>
             {doctors.map((doctor) => (
               <option key={doctor.id} value={doctor.id}>
-                {doctor.name}
+                Bs.{convertFullName(doctor.profile)}
               </option>
             ))}
           </select>
           <button
             onClick={() => setShowModal(true)}
-            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+            className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors items-center flex justify-evenly"
           >
-            <i className="fas fa-plus mr-2"></i>
-            Thêm lịch
+            <MdDateRange className="w-6 h-6" /> Thêm lịch
           </button>
         </div>
       </div>
@@ -151,21 +219,21 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
       {/* Week Navigation */}
       <div className="flex items-center justify-between mb-4">
         <h4 className="text-md font-medium text-gray-700">
-          Tuần {formatDisplayDate(weekDates[0])} -{" "}
-          {formatDisplayDate(weekDates[6])}, {currentWeek.getFullYear()}
+          {formatDisplayDate(weekDates[0])} - {formatDisplayDate(weekDates[6])},{" "}
+          {currentWeek.getFullYear()}
         </h4>
         <div className="flex gap-2">
           <button
             onClick={() => navigateWeek("prev")}
-            className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100"
+            className="px-2 py-1 border border-gray-300 rounded-lg hover:bg-gray-100"
           >
-            <i className="fas fa-chevron-left"></i>
+            <FaChevronLeft className="w-4 h-4" />
           </button>
           <button
             onClick={() => navigateWeek("next")}
-            className="px-3 py-1 border border-gray-300 rounded-lg hover:bg-gray-100"
+            className="px-2 py-1 border border-gray-300 rounded-lg hover:bg-gray-100"
           >
-            <i className="fas fa-chevron-right"></i>
+            <FaChevronRight className="w-4 h-4" />
           </button>
         </div>
       </div>
@@ -223,11 +291,14 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                         schedule.shiftType
                       )}`}
                     >
-                      <div className="font-medium">
-                        {schedule.startTime}-{schedule.endTime}
+                      <div className="font-medium text-sm">
+                        {schedule.slot.startTime.slice(0, 5)} -{" "}
+                        {schedule.slot.endTime.slice(0, 5)}
                       </div>
-                      <div className="text-xs">
-                        {schedule.doctorName.replace("BS. ", "")}
+                      <div className="text-xs truncate">
+                        {schedule.doctorName}
+                        <br />
+                        {schedule.workDate}
                       </div>
                     </div>
                   ))}
@@ -273,12 +344,13 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                   onClick={() => setShowModal(false)}
                   className="text-gray-400 hover:text-gray-600"
                 >
-                  <i className="fas fa-times"></i>
+                  <FaHeartCircleXmark className="w-6 h-6" />
                 </button>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit} className="p-6">
+            <div className="p-6">
+              {" "}
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -298,7 +370,7 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                     <option value="">Chọn bác sĩ</option>
                     {doctors.map((doctor) => (
                       <option key={doctor.id} value={doctor.id}>
-                        {doctor.name}
+                        {convertFullName(doctor.profile)}
                       </option>
                     ))}
                   </select>
@@ -317,43 +389,6 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                     className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
                     required
                   />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Giờ bắt đầu *
-                    </label>
-                    <input
-                      type="time"
-                      value={formData.startTime}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          startTime: e.target.value,
-                        }))
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                      required
-                    />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Giờ kết thúc *
-                    </label>
-                    <input
-                      type="time"
-                      value={formData.endTime}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          endTime: e.target.value,
-                        }))
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
-                      required
-                    />
-                  </div>
                 </div>
 
                 <div>
@@ -377,8 +412,39 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Số bệnh nhân tối đa
+                  </label>
+                  <input
+                    type="number"
+                    value={formData.maxAppointment}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        maxAppointment: Number(e.target.value),
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Ghi chú cho bác sĩ (nếu có)
+                  </label>
+                  <input
+                    type="text"
+                    value={formData.note}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        note: e.target.value,
+                      }))
+                    }
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+                  />
+                </div>
               </div>
-
               <div className="flex gap-3 mt-6">
                 <button
                   type="button"
@@ -388,13 +454,14 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
                   Hủy
                 </button>
                 <button
-                  type="submit"
-                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700"
+                  type="button"
+                  onClick={() => handleCreateSchedule()}
+                  className="flex-1 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 items-center flex justify-evenly"
                 >
-                  Thêm lịch
+                  <MdDateRange className="w-6 h-6" /> Thêm lịch
                 </button>
               </div>
-            </form>
+            </div>
           </div>
         </div>
       )}

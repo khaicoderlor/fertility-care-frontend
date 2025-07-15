@@ -87,9 +87,6 @@ export default function OrderInfoList({ ordersInfo }: { ordersInfo: OrderInfo[] 
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
-                        Dr
-                      </div>
                       <span className="text-sm text-gray-700 font-medium">
                         {order.doctorName}
                       </span>
@@ -97,9 +94,6 @@ export default function OrderInfoList({ ordersInfo }: { ordersInfo: OrderInfo[] 
                   </td>
                   <td className="px-6 py-4">
                     <div className="flex items-center">
-                      <div className="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-full flex items-center justify-center text-white text-xs font-bold mr-3">
-                        {order.patientName.charAt(0).toUpperCase()}
-                      </div>
                       <span className="text-sm text-gray-700 font-medium">
                         {order.patientName}
                       </span>

@@ -7,6 +7,7 @@ import type { Patient } from "../../../models/Patient";
 import { TbReportAnalytics } from "react-icons/tb";
 import { FaFilter } from "react-icons/fa";
 import type { PatientSideAdminPage } from "./PatientTable";
+import axiosInstance from "../../../apis/AxiosInstance";
 
 export interface PatientOrderSideAdmin {
   patient: Patient;
@@ -24,13 +25,25 @@ interface ReportProgressPatientProps {
   patientsOrders: PatientSideAdminPage[];
 }
 
-export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientProps) => {
-  const [selectedOrderReport, setSelectedOrderReport] = useState<ReportProgressPatientSide>();
-  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(null);
+export const ReportProgressPatient = ({
+  patientsOrders,
+}: ReportProgressPatientProps) => {
+  const [selectedOrderReport, setSelectedOrderReport] =
+    useState<ReportProgressPatientSide>();
+  const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(
+    null
+  );
+
+  const handleViewReportDetail = async (order: Order) => {
+    const response = await axiosInstance.get(`/statistics/${order.id}/report-progress/admin-sides`)
+    setSelectedOrderReport(response.data.data)
+  }
 
   return (
     <div className="p-6 bg-white rounded-lg shadow-md">
-      <h3 className="text-xl font-semibold mb-4">📋 Danh sách đơn gói điều trị</h3>
+      <h3 className="text-xl font-semibold mb-4">
+        📋 Danh sách đơn gói điều trị
+      </h3>
 
       <div className="flex items-center justify-between mb-4">
         <input
@@ -70,20 +83,15 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
                   <td className="px-4 py-2">{po.patient.profile?.fullName}</td>
                   <td className="px-4 py-2">{ord.status}</td>
                   <td className="px-4 py-2">{ord.isFrozen ? "✔️" : "❌"}</td>
-                  <td className="px-4 py-2">{ord.totalAmount?.toLocaleString()}₫</td>
+                  <td className="px-4 py-2">
+                    {ord.totalAmount?.toLocaleString()}₫
+                  </td>
                   <td className="px-4 py-2">{ord.startDate}</td>
                   <td className="px-4 py-2">{ord.endDate}</td>
                   <td className="px-4 py-2">
                     <button
                       className="text-indigo-600 hover:text-indigo-800"
-                      onClick={() =>
-                        setSelectedOrderReport({
-                          eggs: [], // fetch or mock data
-                          embryos: [],
-                          embryosTransferred: [],
-                          order: ord,
-                        })
-                      }
+                      onClick={() => handleViewReportDetail(ord)}
                     >
                       <TbReportAnalytics className="w-5 h-5" />
                     </button>
@@ -97,7 +105,9 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
 
       {selectedOrderReport && (
         <div className="mt-8">
-          <h4 className="text-lg font-semibold mb-2">🧬 Thống kê phôi và trứng</h4>
+          <h4 className="text-lg font-semibold mb-2">
+            🧬 Thống kê phôi và trứng
+          </h4>
 
           {/* Egg Report Table */}
           <div className="overflow-x-auto mb-6">
@@ -148,7 +158,9 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
                     <td className="px-4 py-2">{em.embryoStatus}</td>
                     <td className="px-4 py-2">{em.isViable ? "✔️" : "❌"}</td>
                     <td className="px-4 py-2">{em.isFrozen ? "✔️" : "❌"}</td>
-                    <td className="px-4 py-2">{em.isTransferred ? "✔️" : "❌"}</td>
+                    <td className="px-4 py-2">
+                      {em.isTransferred ? "✔️" : "❌"}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -188,12 +200,27 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
               <h5 className="font-semibold mb-2">📦 Thông tin đơn</h5>
-              <p><strong>ID:</strong> {selectedOrderReport.order.id}</p>
-              <p><strong>Gói:</strong> {selectedOrderReport.order.treatmentService?.name}</p>
-              <p><strong>Bác sĩ:</strong> {selectedOrderReport.order.doctor?.profile?.fullName}</p>
-              <p><strong>Bắt đầu:</strong> {selectedOrderReport.order.startDate}</p>
-              <p><strong>Kết thúc:</strong> {selectedOrderReport.order.endDate}</p>
-              <p><strong>Tổng tiền:</strong> {selectedOrderReport.order.totalAmount?.toLocaleString()}₫</p>
+              <p>
+                <strong>ID:</strong> {selectedOrderReport.order.id}
+              </p>
+              <p>
+                <strong>Gói:</strong>{" "}
+                {selectedOrderReport.order.treatmentService?.name}
+              </p>
+              <p>
+                <strong>Bác sĩ:</strong>{" "}
+                {selectedOrderReport.order.doctor?.profile?.fullName}
+              </p>
+              <p>
+                <strong>Bắt đầu:</strong> {selectedOrderReport.order.startDate}
+              </p>
+              <p>
+                <strong>Kết thúc:</strong> {selectedOrderReport.order.endDate}
+              </p>
+              <p>
+                <strong>Tổng tiền:</strong>{" "}
+                {selectedOrderReport.order.totalAmount?.toLocaleString()}₫
+              </p>
             </div>
 
             <div>
@@ -216,19 +243,57 @@ export const ReportProgressPatient = ({ patientsOrders }: ReportProgressPatientP
               {selectedStepIndex !== null && (
                 <div className="mt-4 border p-4 rounded">
                   <h6 className="font-semibold mb-2">
-                    📌 Chi tiết bước {selectedOrderReport.order.orderSteps?.[selectedStepIndex].treatmentStep.stepOrder}
+                    📌 Chi tiết bước{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .treatmentStep.stepOrder
+                    }
                   </h6>
-                  <p><strong>Tên bước:</strong> {selectedOrderReport.order.orderSteps?.[selectedStepIndex].treatmentStep.stepName}</p>
-                  <p><strong>Trạng thái:</strong> {selectedOrderReport.order.orderSteps?.[selectedStepIndex].status}</p>
-                  <p><strong>Thời gian:</strong> {selectedOrderReport.order.orderSteps?.[selectedStepIndex].startDate} → {selectedOrderReport.order.orderSteps?.[selectedStepIndex].endDate}</p>
-                  <p><strong>Ghi chú:</strong> {selectedOrderReport.order.orderSteps?.[selectedStepIndex].note}</p>
+                  <p>
+                    <strong>Tên bước:</strong>{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .treatmentStep.stepName
+                    }
+                  </p>
+                  <p>
+                    <strong>Trạng thái:</strong>{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .status
+                    }
+                  </p>
+                  <p>
+                    <strong>Thời gian:</strong>{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .startDate
+                    }{" "}
+                    →{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .endDate
+                    }
+                  </p>
+                  <p>
+                    <strong>Ghi chú:</strong>{" "}
+                    {
+                      selectedOrderReport.order.orderSteps?.[selectedStepIndex]
+                        .note
+                    }
+                  </p>
 
                   <div className="mt-4">
                     <h6 className="font-semibold mb-2">📅 Cuộc hẹn</h6>
                     <ul className="list-disc list-inside">
-                      {(selectedOrderReport.order.orderSteps?.[selectedStepIndex].appointments ?? []).map((appt) => (
+                      {(
+                        selectedOrderReport.order.orderSteps?.[
+                          selectedStepIndex
+                        ].appointments ?? []
+                      ).map((appt) => (
                         <li key={appt.id}>
-                          {appt.appointmentDate} - {appt.startTime} đến {appt.endTime} với {appt.doctorName}
+                          {appt.appointmentDate} - {appt.startTime} đến{" "}
+                          {appt.endTime} với {appt.doctorName}
                         </li>
                       ))}
                     </ul>

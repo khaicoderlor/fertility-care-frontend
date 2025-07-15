@@ -169,34 +169,6 @@ export const topDoctors: Doctor[] = [
   }
 ];
 
-export const allDoctors: Doctor[] = [
-  ...topDoctors,
-  {
-    id: '11',
-    name: 'BS. Nguyễn Thị Lan',
-    specialty: 'Sản phụ khoa',
-    rating: 3.9,
-    totalPatients: 108,
-    status: 'active',
-    experience: 7,
-    email: 'dr.lan@fertility.com',
-    phone: '0901234577',
-    reviewCount: 48
-  },
-  {
-    id: '12',
-    name: 'BS. Trần Văn Minh',
-    specialty: 'Chuyên khoa IVF',
-    rating: 3.8,
-    totalPatients: 105,
-    status: 'busy',
-    experience: 12,
-    email: 'dr.minh@fertility.com',
-    phone: '0901234578',
-    reviewCount: 62
-  }
-];
-
 export const ratingChartData: RatingData[] = topDoctors.map(doctor => ({
   doctorName: doctor.name.replace('BS. ', ''),
   rating: doctor.rating,
@@ -564,22 +536,6 @@ export const scheduleData: ScheduleSlot[] = [
   }
 ];
 
-// Helper functions
-export const getDoctorsByStatus = (status: Doctor['status']) => {
-  return allDoctors.filter(doctor => doctor.status === status);
-};
-
-export const getDoctorById = (id: string) => {
-  return allDoctors.find(doctor => doctor.id === id);
-};
-
-export const getScheduleByDate = (date: string) => {
-  return scheduleData.filter(slot => slot.date === date);
-};
-
-export const getScheduleByDoctor = (doctorId: string) => {
-  return scheduleData.filter(slot => slot.doctorId === doctorId);
-};
 
 // Chart colors
 export const chartColors = {
@@ -594,7 +550,7 @@ export const chartColors = {
 export const shiftTypes = [
   { value: 'morning', label: 'Ca sáng (8:00-12:00)', color: 'green' },
   { value: 'afternoon', label: 'Ca chiều (13:00-17:00)', color: 'blue' },
-  { value: 'evening', label: 'Ca tối (17:00-20:00)', color: 'purple' }
+  { value: 'evening', label: 'Ca tối (18:00-22:00)', color: 'purple' }
 ];
 
 export const doctorSpecialties = [

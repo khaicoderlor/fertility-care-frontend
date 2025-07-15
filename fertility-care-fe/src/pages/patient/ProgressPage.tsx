@@ -57,7 +57,7 @@ export default function ProgressPage() {
     <>
       <div className="mb-8 p-10">
         <button
-        onClick={() => navigate(-1)}
+        onClick={() => navigate("/patient")}
         className="inline-flex items-center px-4 py-2 mb-10 bg-pink-500 text-white rounded-md shadow hover:bg-pink-600 transition-colors"
       >
         ← Quay lại
