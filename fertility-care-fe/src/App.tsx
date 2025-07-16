@@ -28,6 +28,7 @@ import { ManagerDashboardPage } from "./pages/manager/ManagerDashboardPage";
 import ManagerDashboardDoctorSchedule from "./pages/manager/ManagerDashboardDoctorSchedule";
 import ManagerDashboardFeedbackDoctor from "./pages/manager/ManagerDashboardFeedbackDoctor";
 import ManagerDashboardProgressPatient from "./pages/manager/ManagerDashboardProgressPatient";
+import { PrescriptionPage } from "./pages/patient/PrescriptionPage";
 
 function App() {
   return (
@@ -49,7 +50,8 @@ function App() {
             <Route index element={<ProfilePage />} />
             <Route path="profile" element={<ProfilePage />} />
             <Route path="orders" element={<OrderInfoListWrapper />} />
-            <Route path="appointments" element={<AppointmentTable/>}/>
+            <Route path="appointments" element={<AppointmentTable />} />
+            <Route path="prescriptions" element={<PrescriptionPage />} />
             <Route
               path="payment-histories"
               element={<PaymentHistoriesTable />}
@@ -94,12 +96,7 @@ function App() {
             }
           />
 
-          <Route
-            path="/doctor"
-            element={
-                <DoctorDashboard />
-            }
-          >
+          <Route path="/doctor" element={<DoctorDashboard />}>
             <Route index element={<DoctorStatisticChartPage />} />
             <Route path="my-patients" element={<PatientTable />} />
             <Route path="my-profile" element={<DoctorProfile />} />
@@ -118,13 +115,20 @@ function App() {
           ></Route>
 
           <Route path="/manager" element={<ManagerDashboardPage />}>
-            <Route index element={<ManagerDashboardDoctorSchedule/>}/>
-            <Route path="schedules" element={<ManagerDashboardDoctorSchedule/>}/>
-            <Route path="feedbacks" element={<ManagerDashboardFeedbackDoctor/>}/>
-            <Route path="patients" element={<ManagerDashboardProgressPatient/>}/>
+            <Route index element={<ManagerDashboardDoctorSchedule />} />
+            <Route
+              path="schedules"
+              element={<ManagerDashboardDoctorSchedule />}
+            />
+            <Route
+              path="feedbacks"
+              element={<ManagerDashboardFeedbackDoctor />}
+            />
+            <Route
+              path="patients"
+              element={<ManagerDashboardProgressPatient />}
+            />
           </Route>
-
-          
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>

@@ -46,16 +46,15 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
   const getWeekDates = (date: Date) => {
     const week: Date[] = [];
     const temp = new Date(date);
-    const day = temp.getDay(); // 0: Chủ nhật, 1: Thứ 2, ..., 6: Thứ 7
+    const day = temp.getDay();
 
-    // Tìm ngày Thứ 2 của tuần hiện tại
     const monday = new Date(temp);
     monday.setDate(temp.getDate() - (day === 0 ? 6 : day - 1));
 
     for (let i = 0; i < 7; i++) {
       const d = new Date(monday);
       d.setDate(monday.getDate() + i);
-      week.push(new Date(d.getFullYear(), d.getMonth(), d.getDate())); // reset giờ về 00:00
+      week.push(new Date(d.getFullYear(), d.getMonth(), d.getDate())); 
     }
 
     return week;
@@ -64,7 +63,7 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
   const weekDates = getWeekDates(currentWeek);
 
   const formatDate = (date: Date): string => {
-    return date.toLocaleDateString("en-CA"); // ✅ yyyy-MM-dd không bị UTC ảnh hưởng
+    return date.toLocaleDateString("en-CA"); 
   };
 
   const formatDisplayDate = (date: Date) => {
