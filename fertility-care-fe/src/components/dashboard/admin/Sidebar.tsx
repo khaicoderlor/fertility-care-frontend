@@ -9,7 +9,7 @@ const menuItems = [
   { id: "users", label: "Người dùng", icon: <FaUsers className="w-5 h-5" /> },
   { id: "patients", label: "Bệnh nhân", icon: <RiMentalHealthFill className="w-5 h-5" /> },
   { id: "doctors", label: "Bác sĩ", icon: <FaUserDoctor className="w-5 h-5" /> },
-  { id: "reports-statistic", label: "Báo cáo", icon: <TbReportAnalytics className="w-5 h-5" /> },
+  { id: "reports-statistic", label: "Đơn điều trị", icon: <TbReportAnalytics className="w-5 h-5" /> },
   { id: "payments", label: "Thanh toán", icon: <MdPayment className="w-5 h-5" /> },
 ];
 

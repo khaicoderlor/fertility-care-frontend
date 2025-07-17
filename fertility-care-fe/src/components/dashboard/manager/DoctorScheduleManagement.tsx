@@ -197,7 +197,7 @@ const DoctorScheduleManagement: React.FC<ScheduleManagementProps> = ({
           <select
             value={selectedDoctor}
             onChange={(e) => setSelectedDoctor(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
+            className=" border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500"
           >
             <option value="">Tất cả bác sĩ</option>
             {doctors.map((doctor) => (

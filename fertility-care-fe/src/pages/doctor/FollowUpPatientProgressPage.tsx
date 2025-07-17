@@ -369,7 +369,6 @@ export default function FollowUpPatientProgressPage() {
           onClose={() => setShowProgressReportForm(false)}
         />
       )}
-
       <Footer />
     </div>
   );

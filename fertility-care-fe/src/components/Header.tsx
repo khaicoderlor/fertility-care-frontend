@@ -50,25 +50,25 @@ export default function Header() {
               </a>
             </li>
             <li>
-              <a href="/services" className="hover:text-purple-600">
+              <Link to="/services" className="hover:text-purple-600">
                 Dịch vụ
-              </a>
+              </Link>
             </li>
             <li>
               <a href="/profile" className="hover:text-purple-600">
                 Lộ trình điều trị
               </a>
             </li>
-            <li>
+            {/* <li>
               <a href="/blog" className="hover:text-purple-600">
                 Tìm bác sĩ
               </a>
-            </li>
-            <li>
+            </li> */}
+            {/* <li>
               <a href="/blog" className="hover:text-purple-600">
                 Kết nối yêu thương
               </a>
-            </li>
+            </li> */}
             {isAuthenticated && (
               <>
                 <li>
