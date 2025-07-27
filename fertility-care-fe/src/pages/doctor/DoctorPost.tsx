@@ -4,6 +4,34 @@ import axiosInstance from "../../apis/AxiosInstance";
 import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import Swal from "sweetalert2";
 
+export const convertStatusPost = (status: string) => {
+    switch (status) {
+      case "Reject":
+        return "Bị từ chối";
+      case "Approved":
+        return "Đã phê duyệt";
+      case "Process":
+        return "Đang chờ xử lí";
+      default:
+        return "Không xác định";
+    }
+  };
+
+export const convertBlogCategory = (category: string) => {
+    switch (category) {
+      case "IVF":
+        return "IVF";
+      case "IUI":
+        return "IUI";
+      case "InfoFertility":
+        return "Dịch vụ hiếm muộn";
+      case "Other":
+        return "Khác";
+      default:
+        return "Không xác định";
+    }
+  };
+
 export default function DoctorPost() {
   const { userProfileId, doctorId } = useCompetenceAuth();
   const [blogs, setBlogs] = useState<Blog[]>([]);
@@ -33,34 +61,6 @@ export default function DoctorPost() {
 
     fetchBlogs();
   }, [doctorId]);
-
-  const convertStatusPost = (status: string) => {
-    switch (status) {
-      case "Reject":
-        return "Bị từ chối";
-      case "Approved":
-        return "Đã phê duyệt";
-      case "Process":
-        return "Đang chờ xử lí";
-      default:
-        return "Không xác định";
-    }
-  };
-
-  const convertBlogCategory = (category: string) => {
-    switch (category) {
-      case "IVF":
-        return "IVF";
-      case "IUI":
-        return "IUI";
-      case "InfoFertility":
-        return "Dịch vụ hiếm muộn";
-      case "Other":
-        return "Khác";
-      default:
-        return "Không xác định";
-    }
-  };
 
   const handleAddBlog = async () => {
     try {
