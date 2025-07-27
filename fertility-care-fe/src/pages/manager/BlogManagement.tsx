@@ -1,230 +1,135 @@
-import React, { useState } from "react";
-import Sidebar from "./Sidebar";
-import BlogFilters from "./BlogFilters";
+import { useEffect, useState } from "react";
 import BlogCard from "./BlogCard";
-import { PlusIcon } from "@heroicons/react/24/solid";
-import { BlogStatus } from "../../constants/BlogTypes";
-import type { Blog } from "../../constants/BlogTypes";
 import {
-  CheckCircleIcon,
   ClockIcon,
   PencilIcon,
-  XMarkIcon,
   QuestionMarkCircleIcon,
 } from "@heroicons/react/24/outline";
-import Footer from "../../components/Footer";
-
+import { IoMdCheckmark } from "react-icons/io";
+import { ITEMS_PER_PAGE } from "../../constants/ApplicationConstant";
+import type { Blog } from "../../models/Blog";
+import axiosInstance from "../../apis/AxiosInstance";
 
 export default function BlogManagement() {
-  // State cho modal tạo mới
-  const [showCreateModal, setShowCreateModal] = useState(false);
-  // State cho tìm kiếm
-  const [searchTerm, setSearchTerm] = useState<string>("");
-  // State cho filter trạng thái
-  const [statusFilter, setStatusFilter] = useState<BlogStatus | "all">("all");
+  const [blogs, setBlogs] = useState<Blog[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
-  // Dummy data cho ví dụ
-  const [blogs, setBlogs] = useState<Blog[]>([
-    {
-      id: "1",
-      title: "Blog 1",
-      content: "Nội dung blog 1",
-      status: BlogStatus.Published,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Nguyen", lastName: "A" },
-      imageUrl: "",
-    },
-    {
-      id: "2",
-      title: "Blog 2",
-      content: "Nội dung blog 2",
-      status: BlogStatus.Process,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Tran", lastName: "B" },
-      imageUrl: "",
-    },
-    {
-      id: "3",
-      title: "Blog 3",
-      content: "Nội dung blog 3",
-      status: BlogStatus.Draft,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Le", lastName: "C" },
-      imageUrl: "",
-    },
-    {
-      id: "4",
-      title: "Blog 4",
-      content: "Nội dung blog 4",
-      status: BlogStatus.Archived,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Pham", lastName: "D" },
-      imageUrl: "",
-    },
+  useEffect(() => {
+    const fetchBlogs = async () => {
+      try {
+        const response = await axiosInstance.get("/blogs/all-status")
 
-    {
-      id: "4",
-      title: "Blog 4",
-      content: "Nội dung blog 4",
-      status: BlogStatus.Archived,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Pham", lastName: "D" },
-      imageUrl: "",
-    },
+        setBlogs(response.data.data)
+      } catch(error) {
+        console.log(error)
+      }
+    }
 
-    {
-      id: "4",
-      title: "Blog 4",
-      content: "Nội dung blog 4",
-      status: BlogStatus.Archived,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      author: { firstName: "Pham", lastName: "D" },
-      imageUrl: "",
-    },
-    // ... thêm blog khác nếu muốn
-  ]);
+    fetchBlogs()
+  }, [])
 
-  // Lọc blog theo search và status
-  const filteredBlogs = blogs.filter((blog) => {
-    const matchesSearch =
-      blog.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      blog.content.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesStatus =
-      statusFilter === "all" ? true : blog.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
-
-  // Lấy tên đầy đủ
-  const getFullName = (blog: Blog) =>
-    `${blog.author.lastName} ${blog.author.firstName}`;
-
-  // Màu trạng thái
-  const getStatusColor = (status: BlogStatus) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
-      case BlogStatus.Published:
+      case "Approved":
         return "bg-green-100 text-green-800";
-      case BlogStatus.Process:
+      case "Process":
         return "bg-yellow-100 text-yellow-800";
-      case BlogStatus.Draft:
-        return "bg-gray-100 text-gray-800";
-      case BlogStatus.Archived:
+      case "Rejected":
         return "bg-red-100 text-red-800";
       default:
         return "";
     }
   };
 
-  // Icon trạng thái
-  const getStatusIcon = (status: BlogStatus) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
-      case BlogStatus.Published:
-        return CheckCircleIcon;
-      case BlogStatus.Process:
+      case "Process":
         return ClockIcon;
-      case BlogStatus.Draft:
+      case "Rejected":
         return PencilIcon;
-      case BlogStatus.Archived:
-        return XMarkIcon;
+      case "Approved":
+        return IoMdCheckmark;
       default:
         return QuestionMarkCircleIcon;
     }
   };
 
-  // Xóa blog
   const deleteBlog = (id: string) => {
     setBlogs((prev) => prev.filter((b) => b.id !== id));
   };
 
-  // Cập nhật trạng thái blog
-  const updateBlogStatus = (id: string, newStatus: BlogStatus) => {
-    setBlogs((prev) =>
-      prev.map((b) =>
-        b.id === id ? { ...b, status: newStatus, updatedAt: new Date() } : b
-      )
-    );
-  };
+  const updateBlog = async (id: string, status: string) => {
+    try {
+      await axiosInstance.get(`${id}?status=${status}`) 
+    } catch(error) {
+      console.log(error)
+    }
+  }
+
+  const totalPages = Math.ceil(blogs.length / ITEMS_PER_PAGE);
+
+  const paginatedBlogs = blogs.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <>
-      {/* // Header sẽ nằm ở đây */}
       <div className="flex min-h-screen bg-gray-50">
-        {/* Sidebar */}
-        <Sidebar />     
 
-        {/* Main Content */}
         <div className="flex-1 flex flex-col overflow-hidden">
-          {/* Header */}
           <header className="bg-white shadow-sm border-b border-gray-200">
             <div className="px-6 py-4">
               <div className="flex items-center justify-between">
                 <div>
-                  <h1 className="text-2xl font-bold text-gray-900">Quản lý Blog</h1>
+                  <h1 className="text-2xl font-bold text-gray-900">
+                    Quản lý các bài viết
+                  </h1>
                   <p className="text-sm text-gray-600">
-                    Quản lý tất cả các bài viết blog của bạn
+                    Quản lý tất cả các bài viết
                   </p>
                 </div>
-                <button
-                  onClick={() => setShowCreateModal(true)}
-                  className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                >
-                  <PlusIcon className="w-5 h-5 mr-2" />
-                  Tạo Blog Mới
-                </button>
               </div>
             </div>
           </header>
 
-          {/* Filters */}
-          <BlogFilters
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            statusFilter={statusFilter}
-            setStatusFilter={setStatusFilter}
-          />
-
-          {/* Blog List */}
           <main className="flex-1 overflow-auto p-6">
             <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-              {filteredBlogs.map((blog) => (
+              {paginatedBlogs.map((blog) => (
                 <BlogCard
                   key={blog.id}
                   blog={blog}
-                  getFullName={getFullName}
                   getStatusColor={getStatusColor}
                   getStatusIcon={getStatusIcon}
                   deleteBlog={deleteBlog}
-                  updateBlogStatus={updateBlogStatus}
+                  updateBlogStatus={updateBlog}
                 />
               ))}
             </div>
-            {/* Empty State giữ nguyên */}
-          </main>
 
-          {/* Modal tạo blog mới */}
-          {showCreateModal && (
-            <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-              <div className="bg-white p-6 rounded shadow-lg">
-                <h2 className="text-lg font-bold mb-4">Tạo Blog Mới</h2>
-                {/* Form tạo blog mới ở đây */}
-                <button
-                  className="mt-4 px-4 py-2 bg-gray-300 rounded"
-                  onClick={() => setShowCreateModal(false)}
-                >
-                  Đóng
-                </button>
+            {totalPages > 1 && (
+              <div className="mt-6 flex justify-center space-x-2">
+                {[...Array(totalPages)].map((_, index) => {
+                  const pageNum = index + 1;
+                  return (
+                    <button
+                      key={pageNum}
+                      onClick={() => setCurrentPage(pageNum)}
+                      className={`px-4 py-2 rounded-md border text-sm font-medium ${
+                        currentPage === pageNum
+                          ? "bg-teal-600 text-white border-teal-600"
+                          : "bg-white text-gray-700 border-gray-300 hover:bg-gray-100"
+                      }`}
+                    >
+                      {pageNum}
+                    </button>
+                  );
+                })}
               </div>
-            </div>
-          )}
+            )}
+          </main>
         </div>
       </div>
-
-      <Footer />
     </>
   );
 }

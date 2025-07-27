@@ -1,43 +1,36 @@
-import { useEffect, useState } from "react";
-
-import ImageSponsorsMarquee from "../components/ImageSponsorsMarquee";
-import { treatmentServices } from "../data/ServiceData";
-import type { TreatmentService } from "../models/TreatmentService";
 import ivfVideo from "../assets/video/IVF.mp4";
+import iuiVideo from "../assets/video/IUI.mp4";
 import "../assets/css/StyleService.css";
-import ServiceCard from "../data/ServiceCard";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 export default function Service() {
-  const [services, setServices] = useState<TreatmentService[]>([]);
-  const [isVisible, setIsVisible] = useState(false);
 
-  useEffect(() => {
-    // Load services data
-    setServices(treatmentServices);
+  // useEffect(() => {
+  //   // Load services data
+  //   setServices(treatmentServices);
 
-    // Animate elements on scroll
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("opacity-100", "translate-y-0");
-            entry.target.classList.remove("opacity-0", "translate-y-8");
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
+  //   // Animate elements on scroll
+  //   const observer = new IntersectionObserver(
+  //     (entries) => {
+  //       entries.forEach((entry) => {
+  //         if (entry.isIntersecting) {
+  //           entry.target.classList.add("opacity-100", "translate-y-0");
+  //           entry.target.classList.remove("opacity-0", "translate-y-8");
+  //         }
+  //       });
+  //     },
+  //     { threshold: 0.1 }
+  //   );
 
-    const fadeInElements = document.querySelectorAll(".fade-in");
-    fadeInElements.forEach((element) => observer.observe(element));
+  //   const fadeInElements = document.querySelectorAll(".fade-in");
+  //   fadeInElements.forEach((element) => observer.observe(element));
 
-    // Show scroll down animation
-    setTimeout(() => setIsVisible(true), 1000);
+  //   // Show scroll down animation
+  //   setTimeout(() => setIsVisible(true), 1000);
 
-    return () => observer.disconnect();
-  }, []);
+  //   return () => observer.disconnect();
+  // }, []);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -68,69 +61,7 @@ export default function Service() {
           </button>
         </div>
 
-        {/* Sponsors Marquee */}
-        <ImageSponsorsMarquee />
-
-        {/* Scroll Down Indicator */}
-        {isVisible && (
-          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex flex-col items-center">
-            <a
-              href="#services"
-              className="text-purple-600 hover:text-purple-800 transition duration-300 animate-bounce"
-            >
-              <svg
-                className="w-8 h-8"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 14l-7 7m0 0l-7-7m7 7V3"
-                />
-              </svg>
-            </a>
-            <p className="text-gray-500 text-sm mt-2 text-center">
-              Kéo xuống để tìm hiểu thêm
-            </p>
-          </div>
-        )}
       </section>
-
-      {/* Services Section */}
-      <section id="services" className="py-20 px-4 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16 fade-in opacity-0 translate-y-8 transition-all duration-700">
-            <h2 className="text-3xl md:text-4xl font-bold mb-4 font-serif">
-              Dịch vụ{" "}
-              <span className="bg-gradient-to-r from-purple-600 to-blue-600 text-transparent bg-clip-text">
-                Sinh sản
-              </span>{" "}
-              của chúng tôi
-            </h2>
-            <p className="text-xl text-gray-600 max-w-4xl mx-auto">
-              Các giải pháp sinh sản tiên tiến được thiết kế để hỗ trợ bạn trong
-              hành trình làm cha mẹ.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 mb-16">
-            {services.map((service, index) => (
-              <div
-                key={service.id}
-                className={`fade-in opacity-0 translate-y-8 transition-all duration-700 delay-${
-                  index * 200
-                }`}
-              >
-                <ServiceCard service={service} />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* IVF Info Section */}
       <section className="py-16 bg-cyan-50">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center px-4 sm:px-8">
@@ -191,10 +122,17 @@ export default function Service() {
           <div className="md:w-1/2 w-full flex justify-center mb-8 md:mb-0">
             <div className="relative w-full max-w-xl md:max-w-2xl aspect-video rounded-2xl shadow-2xl border border-gray-200 overflow-hidden bg-purple-100 flex items-center justify-center">
               <div className="text-center">
-                <div className="text-6xl mb-4">💉</div>
-                <h4 className="text-xl font-semibold text-purple-700">
-                  Video IUI
-                </h4>
+                <div className="text-xl">💉</div>
+                <video
+                className="w-full h-full object-cover"
+                autoPlay
+                loop
+                muted
+                playsInline
+              >
+                <source src={iuiVideo} type="video/mp4" />
+                Your browser does not support the video tag.
+              </video>
                 <p className="text-purple-600">
                   Quy trình thụ tinh trong tử cung
                 </p>

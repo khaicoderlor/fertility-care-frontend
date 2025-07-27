@@ -38,10 +38,9 @@ export default function BlogFilters({
             className="pl-10 pr-8 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent appearance-none bg-white"
           >
             <option value="all">Tất cả trạng thái</option>
-            <option value={BlogStatus.Published}>Đã xuất bản</option>
-            <option value={BlogStatus.Process}>Đang xử lý</option>
-            <option value={BlogStatus.Draft}>Bản nháp</option>
-            <option value={BlogStatus.Archived}>Đã lưu trữ</option>
+            <option value={BlogStatus.Process}>Đang chờ xử lí</option>
+            <option value={BlogStatus.Approved}>Đã phê duyệt</option>
+            <option value={BlogStatus.Rejected}>Bị từ chối</option>
           </select>
         </div>
       </div>

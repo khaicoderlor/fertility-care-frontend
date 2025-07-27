@@ -78,4 +78,23 @@ export const convertToDisplayDate = (date: string): string => {
   return `${dd}/${mm}/${yyyy}`;
 };
 
+export const convertTimeAgoLabel = (dateStr: string): string => {
+  const [day, month, year] = dateStr.split("/").map(Number);
+  const inputDate = new Date(year, month - 1, day);
 
+  const now = new Date();
+  const diffMs = now.getTime() - inputDate.getTime();
+  const diffMinutes = Math.floor(diffMs / 1000 / 60);
+
+  if (diffMinutes < 60) {
+    return `${diffMinutes} phút trước`;
+  }
+
+  const diffHours = Math.floor(diffMinutes / 60);
+  if (diffHours < 24) {
+    return `${diffHours} giờ trước`;
+  }
+
+  const diffDays = Math.floor(diffHours / 24);
+  return `${diffDays} ngày trước`;
+};

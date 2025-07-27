@@ -5,9 +5,6 @@ import {
   HomeIcon,
   CalendarIcon,
   DocumentTextIcon,
-  BookOpenIcon,
-  PhoneIcon,
-  ChatBubbleLeftRightIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   CreditCardIcon,
@@ -147,9 +144,20 @@ export default function SideBarPatient({ patient }: SideBarProps) {
               <CreditCardIcon className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Lịch sử thanh toán</span>}
             </Link>
+            <Link
+              to="/patient/feedbacks"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/feedbacks")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
+            >
+              <CreditCardIcon className="w-5 h-5 flex-shrink-0" />
+              {!sidebarCollapsed && <span>Đánh giá</span>}
+            </Link>
           </nav>
 
-          {!sidebarCollapsed && (
+          {/* {!sidebarCollapsed && (
             <div className="p-4 border-t mt-4">
               <div className="text-sm font-medium text-gray-500 mb-3">
                 Hỗ trợ & tài nguyên
@@ -190,7 +198,7 @@ export default function SideBarPatient({ patient }: SideBarProps) {
                 </Link>
               </nav>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </div>

@@ -11,6 +11,7 @@ import type OrderStepPayment from "../../models/OrderStepPayment";
 import axiosInstance from "../../apis/AxiosInstance";
 import { ReportProgressPatient } from "../../components/dashboard/admin/ReportProgressPatient";
 import { UserTable } from "../../components/dashboard/admin/UserTable";
+import BlogManagement from "../manager/BlogManagement";
 
 interface StatCard {
   title: string;
@@ -163,6 +164,17 @@ const AdminDashboard: React.FC = () => {
             <PaymentTable payments={payments}/>
           </div>
         );
+
+      case "blogs":
+         return (
+          <div className="space-y-8">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-800">Thanh toán</h2>
+              <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
+            </div>
+            <BlogManagement/>
+          </div>
+        );  
 
       default:
         return (

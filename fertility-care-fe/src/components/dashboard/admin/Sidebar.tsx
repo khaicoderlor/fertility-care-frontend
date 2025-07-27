@@ -11,6 +11,7 @@ const menuItems = [
   { id: "doctors", label: "Bác sĩ", icon: <FaUserDoctor className="w-5 h-5" /> },
   { id: "reports-statistic", label: "Đơn điều trị", icon: <TbReportAnalytics className="w-5 h-5" /> },
   { id: "payments", label: "Thanh toán", icon: <MdPayment className="w-5 h-5" /> },
+  { id: "blogs", label: "Bài viết", icon: <MdPayment className="w-5 h-5" /> },
 ];
 
 interface SideBarProps {

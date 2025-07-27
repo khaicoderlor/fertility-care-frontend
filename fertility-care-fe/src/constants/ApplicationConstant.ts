@@ -12,3 +12,4 @@ export const ROLE_ADMIN = "Admin"
 
 export const DEFAULT_AVATAR = "https://res.cloudinary.com/dh54xelyq/image/upload/v1748800627/user-circle-isolated-icon-round-600nw-2459622791_vz8f1e.jpg"
 
+export const ITEMS_PER_PAGE = 6

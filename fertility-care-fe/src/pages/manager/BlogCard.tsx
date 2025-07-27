@@ -4,28 +4,25 @@ import {
   TrashIcon,
   CalendarIcon,
   ClockIcon,
-} from "@heroicons/react/24/outline"
-import { BlogStatus } from "../../constants/BlogTypes";
-import type { Blog } from "../../constants/BlogTypes";
+} from "@heroicons/react/24/outline";
+import type { Blog } from "../../models/Blog";
 
 interface BlogCardProps {
-  blog: Blog
-  getFullName: (blog: Blog) => string
-  getStatusColor: (status: BlogStatus) => string
-  getStatusIcon: (status: BlogStatus) => React.ElementType
-  deleteBlog: (id: string) => void
-  updateBlogStatus: (id: string, newStatus: BlogStatus) => void
+  blog: Blog;
+  getStatusColor: (status: string) => string;
+  getStatusIcon: (status: string) => React.ElementType;
+  deleteBlog: (id: string) => void;
+  updateBlogStatus: (id: string, newStatus: string) => void;
 }
 
 export default function BlogCard({
   blog,
-  getFullName,
   getStatusColor,
   getStatusIcon,
   deleteBlog,
   updateBlogStatus,
 }: BlogCardProps) {
-  const StatusIcon = getStatusIcon(blog.status)
+  const StatusIcon = getStatusIcon(blog.status);
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       {/* Blog Image */}
@@ -43,12 +40,20 @@ export default function BlogCard({
         {/* Author */}
         <div className="flex items-center mb-3">
           <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-            <span className="text-sm font-medium text-blue-600">{getFullName(blog).charAt(0)}</span>
+            <img src={blog.avatarUrl} className="rounded-full w-8"/>
           </div>
-          <span className="ml-2 text-sm font-medium text-gray-900">{getFullName(blog)}</span>
+          <span className="ml-2 text-sm font-medium text-gray-900">
+            {blog.fullName}
+          </span>
         </div>
         {/* Content Preview */}
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">{blog.content}</p>
+        <strong className="text-gray-600 text-lg mb-4 line-clamp-3">
+          {blog.title}
+        </strong>
+
+        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
+          {blog.content}
+        </p>
         {/* Status */}
         <div className="flex items-center mb-4">
           <span
@@ -64,12 +69,12 @@ export default function BlogCard({
         <div className="text-xs text-gray-500 mb-4 space-y-1">
           <div className="flex items-center">
             <CalendarIcon className="w-3 h-3 mr-1" />
-            Tạo: {new Date(blog.createdAt).toLocaleDateString("vi-VN")}
+            Ngày đăng tải: {blog.createdAt}
           </div>
           {blog.updatedAt && (
             <div className="flex items-center">
               <ClockIcon className="w-3 h-3 mr-1" />
-              Cập nhật: {new Date(blog.updatedAt).toLocaleDateString("vi-VN")}
+              Cập nhật: {blog.updatedAt}
             </div>
           )}
         </div>
@@ -92,16 +97,17 @@ export default function BlogCard({
           {/* Quick Status Change */}
           <select
             value={blog.status}
-            onChange={(e) => updateBlogStatus(blog.id, e.target.value as BlogStatus)}
+            onChange={(e) =>
+              updateBlogStatus(blog.id, e.target.value)
+            }
             className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-transparent"
           >
-            <option value={BlogStatus.Draft}>Bản nháp</option>
-            <option value={BlogStatus.Process}>Đang xử lý</option>
-            <option value={BlogStatus.Published}>Xuất bản</option>
-            <option value={BlogStatus.Archived}>Lưu trữ</option>
+            <option value="Process">Đang xử lý</option>
+            <option value="Approved">Đã phê duyệt</option>
+            <option value="Rejected">Bị từ chôi</option>
           </select>
         </div>
       </div>
     </div>
-  )
+  );
 }

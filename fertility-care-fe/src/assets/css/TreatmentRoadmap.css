@@ -1,0 +1,164 @@
+/* TreatmentRoadmap Custom Styles */
+.treatment-roadmap {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
+
+.step-item {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: center;
+}
+
+.step-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.step-item.active {
+  transform: scale(1.02);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Timeline Styles */
+.timeline-step {
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.timeline-node {
+  position: relative;
+  z-index: 10;
+  transition: all 0.3s ease-in-out;
+}
+
+.timeline-node::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+}
+
+.timeline-node.active::before {
+  opacity: 0.2;
+  width: 32px;
+  height: 32px;
+}
+
+/* Enhanced hover effects - Only affect step cards, not timeline nodes */
+.timeline-step:hover .step-card {
+  transform: translateY(-2px);
+}
+
+/* Pulse animation for active step */
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1.5);
+    opacity: 0;
+  }
+}
+
+.timeline-step.active .timeline-node::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: currentColor;
+  animation: pulse-ring 1.5s infinite;
+}
+
+/* Completed step glow effect */
+.timeline-step.completed .timeline-node {
+  box-shadow: 0 0 20px rgba(34, 197, 94, 0.3);
+}
+
+.timeline-line {
+  transition: all 0.5s ease-in-out;
+}
+
+.timeline-line.animated {
+  background: linear-gradient(to bottom, currentColor 0%, transparent 100%);
+}
+
+.step-detail {
+  min-height: 350px;
+  transition: all 0.3s ease-in-out;
+}
+
+.fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gradient-text {
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  backdrop-filter: blur(10px);
+  background: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Pulse animation for active timeline node */
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+.timeline-node.active {
+  animation: pulse 2s infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 1024px) {
+  .treatment-roadmap .grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .timeline-step:hover,
+  .timeline-step.active {
+    transform: none;
+  }
+}
+
+/* Remove scrollbars */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}

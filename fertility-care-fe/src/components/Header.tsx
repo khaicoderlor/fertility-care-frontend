@@ -45,7 +45,7 @@ export default function Header() {
         <nav className="hidden md:block flex-1">
           <ul className="flex justify-center space-x-6 text-sm font-medium text-gray-800">
             <li>
-              <a href="/home" className="hover:text-purple-600">
+              <a href="/" className="hover:text-purple-600">
                 Trang chủ
               </a>
             </li>
@@ -55,9 +55,9 @@ export default function Header() {
               </Link>
             </li>
             <li>
-              <a href="/profile" className="hover:text-purple-600">
+              <Link to="/journey-treatments" className="hover:text-purple-600">
                 Lộ trình điều trị
-              </a>
+              </Link>
             </li>
             {/* <li>
               <a href="/blog" className="hover:text-purple-600">
@@ -69,6 +69,16 @@ export default function Header() {
                 Kết nối yêu thương
               </a>
             </li> */}
+            {/* <li>
+              <Link to="/community-supporters" className="hover:text-purple-600">
+                Cộng đồng hỗ trợ
+              </Link>
+            </li> */}
+             <li>
+              <Link to="/blogs" className="hover:text-purple-600">
+                Bài viết
+              </Link>
+            </li>
             {isAuthenticated && (
               <>
                 <li>

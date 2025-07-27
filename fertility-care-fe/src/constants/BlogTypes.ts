@@ -1,8 +1,7 @@
 export const BlogStatus = {
-  Published: "Published",
   Process: "Process",
-  Draft: "Draft",
-  Archived: "Archived",
+  Approved: "Approved",
+  Rejected: "Rejected",
 } as const;
 
 export type BlogStatus = (typeof BlogStatus)[keyof typeof BlogStatus];
