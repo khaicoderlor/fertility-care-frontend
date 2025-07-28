@@ -6,7 +6,6 @@ import {
   StarIcon,
 } from "@heroicons/react/24/outline";
 import StatCard from "../../components/dashboard/doctor/StatCard";
-import FeedbackChart from "../../components/dashboard/doctor/FeedbackChart";
 import PatientAppointmentChart, {
   type PatientData,
 } from "../../components/dashboard/doctor/PatientAppointmentChart";
@@ -21,21 +20,6 @@ import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import type DoctorStatisticOverall from "../../models/statistics/DoctorStatisticOverall";
 
-// Mock data - replace with actual API calls
-const monthlyFeedbackData = [
-  { month: "Jan", rating: 4.2, reviews: 15 },
-  { month: "Feb", rating: 4.5, reviews: 22 },
-  { month: "Mar", rating: 4.3, reviews: 18 },
-  { month: "Apr", rating: 4.7, reviews: 25 },
-  { month: "May", rating: 4.4, reviews: 20 },
-  { month: "Jun", rating: 4.6, reviews: 28 },
-  { month: "Jul", rating: 4.8, reviews: 32 },
-  { month: "Aug", rating: 4.5, reviews: 24 },
-  { month: "Sep", rating: 4.7, reviews: 30 },
-  { month: "Oct", rating: 4.6, reviews: 26 },
-  { month: "Nov", rating: 4.9, reviews: 35 },
-  { month: "Dec", rating: 4.8, reviews: 40 },
-];
 
 export default function DoctorStatisticChartPage() {
   const { doctorId } = useCompetenceAuth();
@@ -154,12 +138,11 @@ export default function DoctorStatisticChartPage() {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <FeedbackChart data={monthlyFeedbackData} />
         <PatientAppointmentChart data={patientsData ?? []} />
-      </div>
+      
 
       {/* Patient Status and Recent Patients */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      
         <PatientStatusChart data={patientStatusData ?? []} />
         <RecentPatientsTable patients={recentPatients ?? []} />
       </div>

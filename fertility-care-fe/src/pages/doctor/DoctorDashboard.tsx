@@ -132,9 +132,6 @@ export default function DoctorDashboard() {
                 <MdFeedback className="w-6 mr-3 font-bold" />
                 Đánh giá
               </div>
-              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full ml-3">
-                24
-              </span>
             </Link>
 
             <Link
@@ -147,9 +144,6 @@ export default function DoctorDashboard() {
                 <BsFillPostcardHeartFill className="w-6 mr-3 font-bold" />
                 Blogs của tôi
               </div>
-              <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full ml-3">
-                24
-              </span>
             </Link>
           </div>
         </nav>

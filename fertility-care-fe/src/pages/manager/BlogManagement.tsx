@@ -54,13 +54,12 @@ export default function BlogManagement() {
     }
   };
 
-  const deleteBlog = (id: string) => {
-    setBlogs((prev) => prev.filter((b) => b.id !== id));
-  };
-
   const updateBlog = async (id: string, status: string) => {
     try {
-      await axiosInstance.get(`${id}?status=${status}`) 
+      await axiosInstance.put(`/blogs/${id}?status=${status}`) 
+      const response = await axiosInstance.get(`/blogs/all-status`)
+
+      setBlogs(response.data.data)
     } catch(error) {
       console.log(error)
     }
@@ -101,7 +100,6 @@ export default function BlogManagement() {
                   blog={blog}
                   getStatusColor={getStatusColor}
                   getStatusIcon={getStatusIcon}
-                  deleteBlog={deleteBlog}
                   updateBlogStatus={updateBlog}
                 />
               ))}

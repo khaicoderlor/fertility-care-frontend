@@ -32,7 +32,6 @@ import Service from "./pages/Service";
 import TreatmentRoadmapPage from "./pages/TreatmentRoadmapPage";
 import BlogsPage from "./pages/BlogPage";
 import { PatientFeedbacks } from "./pages/patient/PatientFeedbacks";
-import { PatientBlogs } from "./pages/patient/PatientBlogs";
 
 function App() {
   return (
@@ -60,7 +59,6 @@ function App() {
             <Route path="appointments" element={<AppointmentTable />} />
             <Route path="prescriptions" element={<PrescriptionPage />} />
             <Route path="feedbacks" element={<PatientFeedbacks />}/>
-            <Route path="blogs" element={<PatientBlogs />}/>
               <Route
                 path="payment-histories"
                 element={<PaymentHistoriesTable />}

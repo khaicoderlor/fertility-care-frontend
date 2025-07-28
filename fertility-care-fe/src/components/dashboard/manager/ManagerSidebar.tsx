@@ -1,27 +1,28 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import '../../../assets/css/ManagerSideBarStyle.css'
+import "../../../assets/css/ManagerSideBarStyle.css";
 import { MdDateRange } from "react-icons/md";
 import { FaUsers } from "react-icons/fa";
 import { RiFeedbackFill } from "react-icons/ri";
+import LogoutCompetenceButton from "../../../pages/auth/LogoutCompetenceButton";
 
 const menuItems = [
   {
     id: "schedules",
     label: "Lịch bác sĩ",
-    icon: <MdDateRange className="w-4 h-4 mr-3"/>,
+    icon: <MdDateRange className="w-4 h-4 mr-3" />,
     path: "/manager/schedules",
   },
   {
     id: "patients",
     label: "Tiến trình bệnh nhân",
-    icon: <FaUsers className="w-4 h-4 mr-3"/>,
+    icon: <FaUsers className="w-4 h-4 mr-3" />,
     path: "/manager/patients",
   },
   {
     id: "feedbacks",
     label: "Đánh giá Bác sĩ",
-    icon: <RiFeedbackFill className="w-4 h-4 mr-3"/>,
+    icon: <RiFeedbackFill className="w-4 h-4 mr-3" />,
     path: "/manager/feedbacks",
   },
 ];
@@ -72,6 +73,7 @@ const ManagerSidebar: React.FC = () => {
           ))}
         </div>
       </nav>
+      <LogoutCompetenceButton />
     </div>
   );
 };

@@ -1,7 +1,7 @@
 "use client"
 
 import { TbListDetails } from "react-icons/tb"
-import { IoBanOutline, IoFilterSharp } from "react-icons/io5"
+import { IoBanOutline } from "react-icons/io5"
 import { IoMdCheckmark } from "react-icons/io"
 import { useState } from "react"
 import type { Patient } from "../../../models/Patient"
@@ -106,19 +106,6 @@ export const PatientTable = ({ patients }: PatientTableProps) => {
                 </svg>
               </div>
             </div>
-
-            <button
-              onClick={() => setShowFilter((s) => !s)}
-              title="Bộ lọc"
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl border transition-all duration-200 font-medium ${
-                showFilter
-                  ? "bg-green-600 text-white border-green-600 shadow-lg"
-                  : "bg-white text-gray-700 border-gray-200 hover:bg-gray-50 shadow-sm"
-              }`}
-            >
-              <IoFilterSharp className="w-5 h-5" />
-              <span className="hidden sm:inline">Bộ lọc</span>
-            </button>
           </div>
         </div>
       </div>
@@ -154,7 +141,7 @@ export const PatientTable = ({ patients }: PatientTableProps) => {
           <thead className="bg-gray-50 sticky top-0">
             <tr>
               {[
-                "bệnh nhân",
+                "Bệnh nhân",
                 "Liên lạc",
                 "Ngày sinh",
                 "Người thân",

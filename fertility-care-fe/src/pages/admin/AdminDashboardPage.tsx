@@ -12,6 +12,7 @@ import axiosInstance from "../../apis/AxiosInstance";
 import { ReportProgressPatient } from "../../components/dashboard/admin/ReportProgressPatient";
 import { UserTable } from "../../components/dashboard/admin/UserTable";
 import BlogManagement from "../manager/BlogManagement";
+import TreatmentServiceTable from "../../components/dashboard/admin/TreatmentServiceTabletsx";
 
 interface StatCard {
   title: string;
@@ -84,20 +85,8 @@ const AdminDashboard: React.FC = () => {
       case "dashboard":
         return (
           <div className="space-y-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
-              <p className="text-gray-600 mt-1">
-                Tổng quan hoạt động phòng khám
-              </p>
-            </div>
-            {/* Stats Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {statCards.map((stat, index) => (
-                <StatsCard key={index} stat={stat} />
-              ))}
-            </div>{" "}
             {/* Chart Section */}
-            <SimpleChart />
+            <TreatmentServiceTable />
           </div>
         );
 
@@ -105,9 +94,9 @@ const AdminDashboard: React.FC = () => {
         return (
           <div className="space-y-8">
             <div>
-              <h2 className="text-3xl font-bold text-gray-800">Dashboard</h2>
+              <h2 className="text-3xl font-bold text-gray-800">Người dùng</h2>
               <p className="text-gray-600 mt-1">
-                Tổng quan hoạt động phòng khám
+                Quản lí thông tin người dùng
               </p>
             </div>
             {/* Stats Cards */}
@@ -168,10 +157,6 @@ const AdminDashboard: React.FC = () => {
       case "blogs":
          return (
           <div className="space-y-8">
-            <div>
-              <h2 className="text-3xl font-bold text-gray-800">Thanh toán</h2>
-              <p className="text-gray-600 mt-1">Quản lý lịch hẹn bệnh nhân</p>
-            </div>
             <BlogManagement/>
           </div>
         );  

@@ -1,6 +1,6 @@
 export interface TreatmentStep {
 
-    Id: string,
+    id: string,
 
     stepName: string,
 

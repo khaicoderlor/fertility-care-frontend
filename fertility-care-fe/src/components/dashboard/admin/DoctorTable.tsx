@@ -1,7 +1,6 @@
 "use client"
 
 import { TbListDetails } from "react-icons/tb"
-import { IoFilterSharp } from "react-icons/io5"
 import { IoMdCheckmark } from "react-icons/io"
 import { IoBanOutline } from "react-icons/io5"
 import { IoClose, IoSearch } from "react-icons/io5"
@@ -86,15 +85,6 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
                 onChange={(e) => setSearch(e.target.value)}
               />
             </div>
-            <button
-              onClick={() => setShowFilter((s) => !s)}
-              className={`flex items-center gap-2 px-4 py-3 rounded-xl font-medium transition-all duration-200 ${
-                showFilter ? "bg-white text-blue-600 shadow-sm" : "bg-white/20 text-white hover:bg-white/30"
-              }`}
-            >
-              <IoFilterSharp className="w-5 h-5" />
-              <span className="hidden sm:inline">Bộ lọc</span>
-            </button>
           </div>
         </div>
       </div>

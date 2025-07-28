@@ -7,7 +7,7 @@ import type { EmbryoTransferredReportResponse } from "../../../models/EmbryoTran
 import type { Order } from "../../../models/Order";
 import type { Patient } from "../../../models/Patient";
 import { TbReportAnalytics } from "react-icons/tb";
-import { FaBoxOpen, FaFilter, FaCheck } from "react-icons/fa";
+import { FaBoxOpen, FaCheck } from "react-icons/fa";
 import type { PatientSideAdminPage } from "./PatientTable";
 import axiosInstance from "../../../apis/AxiosInstance";
 import { formatCurrency } from "../../../functions/CommonFunction";
@@ -18,8 +18,13 @@ import {
   STEP_PLANNED,
   STEP_PROGRESS,
 } from "../../../constants/StepStatus";
-import type OrderStep from "../../../models/OrderStep";
-import { PAYMENT_COMPLETED, PAYMENT_FAILED, PAYMENT_PENDING } from "../../../constants/PaymentStatus";
+import {
+  PAYMENT_COMPLETED,
+  PAYMENT_FAILED,
+  PAYMENT_PENDING,
+} from "../../../constants/PaymentStatus";
+import { ITEMS_PER_PAGE } from "../../../constants/ApplicationConstant";
+import { getStatusOrder } from "../doctor/RecentPatientsTable";
 
 export interface PatientOrderSideAdmin {
   patient: Patient;
@@ -45,6 +50,8 @@ export const ReportProgressPatient = ({
   const [selectedStepIndex, setSelectedStepIndex] = useState<number | null>(
     null
   );
+
+  const [currentPage, setCurrentPage] = useState(1);
 
   const handleViewReportDetail = async (order: Order) => {
     const response = await axiosInstance.get(
@@ -117,27 +124,34 @@ export const ReportProgressPatient = ({
     return STEP_PLANNED;
   };
 
-  const calculateProgress = (orderSteps: OrderStep[]) => {
-    const currentStep = orderSteps.filter((x) => x.status === STEP_PROGRESS);
+  // const calculateProgress = (orderSteps: OrderStep[]) => {
+  //   const currentStep = orderSteps.filter((x) => x.status === STEP_PROGRESS);
 
-    if (typeof currentStep === "undefined" || orderSteps.length === 0) {
-      return 0;
-    }
-    return Math.round(((currentStep.length + 1) / orderSteps.length) * 100);
-  };
+  //   if (typeof currentStep === "undefined" || orderSteps.length === 0) {
+  //     return 0;
+  //   }
+  //   return Math.round(((currentStep.length + 1) / orderSteps.length) * 100);
+  // };
 
   const getPaymentStatus = (status: string) => {
-    switch(status) {
-      case PAYMENT_COMPLETED: 
-        return "Đã thanh toán"
+    switch (status) {
+      case PAYMENT_COMPLETED:
+        return "Đã thanh toán";
       case PAYMENT_PENDING:
-        return "Chưa thanh toán"
+        return "Chưa thanh toán";
       case PAYMENT_FAILED:
-        return "Thất bại"
+        return "Thất bại";
       default:
-        return "Không rõ"      
+        return "Không rõ";
     }
-  }
+  };
+
+  const totalPages = Math.ceil(patientsOrders.length / ITEMS_PER_PAGE);
+
+  const paginatedPatientsOrders = patientsOrders.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
 
   return (
     <div className="min-h-screen bg-gray-50 p-6">
@@ -162,10 +176,6 @@ export const ReportProgressPatient = ({
                 />
                 <div className="absolute left-3 top-2.5 text-gray-400">🔍</div>
               </div>
-              <button className="flex items-center space-x-2 px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-                <FaFilter className="w-4 h-4 text-gray-600" />
-                <span className="text-gray-700">Bộ lọc</span>
-              </button>
             </div>
           </div>
         </div>
@@ -173,66 +183,60 @@ export const ReportProgressPatient = ({
         {/* Orders Table */}
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-gray-200 text-sm">
+              <thead className="bg-gray-100 text-gray-700">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    ID
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Gói điều trị
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Bác sĩ
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Bệnh nhân
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trạng thái
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Trữ phôi
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Tổng tiền
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Bắt đầu
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Kết thúc
-                  </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Thao tác
-                  </th>
+                  {[
+                    "Gói điều trị",
+                    "Bác sĩ",
+                    "Bệnh nhân",
+                    "Trạng thái",
+                    "Trữ phôi",
+                    "Tổng tiền",
+                    "Bắt đầu",
+                    "Kết thúc",
+                    "Thao tác",
+                  ].map((title) => (
+                    <th
+                      key={title}
+                      className="px-6 py-3 text-left font-semibold uppercase tracking-wider text-xs"
+                    >
+                      {title}
+                    </th>
+                  ))}
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {patientsOrders.map((po) =>
+
+              <tbody className="bg-white divide-y divide-gray-100">
+                {paginatedPatientsOrders.map((po) =>
                   (po.orders ?? []).map((ord: Order) => (
                     <tr
                       key={ord.id}
-                      className="hover:bg-gray-50 transition-colors"
+                      className="hover:bg-gray-50 transition-colors duration-200"
                     >
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        #{ord.id}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 font-medium text-gray-900">
                         {ord.treatmentService?.name}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 text-gray-700">
                         {ord.doctor?.profile?.fullName}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 text-gray-700">
                         {po.patient.profile?.fullName}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
-                          {ord.status}
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-2 py-1 rounded-full text-xs font-semibold ${
+                            ord.status === "COMPLETED"
+                              ? "bg-green-100 text-green-700"
+                              : ord.status === "CANCELED"
+                              ? "bg-red-100 text-red-700"
+                              : "bg-yellow-100 text-yellow-700"
+                          }`}
+                        >
+                          {getStatusOrder(ord.status)}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4">
                         <span
                           className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             ord.isFrozen
@@ -243,35 +247,35 @@ export const ReportProgressPatient = ({
                           {ord.isFrozen ? "Có" : "Không"}
                         </span>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {ord.totalAmount?.toLocaleString()}₫
+                      <td className="px-6 py-4 text-gray-800 font-semibold">
+                        💰 {ord.totalAmount?.toLocaleString()}₫
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 text-gray-700">
                         {ord.startDate}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 text-gray-700">
                         {ord.endDate}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex items-center space-x-2">
+                      <td className="px-6 py-4">
+                        <div className="flex gap-2">
                           <button
-                            className="p-2 text-indigo-600 hover:text-indigo-800 hover:bg-indigo-50 rounded-lg transition-colors"
+                            className="p-2 rounded-md text-indigo-600 hover:bg-indigo-100"
                             onClick={() => handleViewReportDetail(ord)}
                             title="Xem báo cáo"
                           >
                             <TbReportAnalytics className="w-5 h-5" />
                           </button>
                           <button
-                            className="p-2 text-green-600 hover:text-green-800 hover:bg-green-50 rounded-lg transition-colors"
+                            className="p-2 rounded-md text-green-600 hover:bg-green-100"
                             onClick={() => handleUnClosedOrder(ord)}
                             title="Mở lại đơn"
                           >
                             <FaBoxOpen className="w-5 h-5" />
                           </button>
                           <button
-                            className="p-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Đóng đơn điều trị"
+                            className="p-2 rounded-md text-red-600 hover:bg-red-100"
                             onClick={() => handleClosedOrder(ord)}
+                            title="Đóng đơn"
                           >
                             <IoCloseCircleSharp className="w-5 h-5" />
                           </button>
@@ -283,6 +287,43 @@ export const ReportProgressPatient = ({
               </tbody>
             </table>
           </div>
+        </div>
+
+        <div className="flex justify-center mt-6 items-center gap-1 flex-wrap">
+          {/* Trang trước */}
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 border rounded-md bg-white hover:bg-gray-100 disabled:opacity-50"
+          >
+            Trước
+          </button>
+
+          {/* Các nút số trang */}
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentPage(index + 1)}
+              className={`px-3 py-1 rounded-md border ${
+                currentPage === index + 1
+                  ? "bg-teal-600 text-white shadow font-semibold"
+                  : "bg-white text-gray-800 hover:bg-gray-100"
+              }`}
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          {/* Trang sau */}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 border rounded-md bg-white hover:bg-gray-100 disabled:opacity-50"
+          >
+            Sau
+          </button>
         </div>
 
         {/* Report Details */}
@@ -300,14 +341,7 @@ export const ReportProgressPatient = ({
                   <h3 className="text-lg font-semibold text-gray-900">
                     Tiến độ điều trị
                   </h3>
-                  <div className="text-right">
-                    <div className="text-2xl font-bold text-blue-600">
-                      {calculateProgress(
-                        selectedOrderReport.order.orderSteps ?? []
-                      )}
-                      %
-                    </div>
-                  </div>
+                  
                 </div>
 
                 {/* Timeline */}
@@ -436,8 +470,8 @@ export const ReportProgressPatient = ({
                             {getPaymentStatus(
                               selectedOrderReport.order.orderSteps?.[
                                 selectedStepIndex
-                              ].paymentStatus??"")
-                            }
+                              ].paymentStatus ?? ""
+                            )}
                           </p>
                         </div>
                       </div>

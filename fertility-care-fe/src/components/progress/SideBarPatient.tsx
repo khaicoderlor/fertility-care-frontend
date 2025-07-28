@@ -16,12 +16,11 @@ import { useLocation } from "react-router-dom";
 
 import { Link } from "react-router-dom";
 import { RiFeedbackLine } from "react-icons/ri";
-import {  BsFilePostFill } from "react-icons/bs";
+import LogoutButton from "../../pages/auth/LogoutButton";
 
 interface SideBarProps {
   patient: Patient | null;
 }
-
 
 export default function SideBarPatient({ patient }: SideBarProps) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
@@ -157,19 +156,9 @@ export default function SideBarPatient({ patient }: SideBarProps) {
               <RiFeedbackLine className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Đánh giá</span>}
             </Link>
-            <Link
-              to="/patient/blogs"
-              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                isActive("/patient/blogs")
-                  ? "text-pink-600 bg-pink-50"
-                  : "text-gray-700 hover:bg-gray-100"
-              } ${sidebarCollapsed ? "justify-center" : ""}`}
-            >
-              <BsFilePostFill className="w-5 h-5 flex-shrink-0" />
-              {!sidebarCollapsed && <span>Bài viết</span>}
-            </Link>
           </nav>
         </div>
+        <LogoutButton/>
       </div>
     </div>
   );

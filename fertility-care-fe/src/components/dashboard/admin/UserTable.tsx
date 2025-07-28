@@ -171,7 +171,6 @@ export const UserTable = () => {
                   <th className="px-4 py-3">Giới tính</th>
                   <th className="px-4 py-3">Ngày tham gia</th>
                   <th className="px-4 py-3">Loại</th>
-                  <th className="px-4 py-3">Thao tác</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
@@ -201,7 +200,7 @@ export const UserTable = () => {
                           <span className="text-gray-600">Email thường</span>
                         )}
                       </td>
-                      <td className="px-4 py-2">
+                      {/* <td className="px-4 py-2">
                         <button
                           type="button"
                           className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded-md transition duration-200"
@@ -209,7 +208,7 @@ export const UserTable = () => {
                         >
                           Vô hiệu hóa
                         </button>
-                      </td>
+                      </td> */}
                     </tr>
                   ))
                 ) : (

@@ -1,17 +1,43 @@
+import { BsFileEarmarkPost } from "react-icons/bs";
 import { FaUsers } from "react-icons/fa";
 import { FaUserDoctor } from "react-icons/fa6";
 import { MdOutlineDashboard, MdPayment } from "react-icons/md";
 import { RiMentalHealthFill } from "react-icons/ri";
 import { TbReportAnalytics } from "react-icons/tb";
+import LogoutCompetenceButton from "../../../pages/auth/LogoutCompetenceButton";
 
 const menuItems = [
-  { id: "dashboard", label: "Tổng quan", icon: <MdOutlineDashboard className="w-5 h-5" /> },
+  {
+    id: "dashboard",
+    label: "Tổng quan",
+    icon: <MdOutlineDashboard className="w-5 h-5" />,
+  },
   { id: "users", label: "Người dùng", icon: <FaUsers className="w-5 h-5" /> },
-  { id: "patients", label: "Bệnh nhân", icon: <RiMentalHealthFill className="w-5 h-5" /> },
-  { id: "doctors", label: "Bác sĩ", icon: <FaUserDoctor className="w-5 h-5" /> },
-  { id: "reports-statistic", label: "Đơn điều trị", icon: <TbReportAnalytics className="w-5 h-5" /> },
-  { id: "payments", label: "Thanh toán", icon: <MdPayment className="w-5 h-5" /> },
-  { id: "blogs", label: "Bài viết", icon: <MdPayment className="w-5 h-5" /> },
+  {
+    id: "patients",
+    label: "Bệnh nhân",
+    icon: <RiMentalHealthFill className="w-5 h-5" />,
+  },
+  {
+    id: "doctors",
+    label: "Bác sĩ",
+    icon: <FaUserDoctor className="w-5 h-5" />,
+  },
+  {
+    id: "reports-statistic",
+    label: "Đơn điều trị",
+    icon: <TbReportAnalytics className="w-5 h-5" />,
+  },
+  {
+    id: "payments",
+    label: "Thanh toán",
+    icon: <MdPayment className="w-5 h-5" />,
+  },
+  {
+    id: "blogs",
+    label: "Bài viết",
+    icon: <BsFileEarmarkPost className="w-5 h-5" />,
+  },
 ];
 
 interface SideBarProps {
@@ -55,20 +81,7 @@ const Sidebar = ({ activeItem = "dashboard", onItemClick }: SideBarProps) => {
           </button>
         ))}
       </nav>
-
-      {/* User Info */}
-      <div className="p-4 border-t">
-        <div className="bg-purple-50 p-3 rounded-lg flex items-center gap-3">
-          <img
-            src="https://via.placeholder.com/40x40/667eea/ffffff?text=AD"
-            className="w-10 h-10 rounded-full"
-            alt="Admin"
-          />
-          <div>
-            <p className="text-xs text-gray-600">Admin</p>
-          </div>
-        </div>
-      </div>
+      <LogoutCompetenceButton/>
     </div>
   );
 };

@@ -1,14 +1,17 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
-import { STEP_COMPLETED, STEP_FAILED, STEP_PROGRESS } from "../../../constants/StepStatus";
+import {
+  STEP_COMPLETED,
+  STEP_FAILED,
+  STEP_PROGRESS,
+} from "../../../constants/StepStatus";
 import { calculateCompletedPercentage } from "../../../functions/CommonFunction";
 import type OrderStep from "../../../models/OrderStep";
 
-interface ProgressStepProps { 
-  orderSteps: OrderStep[]
+interface ProgressStepProps {
+  orderSteps: OrderStep[];
 }
 
-export default function ProgressStep({orderSteps}: ProgressStepProps) {
-
+export default function ProgressStep({ orderSteps }: ProgressStepProps) {
   return (
     <div className="mt-8">
       <div className="flex items-center justify-between">
@@ -38,14 +41,14 @@ export default function ProgressStep({orderSteps}: ProgressStepProps) {
         ))}
       </div>
       <div className="relative mt-4">
-        <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 transform bg-gray-200"></div>
+        <div className="absolute top-1/2 h-1 w-full -translate-y-1/2 transform bg-gray-200 rounded-full"></div>
         <div
-          className="absolute top-1/2 h-1 -translate-y-1/2 transform bg-green-500"
+          className="absolute top-1/2 h-1 -translate-y-1/2 transform bg-green-500 rounded-full transition-all duration-500"
           style={{
-            width: Math.floor(calculateCompletedPercentage(orderSteps)),
+            width: `${calculateCompletedPercentage(orderSteps)}%`
           }}
         ></div>
       </div>
     </div>
-  );
+  )
 }

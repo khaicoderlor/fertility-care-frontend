@@ -1,17 +1,15 @@
 import {
   EyeIcon,
-  PencilIcon,
-  TrashIcon,
   CalendarIcon,
   ClockIcon,
 } from "@heroicons/react/24/outline";
 import type { Blog } from "../../models/Blog";
+import { convertStatusPost } from '../doctor/DoctorPost';
 
 interface BlogCardProps {
   blog: Blog;
   getStatusColor: (status: string) => string;
   getStatusIcon: (status: string) => React.ElementType;
-  deleteBlog: (id: string) => void;
   updateBlogStatus: (id: string, newStatus: string) => void;
 }
 
@@ -19,7 +17,6 @@ export default function BlogCard({
   blog,
   getStatusColor,
   getStatusIcon,
-  deleteBlog,
   updateBlogStatus,
 }: BlogCardProps) {
   const StatusIcon = getStatusIcon(blog.status);
@@ -36,7 +33,7 @@ export default function BlogCard({
         </div>
       )}
       {/* Blog Content */}
-      <div className="p-6">
+      <div className="p-2">
         {/* Author */}
         <div className="flex items-center mb-3">
           <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -50,10 +47,6 @@ export default function BlogCard({
         <strong className="text-gray-600 text-lg mb-4 line-clamp-3">
           {blog.title}
         </strong>
-
-        <p className="text-gray-600 text-sm mb-4 line-clamp-3">
-          {blog.content}
-        </p>
         {/* Status */}
         <div className="flex items-center mb-4">
           <span
@@ -62,7 +55,7 @@ export default function BlogCard({
             )}`}
           >
             <StatusIcon className="w-3 h-3 mr-1" />
-            {blog.status}
+            {convertStatusPost(blog.status)}
           </span>
         </div>
         {/* Dates */}
@@ -81,17 +74,8 @@ export default function BlogCard({
         {/* Actions */}
         <div className="flex items-center justify-between pt-4 border-t border-gray-200">
           <div className="flex space-x-2">
-            <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors">
-              <EyeIcon className="w-4 h-4" />
-            </button>
-            <button className="p-2 text-gray-400 hover:text-green-600 transition-colors">
-              <PencilIcon className="w-4 h-4" />
-            </button>
-            <button
-              onClick={() => deleteBlog(blog.id)}
-              className="p-2 text-gray-400 hover:text-red-600 transition-colors"
-            >
-              <TrashIcon className="w-4 h-4" />
+            <button className="p-2 text-gray-400 hover:text-blue-600 transition-colors flex items-center justify-around">
+              <EyeIcon className="w-5 h-5 mr-2" /> <span className="text-sm">Chi tiết</span> 
             </button>
           </div>
           {/* Quick Status Change */}
@@ -103,8 +87,8 @@ export default function BlogCard({
             className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="Process">Đang xử lý</option>
-            <option value="Approved">Đã phê duyệt</option>
-            <option value="Rejected">Bị từ chôi</option>
+            <option value="Approved">Phê duyệt</option>
+            <option value="Rejected">Vi phạm</option>
           </select>
         </div>
       </div>

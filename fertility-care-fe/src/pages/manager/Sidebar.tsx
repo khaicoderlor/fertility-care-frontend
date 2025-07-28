@@ -4,11 +4,27 @@ import {
   UserGroupIcon,
 } from "@heroicons/react/24/outline";
 import { Link, useLocation } from "react-router-dom";
+import LogoutCompetenceButton from "../auth/LogoutCompetenceButton";
 
 const sidebarItems = [
-  { name: "Lịch làm việc", icon: HomeIcon, href: "/manager/schedules", key: "doctor-schedules" },
-  { name: "Phản hồi", icon: DocumentTextIcon, href: "/manager/feedbacks", key: "feedbacks" },
-  { name: "Bệnh nhân", icon: UserGroupIcon, href: "/manager/patients", key: "patients" },
+  {
+    name: "Lịch làm việc",
+    icon: HomeIcon,
+    href: "/manager/schedules",
+    key: "doctor-schedules",
+  },
+  {
+    name: "Phản hồi",
+    icon: DocumentTextIcon,
+    href: "/manager/feedbacks",
+    key: "feedbacks",
+  },
+  {
+    name: "Bệnh nhân",
+    icon: UserGroupIcon,
+    href: "/manager/patients",
+    key: "patients",
+  },
 ];
 
 export default function Sidebar() {
@@ -26,20 +42,23 @@ export default function Sidebar() {
           const isActive = location.pathname.startsWith(item.href);
 
           return (
-            <Link
-              key={item.name}
-              to={item.href}
-              className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
-                isActive
-                  ? "bg-blue-100 text-blue-700"
-                  : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-              }`}
-            >
-              <Icon className="w-5 h-5 mr-3" />
-              {item.name}
-            </Link>
+            <>
+              <Link
+                key={item.name}
+                to={item.href}
+                className={`flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-colors ${
+                  isActive
+                    ? "bg-blue-100 text-blue-700"
+                    : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+                }`}
+              >
+                <Icon className="w-5 h-5 mr-3" />
+                {item.name}
+              </Link>
+            </>
           );
         })}
+        <LogoutCompetenceButton />
       </nav>
     </aside>
   );
