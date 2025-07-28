@@ -15,6 +15,8 @@ import type { Patient } from "../../models/Patient";
 import { useLocation } from "react-router-dom";
 
 import { Link } from "react-router-dom";
+import { RiFeedbackLine } from "react-icons/ri";
+import {  BsFilePostFill } from "react-icons/bs";
 
 interface SideBarProps {
   patient: Patient | null;
@@ -136,7 +138,7 @@ export default function SideBarPatient({ patient }: SideBarProps) {
             <Link
               to="/patient/payment-histories"
               className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                isActive("/patient/payment/histories")
+                isActive("/patient/payment-histories")
                   ? "text-pink-600 bg-pink-50"
                   : "text-gray-700 hover:bg-gray-100"
               } ${sidebarCollapsed ? "justify-center" : ""}`}
@@ -152,53 +154,21 @@ export default function SideBarPatient({ patient }: SideBarProps) {
                   : "text-gray-700 hover:bg-gray-100"
               } ${sidebarCollapsed ? "justify-center" : ""}`}
             >
-              <CreditCardIcon className="w-5 h-5 flex-shrink-0" />
+              <RiFeedbackLine className="w-5 h-5 flex-shrink-0" />
               {!sidebarCollapsed && <span>Đánh giá</span>}
             </Link>
+            <Link
+              to="/patient/blogs"
+              className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
+                isActive("/patient/blogs")
+                  ? "text-pink-600 bg-pink-50"
+                  : "text-gray-700 hover:bg-gray-100"
+              } ${sidebarCollapsed ? "justify-center" : ""}`}
+            >
+              <BsFilePostFill className="w-5 h-5 flex-shrink-0" />
+              {!sidebarCollapsed && <span>Bài viết</span>}
+            </Link>
           </nav>
-
-          {/* {!sidebarCollapsed && (
-            <div className="p-4 border-t mt-4">
-              <div className="text-sm font-medium text-gray-500 mb-3">
-                Hỗ trợ & tài nguyên
-              </div>
-              <nav className="space-y-1">
-                <Link
-                  to="/support"
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                    isActive("/support")
-                      ? "text-pink-600 bg-pink-50"
-                      : "text-gray-700 hover:bg-gray-100"
-                  } ${sidebarCollapsed ? "justify-center" : ""}`}
-                >
-                  <ChatBubbleLeftRightIcon className="w-5 h-5" />
-                  <span>Hỗ trợ</span>
-                </Link>
-                <Link
-                  to="/explore"
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                    isActive("/explore")
-                      ? "text-pink-600 bg-pink-50"
-                      : "text-gray-700 hover:bg-gray-100"
-                  } ${sidebarCollapsed ? "justify-center" : ""}`}
-                >
-                  <BookOpenIcon className="w-5 h-5" />
-                  <span>Tìm hiểu thêm</span>
-                </Link>
-                <Link
-                  to="/emergency-contact"
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-colors ${
-                    isActive("/emergency-contact")
-                      ? "text-pink-600 bg-pink-50"
-                      : "text-gray-700 hover:bg-gray-100"
-                  } ${sidebarCollapsed ? "justify-center" : ""}`}
-                >
-                  <PhoneIcon className="w-5 h-5" />
-                  <span>Liên lạc khẩn cấp</span>
-                </Link>
-              </nav>
-            </div>
-          )} */}
         </div>
       </div>
     </div>

@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../contexts/AuthContext";
 import axiosInstance from "../../apis/AxiosInstance";
-import { PAYMENT_CANCELLED, PAYMENT_COMPLETED } from "../../constants/PaymentStatus";
+import {
+  PAYMENT_CANCELLED,
+  PAYMENT_COMPLETED,
+} from "../../constants/PaymentStatus";
 
 interface OrderStepPayment {
   treatmentName: string;
@@ -17,6 +20,9 @@ interface OrderStepPayment {
 }
 
 export default function PaymentHistoriesTable() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 5;
+
   const [orderStepPayments, setOrderStepPayments] = useState<
     OrderStepPayment[]
   >([]);
@@ -37,6 +43,12 @@ export default function PaymentHistoriesTable() {
     };
     s();
   }, [patientId]);
+
+  const totalPages = Math.ceil(orderStepPayments.length / itemsPerPage);
+  const paginatedPayments = orderStepPayments.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <div className="p-4 rounded-2xl shadow-lg border border-gray-200 bg-white overflow-x-auto">
@@ -67,8 +79,8 @@ export default function PaymentHistoriesTable() {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-100">
-          {orderStepPayments.length > 0 ? (
-            orderStepPayments.map((payment, idx) => (
+          {paginatedPayments.length > 0 ? (
+            paginatedPayments.map((payment, idx) => (
               <tr key={idx} className="hover:bg-gray-50 transition">
                 <td className="px-4 py-3">{payment.treatmentName}</td>
                 <td className="px-4 py-3">{payment.doctorName}</td>
@@ -79,9 +91,7 @@ export default function PaymentHistoriesTable() {
                   {payment.totalAmount.toLocaleString("vi-VN")} ₫
                 </td>
                 <td className="px-4 py-3">{payment.paymentMethod}</td>
-                <td className="px-4 py-3">
-                  {payment.paymentDate}
-                </td>
+                <td className="px-4 py-3">{payment.paymentDate}</td>
                 <td className="px-4 py-3">
                   <span
                     className={`inline-block px-2 py-1 rounded-full text-xs font-medium ${
@@ -110,6 +120,42 @@ export default function PaymentHistoriesTable() {
           )}
         </tbody>
       </table>
+      {totalPages > 1 && (
+        <div className="flex justify-center items-center gap-2 mt-4">
+          <button
+            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+            disabled={currentPage === 1}
+            className="px-3 py-1 rounded border bg-white hover:bg-gray-100 disabled:opacity-50"
+          >
+            Trang trước
+          </button>
+          {[...Array(totalPages)].map((_, index) => {
+            const page = index + 1;
+            return (
+              <button
+                key={page}
+                onClick={() => setCurrentPage(page)}
+                className={`px-3 py-1 rounded border ${
+                  currentPage === page
+                    ? "bg-blue-500 text-white"
+                    : "bg-white hover:bg-gray-100"
+                }`}
+              >
+                {page}
+              </button>
+            );
+          })}
+          <button
+            onClick={() =>
+              setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+            }
+            disabled={currentPage === totalPages}
+            className="px-3 py-1 rounded border bg-white hover:bg-gray-100 disabled:opacity-50"
+          >
+            Trang sau
+          </button>
+        </div>
+      )}
     </div>
   );
 }

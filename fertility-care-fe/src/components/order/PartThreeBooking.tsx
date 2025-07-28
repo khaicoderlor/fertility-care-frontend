@@ -1,6 +1,6 @@
 "use client";
 
-import { FaStar, FaArrowRight } from "react-icons/fa";
+import { FaStar } from "react-icons/fa";
 import type { Doctor } from "../../models/Doctor";
 import { convertFullName } from "../../functions/CommonFunction";
 
@@ -8,16 +8,12 @@ interface PartProps {
   doctors: Doctor[];
   selectedDoctor: Doctor | null;
   onDoctorSelect: (doctor: Doctor) => void;
-  onNext: () => void;
-  isCompleted: boolean;
 }
 
 export default function PartThreeBooking({
   doctors,
   selectedDoctor,
   onDoctorSelect,
-  onNext,
-  isCompleted,
 }: PartProps) {
   return (
     <section id="select-doctor" className="scroll-mt-20 py-20 ">
@@ -78,17 +74,7 @@ export default function PartThreeBooking({
             </div>
           ))}
         </div>
-        {isCompleted && (
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={onNext}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200 flex items-center"
-            >
-              Continue
-              <FaArrowRight className="ml-2 w-4 h-4" />
-            </button>
-          </div>
-        )}
+        
       </div>
     </section>
   );

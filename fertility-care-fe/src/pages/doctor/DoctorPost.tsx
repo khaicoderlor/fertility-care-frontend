@@ -5,32 +5,32 @@ import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import Swal from "sweetalert2";
 
 export const convertStatusPost = (status: string) => {
-    switch (status) {
-      case "Reject":
-        return "Bị từ chối";
-      case "Approved":
-        return "Đã phê duyệt";
-      case "Process":
-        return "Đang chờ xử lí";
-      default:
-        return "Không xác định";
-    }
-  };
+  switch (status) {
+    case "Reject":
+      return "Bị từ chối";
+    case "Approved":
+      return "Đã phê duyệt";
+    case "Process":
+      return "Đang chờ xử lí";
+    default:
+      return "Không xác định";
+  }
+};
 
 export const convertBlogCategory = (category: string) => {
-    switch (category) {
-      case "IVF":
-        return "IVF";
-      case "IUI":
-        return "IUI";
-      case "InfoFertility":
-        return "Dịch vụ hiếm muộn";
-      case "Other":
-        return "Khác";
-      default:
-        return "Không xác định";
-    }
-  };
+  switch (category) {
+    case "IVF":
+      return "IVF";
+    case "IUI":
+      return "IUI";
+    case "InfoFertility":
+      return "Dịch vụ hiếm muộn";
+    case "Other":
+      return "Khác";
+    default:
+      return "Không xác định";
+  }
+};
 
 export default function DoctorPost() {
   const { userProfileId, doctorId } = useCompetenceAuth();
@@ -41,6 +41,7 @@ export default function DoctorPost() {
     null
   );
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewImageUrl, setPreviewImageUrl] = useState<string | null>(null);
 
   const [newBlog, setNewBlog] = useState({
     title: "",
@@ -72,7 +73,6 @@ export default function DoctorPost() {
           icon: "success",
         });
 
-        // Thêm vào danh sách hiển thị
         setBlogs((prev) => [...prev, response.data.data]);
         setShowFormAddBlog(false);
         setNewBlog({
@@ -98,20 +98,19 @@ export default function DoctorPost() {
       topic: blog.category,
       userProfileId: userProfileId,
     };
+    console.log(blog);
+    console.log(payload);
 
     try {
       const response = await axiosInstance.put(
         `/blogs/${blog.id}/content`,
         payload
       );
-      if (response.data.success) {
+      if (response.data.data) {
         Swal.fire("Đã cập nhật bài viết", "", "success");
 
-        setBlogs((prev) =>
-          prev.map((item) =>
-            item.id === blog.id ? { ...item, ...blog } : item
-          )
-        );
+        const blogs = await axiosInstance.get(`/blogs/doctor/${doctorId}`);
+        setBlogs(blogs.data.data);
         setShowFormEditFile(null);
       }
     } catch (error) {
@@ -119,15 +118,14 @@ export default function DoctorPost() {
     }
   };
 
-
   const handleUpdateImage = async () => {
     if (!showFormUpdateFile || !selectedFile) return;
 
     const formData = new FormData();
     formData.append("image", selectedFile);
-
+    
     try {
-      const response = await axiosInstance.put(
+      const response = await axiosInstance.patch(
         `/blogs/${showFormUpdateFile.id}/image`,
         formData,
         {
@@ -156,6 +154,14 @@ export default function DoctorPost() {
       Swal.fire("Cập nhật hình ảnh thất bại", "", "error");
     }
   };
+
+  useEffect(() => {
+    return () => {
+      if (previewImageUrl) {
+        URL.revokeObjectURL(previewImageUrl);
+      }
+    };
+  }, [previewImageUrl]);
 
   return (
     <div className="p-6 max-w-7xl mx-auto">
@@ -196,11 +202,16 @@ export default function DoctorPost() {
                 <td className="px-4 py-2">{blog.id}</td>
                 <td className="px-4 py-2">
                   <img
-                    src={blog.imageUrl}
+                    src={
+                      showFormUpdateFile?.id === blog.id && previewImageUrl
+                        ? previewImageUrl
+                        : blog.imageUrl
+                    }
                     alt="thumbnail"
                     className="w-10 h-10 object-cover rounded-md"
                   />
                 </td>
+
                 <td className="px-4 py-2">{blog.title}</td>
                 <td className="px-4 py-2">{convertStatusPost(blog.status)}</td>
                 <td className="px-4 py-2">
@@ -357,16 +368,13 @@ export default function DoctorPost() {
             <div>
               <label className="block font-medium">Tiêu đề</label>
               <input
-                type="text"
-                value={showFormEditFile.title}
-                onChange={(e) =>
-                  setShowFormEditFile({
-                    ...showFormEditFile,
-                    title: e.target.value,
-                  })
-                }
-                className="w-full border px-3 py-2 rounded"
-                required
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  setSelectedFile(file);
+                  setPreviewImageUrl(file ? URL.createObjectURL(file) : null);
+                }}
               />
             </div>
             <div>

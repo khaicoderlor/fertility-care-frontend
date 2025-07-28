@@ -31,6 +31,8 @@ import { PrescriptionPage } from "./pages/patient/PrescriptionPage";
 import Service from "./pages/Service";
 import TreatmentRoadmapPage from "./pages/TreatmentRoadmapPage";
 import BlogsPage from "./pages/BlogPage";
+import { PatientFeedbacks } from "./pages/patient/PatientFeedbacks";
+import { PatientBlogs } from "./pages/patient/PatientBlogs";
 
 function App() {
   return (
@@ -57,10 +59,12 @@ function App() {
             <Route path="orders" element={<OrderInfoListWrapper />} />
             <Route path="appointments" element={<AppointmentTable />} />
             <Route path="prescriptions" element={<PrescriptionPage />} />
-            <Route
-              path="payment-histories"
-              element={<PaymentHistoriesTable />}
-            />
+            <Route path="feedbacks" element={<PatientFeedbacks />}/>
+            <Route path="blogs" element={<PatientBlogs />}/>
+              <Route
+                path="payment-histories"
+                element={<PaymentHistoriesTable />}
+              />
           </Route>
 
           <Route

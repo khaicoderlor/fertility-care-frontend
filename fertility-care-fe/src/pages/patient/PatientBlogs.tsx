@@ -74,7 +74,7 @@ export const PatientBlogs = () => {
     formData.append("image", imageFile);
 
     try {
-      await axiosInstance.put(`/blogs/${selectedBlog.id}/image`, formData, {
+      await axiosInstance.patch(`/blogs/${selectedBlog.id}/image`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

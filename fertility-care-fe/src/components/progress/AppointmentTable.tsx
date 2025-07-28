@@ -9,6 +9,7 @@ import { useAuth } from "../../contexts/AuthContext";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
 import { formatCurrency } from "../../functions/CommonFunction";
+import { ITEMS_PER_PAGE } from "../../constants/ApplicationConstant";
 
 interface AppointmentData {
   id: string;
@@ -25,24 +26,24 @@ interface AppointmentData {
   appointmentStatus: string;
 }
 
-
 const AppointmentTable: React.FC = () => {
-  const {patientId} = useAuth();
+  const { patientId } = useAuth();
   const [appointments, setAppointments] = useState<AppointmentData[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
 
   useEffect(() => {
     const fetch = async () => {
       try {
-        const response = await axiosInstance.get(`/patients/${patientId}/follow-appointment`);
-
-        setAppointments(response.data.data)
+        const response = await axiosInstance.get(
+          `/patients/${patientId}/follow-appointment`
+        );
+        setAppointments(response.data.data);
       } catch (error) {
-        console.log(error)
+        console.log(error);
       }
-    }
-
-    fetch()
-  }, [patientId])
+    };
+    fetch();
+  }, [patientId]);
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -72,9 +73,32 @@ const AppointmentTable: React.FC = () => {
     }
   };
 
+  const convertAppointmentType = (status: string): string => {
+    switch (status) {
+      case "InitialConsultation":
+        return "Khám ban đầu";
+      case "FollowUp":
+        return "Theo dõi";
+      case "Treatment":
+        return "Điều trị";
+      case "Check":
+        return "Kiểm tra";
+      default:
+        return "Khác";
+    }
+  };
+
+  // Tính toán phân trang
+  const totalPages = Math.ceil(appointments.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedAppointments = appointments.slice(
+    startIndex,
+    startIndex + ITEMS_PER_PAGE
+  );
+
   return (
-    <div className="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
@@ -89,39 +113,35 @@ const AppointmentTable: React.FC = () => {
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-200">
-              {/* Table Header */}
-              <thead className="bg-gray-50">
+              <thead className="bg-gray-100">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Bác sĩ & Chuyên môn
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Ngày & Giờ
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Chi tiết điều trị
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Chi phí phát sinh
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Trạng thái
                   </th>
-                  <th className="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-4 text-left text-base font-medium text-gray-500">
                     Ghi chú
                   </th>
                 </tr>
               </thead>
-
-              {/* Table Body */}
               <tbody className="bg-white divide-y divide-gray-200">
-                {appointments.map((appointment) => (
+                {paginatedAppointments.map((appointment) => (
                   <tr
                     key={appointment.id}
-                    className="hover:bg-gray-50 transition-colors duration-200"
+                    className="hover:bg-gray-50 transition-colors"
                   >
-                    {/* Doctor & Service */}
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <div className="text-sm font-medium text-gray-900">
                           {appointment.doctorName}
@@ -131,9 +151,7 @@ const AppointmentTable: React.FC = () => {
                         </div>
                       </div>
                     </td>
-
-                    {/* Date & Time */}
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <div className="text-sm font-medium text-gray-900">
                           {appointment.appointmentDate}
@@ -143,21 +161,17 @@ const AppointmentTable: React.FC = () => {
                         </div>
                       </div>
                     </td>
-
-                    {/* Treatment Details */}
                     <td className="px-6 py-4">
                       <div className="flex flex-col">
                         <div className="text-sm font-medium text-gray-900 mb-1">
-                          {appointment.target}
+                          {convertAppointmentType(appointment.target)}
                         </div>
                         <div className="text-sm text-gray-500">
                           Bước: {appointment.treatmentStepName}
                         </div>
                       </div>
                     </td>
-
-                    {/* Fee */}
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <div
                         className={`text-sm font-medium ${
                           appointment.extraFee > 0
@@ -168,9 +182,7 @@ const AppointmentTable: React.FC = () => {
                         {formatCurrency(appointment.extraFee)}
                       </div>
                     </td>
-
-                    {/* Status */}
-                    <td className="px-6 py-4 whitespace-nowrap">
+                    <td className="px-6 py-4">
                       <span
                         className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(
                           appointment.appointmentStatus
@@ -179,8 +191,6 @@ const AppointmentTable: React.FC = () => {
                         {getAppointmentStatus(appointment.appointmentStatus)}
                       </span>
                     </td>
-
-                    {/* Notes */}
                     <td className="px-6 py-4">
                       <div
                         className="text-sm text-gray-500 max-w-xs truncate"
@@ -194,51 +204,47 @@ const AppointmentTable: React.FC = () => {
               </tbody>
             </table>
           </div>
-        </div>
 
-        {/* Footer Stats
-        <div className="mt-8 grid grid-cols-1 md:grid-cols-4 gap-4">
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-blue-600">
-              {
-                sampleAppointments.filter(
-                  (a) => a.appointmentStatus === "Booked"
-                ).length
-              }
+          {/* Pagination */}
+          {totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 py-4 bg-gray-50 border-t flex-wrap">
+              <button
+                onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                className="px-3 py-1 rounded border bg-white hover:bg-gray-100 disabled:opacity-50"
+              >
+                Trang trước
+              </button>
+
+              {/* Page Numbers */}
+              {Array.from({ length: totalPages }, (_, index) => index + 1).map(
+                (pageNumber) => (
+                  <button
+                    key={pageNumber}
+                    onClick={() => setCurrentPage(pageNumber)}
+                    className={`px-3 py-1 rounded border ${
+                      currentPage === pageNumber
+                        ? "bg-blue-600 text-white"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                  >
+                    {pageNumber}
+                  </button>
+                )
+              )}
+
+              <button
+                onClick={() =>
+                  setCurrentPage((prev) => Math.min(prev + 1, totalPages))
+                }
+                disabled={currentPage === totalPages}
+                className="px-3 py-1 rounded border bg-white hover:bg-gray-100 disabled:opacity-50"
+              >
+                Trang sau
+              </button>
             </div>
-            <div className="text-sm text-gray-500">Booked</div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-green-600">
-              {
-                sampleAppointments.filter(
-                  (a) => a.appointmentStatus === "Confirmed"
-                ).length
-              }
-            </div>
-            <div className="text-sm text-gray-500">Confirmed</div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-gray-600">
-              {
-                sampleAppointments.filter(
-                  (a) => a.appointmentStatus === "Completed"
-                ).length
-              }
-            </div>
-            <div className="text-sm text-gray-500">Completed</div>
-          </div>
-          <div className="bg-white rounded-lg shadow p-6">
-            <div className="text-2xl font-bold text-red-600">
-              {
-                sampleAppointments.filter(
-                  (a) => a.appointmentStatus === "Cancelled"
-                ).length
-              }
-            </div>
-            <div className="text-sm text-gray-500">Cancelled</div>
-          </div>
-        </div> */}
+          )}
+        </div>
       </div>
     </div>
   );

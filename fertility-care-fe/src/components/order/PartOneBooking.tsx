@@ -1,21 +1,17 @@
 "use client";
 
-import { FaCheck, FaArrowRight } from "react-icons/fa";
+import { FaCheck } from "react-icons/fa";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { IUI_ID, IVF_ID } from "../../constants/ApplicationConstant";
 
 interface PartProps {
   selectedTreatment: string;
   onTreatmentSelect: (treatment: string) => void;
-  onNext: () => void;
-  isCompleted: boolean;
 }
 
 export default function PartOneBooking({
   selectedTreatment,
   onTreatmentSelect,
-  onNext,
-  isCompleted,
 }: PartProps) {
   return (
     <div id="treatment-type" className="scroll-mt-20">
@@ -42,27 +38,27 @@ export default function PartOneBooking({
                 <CheckIcon className="w-8 h-8 text-blue-600" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                IUI Treatment
+                Gói điều trị IUI
               </h3>
               <p className="text-gray-600 mb-4">
-                Intrauterine Insemination (IUI) is a less invasive fertility
-                treatment where sperm is placed directly into the uterus during
-                ovulation.
+                Thụ tinh nhân tạo trong tử cung (IUI) là một phương pháp điều
+                trị hiếm muộn ít xâm lấn hơn, trong đó tinh trùng được đưa trực
+                tiếp vào tử cung trong quá trình rụng trứng.
               </p>
             </div>
             <div className="px-6 pb-6">
               <ul className="space-y-2">
                 <li className="flex items-center text-green-600">
                   <FaCheck className="w-4 h-4 mr-2" />
-                  Less invasive procedure
+                  Thủ tục đơn giản
                 </li>
                 <li className="flex items-center text-green-600">
                   <FaCheck className="w-4 h-4 mr-2" />
-                  Lower cost option
+                   Giảm thiểu tối chi phí
                 </li>
                 <li className="flex items-center text-green-600">
                   <FaCheck className="w-4 h-4 mr-2" />
-                  Shorter treatment cycle
+                  Thời gian điều trị ngắn
                 </li>
               </ul>
             </div>
@@ -79,44 +75,30 @@ export default function PartOneBooking({
                 <CheckIcon className="w-8 h-8 text-purple-600" />
               </div>
               <h3 className="text-2xl font-semibold text-gray-900 mb-2">
-                IVF Treatment
+                Gói điêu trị IVF
               </h3>
               <p className="text-gray-600 mb-4">
-                In Vitro Fertilization (IVF) is a comprehensive fertility
-                treatment where eggs are fertilized outside the body and then
-                transferred to the uterus.
+                Thụ tinh trong ống nghiệm (IVF) là một phương pháp điều trị vô sinh toàn diện, trong đó trứng được thụ tinh bên ngoài cơ thể và sau đó được chuyển vào tử cung.
               </p>
             </div>
             <div className="px-6 pb-6">
               <ul className="space-y-2">
                 <li className="flex items-center text-green-600">
                   <FaCheck className="w-4 h-4 mr-2" />
-                  Higher success rates
+                  Tỉ lệ thành công cao
+                </li>
+                <li className="flex items-center text-green-600">
+                  <FaCheck className="w-4 h-4 mr-2" />Genetic testing available
+                  
                 </li>
                 <li className="flex items-center text-green-600">
                   <FaCheck className="w-4 h-4 mr-2" />
-                  Genetic testing available
-                </li>
-                <li className="flex items-center text-green-600">
-                  <FaCheck className="w-4 h-4 mr-2" />
-                  Multiple embryo options
+                  Đa dạng sự lựa chọn
                 </li>
               </ul>
             </div>
           </div>
         </div>
-
-        {isCompleted && (
-          <div className="flex justify-center mt-8">
-            <button
-              onClick={onNext}
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-md font-medium transition-colors duration-200 flex items-center"
-            >
-              Continue
-              <FaArrowRight className="ml-2 w-4 h-4" />
-            </button>
-          </div>
-        )}
       </div>
     </div>
   );

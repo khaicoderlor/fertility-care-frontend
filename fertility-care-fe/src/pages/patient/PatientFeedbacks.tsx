@@ -18,10 +18,9 @@ export const PatientFeedbacks = () => {
         const response = await axiosInstance.get(`/feedbacks/patient/${patientId}`);
         setFeedbacks(response.data.data);
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     };
-
     fetchFeedbacks();
   }, [patientId]);
 
@@ -41,93 +40,100 @@ export const PatientFeedbacks = () => {
     try {
       await axiosInstance.put(`/feedbacks/${updateId}`, { rating, comment });
       setUpdateId(null);
-
       const response = await axiosInstance.get(`/feedbacks/patient/${patientId}`);
       setFeedbacks(response.data.data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
   return (
-    <div>
-      <table className="w-full table-auto border">
-        <thead>
-          <tr>
-            <th>Bác sĩ</th>
-            <th>Chuyên môn</th>
-            <th>Gói điều trị</th>
-            <th>Trạng thái</th>
-            <th>Đánh giá</th>
-            <th>Bình luận</th>
-            <th>Ngày đánh giá</th>
-            <th>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {feedbacks.map((feedback) => (
-            <tr key={feedback.id}>
-              <td>{convertFullName(feedback.doctor.profile)}</td>
-              <td>{feedback.doctor.specialization}</td>
-              <td>{feedback.treatmentService.name}</td>
-              <td>{feedback.status}</td>
-              <td className="flex items-center">
-                {feedback.rating} <FaStar className="text-yellow-500 w-4 h-4 ml-1" />
-              </td>
-              <td>{feedback.comment}</td>
-              <td>{new Date(feedback.createdAt).toLocaleDateString()}</td>
-              <td>
-                <button
-                  className="text-blue-500 underline"
-                  onClick={() => handleUpdateClick(feedback)}
-                >
-                  Cập nhật
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+    <div className=" mx-auto">
+      <h2 className="text-3xl font-bold text-gray-800 mb-6">Lịch sử đánh giá</h2>
 
-      {/* Update Form */}
-      {updateId !== null && (
-        <div className="mt-4 border rounded p-4 shadow bg-gray-50">
-          <h3 className="text-lg font-semibold mb-2">Cập nhật đánh giá</h3>
-          <div className="mb-2">
-            <label className="block mb-1">Số sao:</label>
-            <select
-              value={rating}
-              onChange={(e) => setRating(parseInt(e.target.value))}
-              className="border p-1"
-            >
-              {[1, 2, 3, 4, 5].map((r) => (
-                <option key={r} value={r}>
-                  {r} <FaStar className="text-yellow-500 w-4 h-4 ml-1"/>
-                </option>
-              ))}
-            </select>
-          </div>
-          <div className="mb-2">
-            <label className="block mb-1">Bình luận:</label>
-            <textarea
-              value={comment}
-              onChange={(e) => setComment(e.target.value)}
-              className="border p-2 w-full"
-            />
-          </div>
-          <div className="flex gap-2">
-            <button
-              className="bg-green-500 text-white px-4 py-1 rounded"
-              onClick={handleSubmitUpdate}
-            >
-              Lưu
-            </button>
-            <button
-              className="bg-gray-400 text-white px-4 py-1 rounded"
-              onClick={handleCancel}
-            >
-              Hủy
-            </button>
+      <div className="overflow-x-auto rounded-lg shadow-md border border-gray-200 bg-white">
+        <table className="min-w-full text-sm text-left">
+          <thead className="bg-gray-100 text-gray-700 font-semibold text-xs">
+            <tr>
+              <th className="px-6 py-3">Bác sĩ</th>
+              <th className="px-6 py-3">Chuyên môn</th>
+              <th className="px-6 py-3">Gói điều trị</th>
+              <th className="px-6 py-3">Đánh giá</th>
+              <th className="px-6 py-3">Bình luận</th>
+              <th className="px-6 py-3">Ngày</th>
+              <th className="px-6 py-3 text-center">Hành động</th>
+            </tr>
+          </thead>
+          <tbody>
+            {feedbacks.map((feedback) => (
+              <tr key={feedback.id} className="border-t hover:bg-gray-50 transition duration-150">
+                <td className="px-6 py-3">{convertFullName(feedback.doctor.profile)}</td>
+                <td className="px-6 py-3">{feedback.doctor.specialization}</td>
+                <td className="px-6 py-3">{feedback.treatmentService.name}</td>
+                <td className="px-6 py-3">
+                  <div className="flex gap-1 text-yellow-500">
+                    {Array.from({ length: feedback.rating }).map((_, i) => (
+                      <FaStar key={i} className="w-4 h-4" />
+                    ))}
+                  </div>
+                </td>
+                <td className="px-6 py-3 max-w-sm text-gray-600">{feedback.comment}</td>
+                <td className="px-6 py-3">{feedback.createdAt}</td>
+                <td className="px-6 py-3 text-center">
+                  <button
+                    className="text-blue-600 hover:underline font-medium"
+                    onClick={() => handleUpdateClick(feedback)}
+                  >
+                    Cập nhật
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {updateId && (
+        <div className="mt-10 bg-white border border-gray-200 shadow-md rounded-xl p-6 max-w-2xl mx-auto">
+          <h3 className="text-xl font-semibold mb-4 text-gray-800">Cập nhật đánh giá</h3>
+          <div className="space-y-4">
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Số sao:</label>
+              <select
+                value={rating}
+                onChange={(e) => setRating(parseInt(e.target.value))}
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              >
+                {[1, 2, 3, 4, 5].map((r) => (
+                  <option key={r} value={r}>
+                    {r} sao
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="block font-medium text-gray-700 mb-1">Bình luận:</label>
+              <textarea
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder="Viết cảm nhận của bạn..."
+                className="border border-gray-300 rounded-lg px-4 py-2 w-full h-28 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+            </div>
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleSubmitUpdate}
+                className="bg-blue-600 hover:bg-blue-700 text-white font-medium px-6 py-2 rounded-lg shadow"
+              >
+                Lưu
+              </button>
+              <button
+                onClick={handleCancel}
+                className="bg-gray-400 hover:bg-gray-500 text-white font-medium px-6 py-2 rounded-lg shadow"
+              >
+                Hủy
+              </button>
+            </div>
           </div>
         </div>
       )}
