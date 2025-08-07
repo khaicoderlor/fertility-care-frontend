@@ -62,15 +62,13 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
   return (
     <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
       {/* ===== Header Section ===== */}
-      <div className="bg-gradient-to-r from-blue-600 to-blue-700 p-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="bg-gray-200">
+        <div className="flex items-center justify-between gap-4 p-5">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-xl flex items-center justify-center">
-              <span className="text-2xl">🩺</span>
-            </div>
+
             <div>
-              <h3 className="text-2xl font-bold text-white">Danh sách bác sĩ</h3>
-              <p className="text-blue-100 text-sm">Quản lý thông tin bác sĩ và đơn điều trị</p>
+              <h3 className="text-2xl font-bold text-black">Danh sách bác sĩ</h3>
+              <p className="text-gray-700 text-sm">Quản lý thông tin bác sĩ và đơn điều trị</p>
             </div>
           </div>
 
@@ -184,10 +182,10 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl shadow-2xl border border-gray-200 max-w-6xl w-full max-h-[90vh] overflow-hidden">
             {/* Profile Header */}
-            <div className="bg-gradient-to-r from-blue-600 via-blue-700 to-purple-700 p-8 relative">
+            <div className="bg-gray-300 p-8 relative">
               <button
                 onClick={() => setSelectedDoctor(undefined)}
-                className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-white"
+                className="absolute top-4 right-4 p-2 bg-white/20 hover:bg-white/30 rounded-xl transition-all duration-200 text-gray-800"
               >
                 <IoClose className="w-6 h-6" />
               </button>
@@ -208,7 +206,7 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
                 </div>
 
                 {/* Doctor Info */}
-                <div className="flex-1 text-white">
+                <div className="flex-1 text-black">
                   <h4 className="text-3xl font-bold mb-3">{convertFullName(selectedDoctor.doctor.profile)}</h4>
 
                   <div className="flex items-center gap-4 mb-4">
@@ -267,41 +265,25 @@ export const DoctorTable = ({ doctors }: DoctorTableProps) => {
                 {/* Contact Info */}
                 <div className="space-y-6">
                   <h5 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span className="text-2xl">📞</span>
                     Thông tin liên hệ
                   </h5>
 
                   <div className="space-y-4">
                     <div className="bg-gradient-to-r from-blue-50 to-blue-100 rounded-2xl p-6 border border-blue-200">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-blue-500 rounded-xl flex items-center justify-center">
-                          <span className="text-white text-xl">📧</span>
-                        </div>
                         <div>
-                          <div className="text-sm font-medium text-blue-700 mb-1">Email</div>
+                          <div className="text-xl font-medium text-gray-900 mb-1">Email</div>
                           <div className="font-semibold text-gray-900">{selectedDoctor.doctorEmail}</div>
                         </div>
                       </div>
                     </div>
 
-                    <div className="bg-gradient-to-r from-green-50 to-green-100 rounded-2xl p-6 border border-green-200">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-green-500 rounded-xl flex items-center justify-center">
-                          <span className="text-white text-xl">📱</span>
-                        </div>
-                        <div>
-                          <div className="text-sm font-medium text-green-700 mb-1">Điện thoại</div>
-                          <div className="font-semibold text-gray-900">{selectedDoctor.doctorPhone}</div>
-                        </div>
-                      </div>
-                    </div>
                   </div>
                 </div>
 
                 {/* Biography */}
                 <div className="space-y-6">
                   <h5 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                    <span className="text-2xl">📝</span>
                     Tiểu sử bác sĩ
                   </h5>
 

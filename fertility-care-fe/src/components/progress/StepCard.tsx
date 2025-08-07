@@ -1,14 +1,9 @@
 "use client";
 
 import {
-  BeakerIcon,
   BellIcon,
   ClockIcon,
   CreditCardIcon,
-  DocumentTextIcon,
-  EyeDropperIcon,
-  HeartIcon,
-  SparklesIcon,
 } from "@heroicons/react/24/outline";
 import { CheckCircleIcon } from "@heroicons/react/24/solid";
 import {
@@ -36,24 +31,6 @@ interface StepCardProps {
   onClick: () => void;
   order: Order;
 }
-
-export const renderIconByStep = (step: OrderStep) => {
-  const stepOrder = step.treatmentStep.stepOrder;
-  switch (stepOrder) {
-    case 1:
-      return <DocumentTextIcon className="w-7" />;
-    case 2:
-      return <SparklesIcon className="w-7" />;
-    case 3:
-      return <EyeDropperIcon className="w-7" />;
-    case 4:
-      return <BeakerIcon className="w-7" />;
-    case 5:
-      return <HeartIcon className="w-7" />;
-    case 6:
-      return <ClockIcon className="w-7" />;
-  }
-};
 
 export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
   const [showFeedbackForm, setShowFeedbackForm] = useState(false);
@@ -110,7 +87,7 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
       comment,
     };
 
-    console.log(payload)
+    console.log(payload);
 
     try {
       await axiosInstance.post("/feedbacks", payload);
@@ -135,19 +112,16 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
       )} ${isSelected ? "ring-2 ring-pink-600" : ""}`}
       onClick={onClick}
     >
-      {/* Appointment Count Badge */}
       <div className="absolute top-4 right-4 z-10">
         <div className="flex items-center gap-1 bg-orange-500 text-white px-3 py-2 rounded-full text-sm font-semibold shadow-lg animate-wiggle">
           <BellIcon className="w-5 h-5" />
           <span>{step.appointments?.length}</span>
         </div>
       </div>
-
       <div className="p-6 pt-12 pr-20">
         <div className="flex items-start gap-4">
-          {/* Step Icon */}
           <div
-            className={`w-12 h-12 rounded-full flex items-center justify-center flex-shrink-0 relative ${
+            className={`w-12 h-12 rounded-full flex items-center justify-center relative ${
               step.status === STEP_COMPLETED
                 ? "bg-green-500 text-white"
                 : step.status === STEP_PROGRESS
@@ -155,15 +129,8 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
                 : "bg-gray-200 text-gray-500"
             }`}
           >
-            {renderIconByStep(step)}
-
-            {/* Energy Glow Effect */}
-            {step.status === "active" && (
-              <div className="absolute inset-0 rounded-full bg-blue-400 animate-ping opacity-75" />
-            )}
+            {step.treatmentStep.stepOrder}
           </div>
-
-          {/* Step Content */}
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-3 mb-2">
               <h3 className="text-lg font-semibold text-gray-900">
@@ -171,11 +138,9 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
               </h3>
               {getStatusBadge(step.status ?? "")}
             </div>
-
             <p className="text-gray-600 mb-3">
               {step.treatmentStep.description}
             </p>
-
             <div className="flex items-center gap-4 text-sm text-gray-500 mb-3">
               <div className="flex items-center gap-1">
                 <ClockIcon className="w-4 h-4" />
@@ -188,13 +153,10 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
                 </div>
               )}
             </div>
-
-            {/* Cost Display Only */}
             <div className="flex items-center gap-2">
               <CreditCardIcon className="w-4 h-4 text-gray-400" />
               <span className="font-semibold text-gray-900">
                 {formatCurrency(step.totalAmount ?? 0)}{" "}
-                {/* bỏ vào giá tổng của 1 bước */}
               </span>
               {step.paymentStatus == PAYMENT_COMPLETED ? (
                 <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
@@ -232,8 +194,6 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
           <h4 className="font-semibold mb-2 text-sm text-gray-800">
             Đánh giá toàn bộ quá trình điều trị
           </h4>
-
-          {/* Rating */}
           <div className="flex gap-1 mb-3">
             {[1, 2, 3, 4, 5].map((star) => (
               <StarIcon
@@ -245,16 +205,12 @@ export function StepCard({ step, isSelected, onClick, order }: StepCardProps) {
               />
             ))}
           </div>
-
-          {/* Comment */}
           <textarea
             placeholder="Viết nhận xét..."
             value={comment}
             onChange={(e) => setComment(e.target.value)}
             className="w-full h-20 p-2 border border-gray-300 rounded-md text-sm mb-3"
           />
-
-          {/* Action buttons */}
           <div className="flex justify-end gap-2">
             <button
               className="text-sm px-3 py-1 rounded-md bg-gray-200 hover:bg-gray-300"

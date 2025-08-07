@@ -136,23 +136,6 @@ const DoctorFeedbackManagement: React.FC<DoctorFeedbackManagementProps> = ({ fee
             </div>
           </div>
 
-          {/* Doctor Filter */}
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Lọc theo bác sĩ</label>
-            <select
-              value={doctorFilter}
-              onChange={(e) => setDoctorFilter(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            >
-              <option value="">Tất cả bác sĩ</option>
-              {doctors.map((doctor) => (
-                <option key={doctor} value={doctor}>
-                  {doctor}
-                </option>
-              ))}
-            </select>
-          </div>
-
           {/* Rating Filter - Only show in detailed view */}
           {viewMode === "detailed" && (
             <div>

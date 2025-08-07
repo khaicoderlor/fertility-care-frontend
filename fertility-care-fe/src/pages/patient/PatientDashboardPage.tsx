@@ -1,4 +1,3 @@
-import { Bars3Icon, HeartIcon } from "@heroicons/react/24/solid";
 import Footer from "../../components/Footer";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
@@ -6,6 +5,7 @@ import type { Patient } from "../../models/Patient";
 import { useAuth } from "../../contexts/AuthContext";
 import { Outlet } from "react-router-dom";
 import SideBarPatient from "../../components/progress/SideBarPatient";
+import Header from "../tests/Header";
 
 export default function PatientDashboardPage() {
   const { patientId } = useAuth();
@@ -29,7 +29,8 @@ export default function PatientDashboardPage() {
 
   return (
     <div>
-      <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 flex">
+      <Header/>
+      <div className="min-h-screen bg-gradient-to-br from-white to-purple-50 flex mt-5">
         {/* Sidebar */}
         {sidebarOpen && <SideBarPatient patient={patient ?? null} />}
 
@@ -42,21 +43,7 @@ export default function PatientDashboardPage() {
         )}
 
         <div className="flex-1 lg:ml-0">
-          <div className="lg:hidden bg-white shadow-sm p-4 flex items-center justify-between">
-            <button
-              onClick={() => setSidebarOpen(true)}
-              className="p-2 rounded-md text-gray-600 hover:bg-gray-100"
-            >
-              <Bars3Icon className="w-6 h-6" />
-            </button>
-            <div className="flex items-center gap-2">
-              <HeartIcon className="w-6 h-6 text-pink-500" />
-              <span className="font-semibold text-gray-900">
-                Fertility Care
-              </span>
-            </div>
-            <div className="w-10" />
-          </div>
+          
 
           <div className="p-6">
             {patient ? (

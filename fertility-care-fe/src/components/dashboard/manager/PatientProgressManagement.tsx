@@ -6,7 +6,6 @@ import {
   statusFilterOptions,
 } from "../../../data/DataManagerProgressPatient";
 import { convertFullName } from "../../../functions/CommonFunction";
-import { BiDetail } from "react-icons/bi";
 
 interface PatientProgressManagementProps {
   progressData: PatientProgress[];
@@ -60,26 +59,22 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
     currentPage * itemsPerPage
   );
 
-  const handleViewDetails = (progress: PatientProgress) => {
-    if (onViewDetails) {
-      onViewDetails(progress);
-    }
-  };
 
-  const getProgressBarColor = (status: string) => {
-    switch (status) {
-      case "Completed":
-        return "bg-green-500";
-      case "InProgress":
-        return "bg-blue-500";
-      case "Planned":
-        return "bg-yellow-500";
-      case "Failed":
-        return "bg-red-500";
-      default:
-        return "bg-gray-500";
-    }
-  };
+
+  // const getProgressBarColor = (status: string) => {
+  //   switch (status) {
+  //     case "Completed":
+  //       return "bg-green-500";
+  //     case "InProgress":
+  //       return "bg-blue-500";
+  //     case "Planned":
+  //       return "bg-yellow-500";
+  //     case "Failed":
+  //       return "bg-red-500";
+  //     default:
+  //       return "bg-gray-500";
+  //   }
+  // };
 
   return (
     <div className="patient-progress-management">
@@ -170,9 +165,9 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Dịch vụ
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                {/* <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Tiến trình
-                </th>
+                </th> */}
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Ngày bắt đầu
                 </th>
@@ -182,9 +177,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                 <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Trạng thái
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Thao tác
-                </th>
+   
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -206,7 +199,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                       {progress.serviceName}
                     </div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  {/* <td className="px-6 py-4 whitespace-nowrap">
                     <div className="flex flex-col">
                       <div className="text-sm font-medium text-gray-900 mb-1">
                         Bước {progress.currentStep}/{progress.totalSteps}
@@ -231,7 +224,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                         %
                       </div>
                     </div>
-                  </td>
+                  </td> */}
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                     {progress.startDate}
                   </td>
@@ -247,14 +240,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                       {getStatusText(progress.status)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                    <button
-                      onClick={() => handleViewDetails(progress)}
-                      className="text-blue-600 hover:text-blue-900 mr-3 items-center flex"
-                    >
-                      <BiDetail className="w-4 h-4 mr-2"/>Xem chi tiết
-                    </button>
-                  </td>
+                  
                 </tr>
               ))}
             </tbody>
@@ -264,24 +250,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
         {/* Pagination */}
         {totalPages > 1 && (
           <div className="bg-white px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
-                disabled={currentPage === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-              >
-                Trước
-              </button>
-              <button
-                onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
-                }
-                disabled={currentPage === totalPages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-              >
-                Sau
-              </button>
-            </div>
+            
             <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm text-gray-700">
@@ -305,7 +274,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                     disabled={currentPage === 1}
                     className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                   >
-                    <i className="fas fa-chevron-left"></i>
+                    Trước
                   </button>
                   {[...Array(totalPages)].map((_, index) => {
                     const page = index + 1;
@@ -330,7 +299,7 @@ const PatientProgressManagement: React.FC<PatientProgressManagementProps> = ({
                     disabled={currentPage === totalPages}
                     className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
                   >
-                    <i className="fas fa-chevron-right"></i>
+                    Sau
                   </button>
                 </nav>
               </div>

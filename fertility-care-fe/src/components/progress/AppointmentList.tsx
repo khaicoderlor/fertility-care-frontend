@@ -11,7 +11,16 @@ import {
   APPOINTMENT_COMPLETED,
   APPOINTMENT_CANCELLED,
 } from "../../constants/AppointmentStatus";
-import { convertSlotTime, formatCurrency } from '../../functions/CommonFunction';
+import {
+  convertSlotTime,
+  formatCurrency,
+} from "../../functions/CommonFunction";
+import {
+  APPOINTMENT_TYPE_CHECK,
+  APPOINTMENT_TYPE_FOLLOWUP,
+  APPOINTMENT_TYPE_INITIAL,
+  APPOINTMENT_TYPE_TREATMENT,
+} from "../../constants/AppointmentType";
 
 interface AppointmentListProps {
   appointments: Appointment[];
@@ -70,9 +79,24 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
     });
   };
 
+  const convertToAppointmentStatus = (status: string) => {
+    switch (status) {
+      case APPOINTMENT_TYPE_INITIAL:
+        return "Khám ban đầu";
+      case APPOINTMENT_TYPE_CHECK:
+        return "Kiểm tra";
+      case APPOINTMENT_TYPE_FOLLOWUP:
+        return "Theo dõi";
+      case APPOINTMENT_TYPE_TREATMENT:
+        return "Điều trị";
+      default:
+        return "Khác";
+    }
+  };
+
   return (
-    <div className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-lg">
-      <div className="px-6 py-4 border-b border-gray-200">
+    <div className="bg-white border-0 shadow-lg rounded-lg">
+      <div className="px-6 py-4 border-b border-gray-200 mb-4">
         <h3 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
           <CalendarIcon className="w-5 h-5" />
           Lịch hẹn ({appointments.length})
@@ -88,7 +112,7 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
               >
                 <div className="flex items-center justify-between">
                   <h4 className="font-medium text-gray-900">
-                    {appointment.type == "InitialConsultation" ? "Khám ban đầu" : ""}
+                    {convertToAppointmentStatus(appointment.type ?? "")}
                   </h4>
                   {getAppointmentStatusBadge(appointment.status ?? "")}
                 </div>
@@ -119,26 +143,21 @@ export function AppointmentList({ appointments }: AppointmentListProps) {
                   </div>
                 </div>
 
-                { (
-                  <div className="bg-green-50 p-3 rounded border-l-4 border-green-400">
-                    <div className="flex items-center gap-2 mb-1">
-                      <BanknotesIcon className="h-5 w-5 text-green-600" />
-                      <strong className="text-gray-800 text-sm">
-                        Chi phí phát sinh:
-                      </strong>
-                    </div>
-                    <p className="text-gray-700 text-sm">
-                      {formatCurrency(appointment.extraFee??0)}
-                      {/* giá tiền thêm của appointment */}
-                    </p>
+                <div className="bg-green-50 p-3 rounded border-l-4 border-green-400">
+                  <div className="flex items-center gap-2 mb-1">
+                    <BanknotesIcon className="h-5 w-5 text-green-600" />
+                    <strong className="text-gray-800 text-sm">
+                      Chi phí phát sinh:
+                    </strong>
                   </div>
-                )}
+                  <p className="text-gray-700 text-sm">
+                    {formatCurrency(appointment.extraFee ?? 0)}
+                  </p>
+                </div>
 
-                { (
-                  <div className="bg-gray-100 p-3 rounded text-sm text-gray-700">
-                    <strong>Ghi chú:</strong> {appointment.note}
-                  </div>
-                )}
+                <div className="bg-gray-100 p-3 text-sm text-gray-700">
+                  <strong>Ghi chú:</strong> {appointment.note}
+                </div>
               </div>
             ))}
           </div>

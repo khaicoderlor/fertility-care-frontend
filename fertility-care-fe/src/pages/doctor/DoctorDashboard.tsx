@@ -10,7 +10,7 @@ import { PiUsersThreeFill } from "react-icons/pi";
 import { MdFeedback, MdSpaceDashboard } from "react-icons/md";
 import { RiProfileFill } from "react-icons/ri";
 import { BsCalendarDateFill, BsFillPostcardHeartFill } from "react-icons/bs";
-import { BiLogOut } from "react-icons/bi";
+import LogoutCompetenceButton from "../auth/LogoutCompetenceButton";
 
 export default function DoctorDashboard() {
   const { doctorId } = useCompetenceAuth();
@@ -146,16 +146,9 @@ export default function DoctorDashboard() {
               </div>
             </Link>
           </div>
+
         </nav>
-        {/* Doctor Profile */}
-        <div className="absolute bottom-6 left-4 right-4">
-          <button className="flex items-center justify-between w-full px-4 py-3 text-gray-700 rounded-lg hover:bg-gray-100 group transition-colors duration-200">
-            <div className="flex items-center">
-              <BiLogOut className="w-6 mr-3 font-bold" />
-              Đăng xuất
-            </div>
-          </button>
-        </div>
+        <LogoutCompetenceButton/>
       </div>
 
       {/* Main Content */}

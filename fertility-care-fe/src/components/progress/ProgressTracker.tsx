@@ -16,7 +16,7 @@ export function ProgressTracker({
   const progressPercentage = (completedSteps / totalSteps) * 100;
 
   return (
-    <div className="bg-white/80 backdrop-blur-sm border-0 shadow-lg rounded-lg">
+    <div className="bg-white border-0 shadow-lg rounded-lg">
       <div className="p-6">
         <div className="flex items-center justify-between mb-6">
           <div>

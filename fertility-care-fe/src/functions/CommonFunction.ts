@@ -84,17 +84,25 @@ export const convertTimeAgoLabel = (dateStr: string): string => {
 
   const now = new Date();
   const diffMs = now.getTime() - inputDate.getTime();
-  const diffMinutes = Math.floor(diffMs / 1000 / 60);
 
-  if (diffMinutes < 60) {
-    return `${diffMinutes} phút trước`;
+  if (diffMs < 0) {
+    return "Trong tương lai";
   }
 
+  const diffSeconds = Math.floor(diffMs / 1000);
+  const diffMinutes = Math.floor(diffSeconds / 60);
   const diffHours = Math.floor(diffMinutes / 60);
-  if (diffHours < 24) {
-    return `${diffHours} giờ trước`;
-  }
-
   const diffDays = Math.floor(diffHours / 24);
-  return `${diffDays} ngày trước`;
+  const diffWeeks = Math.floor(diffDays / 7);
+  const diffMonths = Math.floor(diffDays / 30);
+  const diffYears = Math.floor(diffDays / 365);
+
+  if (diffSeconds < 60) return `${diffSeconds} giây trước`;
+  if (diffMinutes < 60) return `${diffMinutes} phút trước`;
+  if (diffHours < 24) return `${diffHours} giờ trước`;
+  if (diffDays < 7) return `${diffDays} ngày trước`;
+  if (diffWeeks < 5) return `${diffWeeks} tuần trước`;
+  if (diffMonths < 12) return `${diffMonths} tháng trước`;
+  return `${diffYears} năm trước`;
 };
+

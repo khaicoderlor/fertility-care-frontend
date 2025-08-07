@@ -4,19 +4,21 @@ import axiosInstance from "../../../apis/AxiosInstance";
 import type { PatientDashboard } from "../../../models/PatientDashboard";
 import { Link } from "react-router-dom";
 import { Eye, ChevronLeft, ChevronRight } from "lucide-react";
+import { ITEMS_PER_PAGE } from "../../../constants/ApplicationConstant";
 
 export default function PatientTable() {
   const { doctorId } = useCompetenceAuth();
   const [patients, setPatients] = useState<PatientDashboard[]>();
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 5;
-  const totalPages = Math.ceil((patients?.length || 0) / pageSize);
-
+  const [totalPages, setTotalPages] = useState(1);
   useEffect(() => {
     const fetchPatients = async (dId: string) => {
       try {
         const response = await axiosInstance.get(`/doctors/${dId}/patients`);
-        setPatients(response.data.data);
+        const fetchedPatients = response.data.data;
+        setPatients(fetchedPatients);
+        setCurrentPage(1);
+        setTotalPages(Math.ceil(fetchedPatients.length / ITEMS_PER_PAGE));
       } catch (error) {
         console.error(error);
       }
@@ -28,19 +30,24 @@ export default function PatientTable() {
   const handlePrev = () => setCurrentPage((p) => Math.max(p - 1, 1));
   const handleNext = () => setCurrentPage((p) => Math.min(p + 1, totalPages));
 
-  const startIndex = (currentPage - 1) * pageSize;
-  const displayedPatients = patients?.slice(startIndex, startIndex + pageSize) ?? [];
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const displayedPatients =
+    patients?.slice(startIndex, startIndex + ITEMS_PER_PAGE) ?? []; 
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-100">
       <div className="p-6 border-b border-gray-200 flex items-center justify-between">
         <div>
-          <h3 className="text-lg font-semibold text-gray-800">Bệnh nhân của tôi</h3>
-          <p className="text-sm text-gray-600 mt-1">Danh sách bệnh nhân đang theo dõi</p>
+          <h3 className="text-lg font-semibold text-gray-800">
+            Bệnh nhân của tôi
+          </h3>
+          <p className="text-sm text-gray-600 mt-1">
+            Danh sách bệnh nhân đang theo dõi
+          </p>
         </div>
 
         {totalPages > 1 && (
-          <div className="flex items-center gap-1 mt-2">
+          <div className="flex items-center gap-1">
             <button
               onClick={handlePrev}
               disabled={currentPage === 1}
@@ -48,17 +55,29 @@ export default function PatientTable() {
             >
               <ChevronLeft size={16} />
             </button>
-            {Array.from({ length: totalPages }, (_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentPage(index + 1)}
-                className={`px-3 py-1 border rounded ${
-                  currentPage === index + 1 ? "bg-blue-600 text-white" : "bg-white"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
+
+            {Array.from({ length: totalPages }, (_, index) => index + 1)
+              .filter((page) => {
+                if (totalPages <= 5) return true;
+                if (currentPage <= 3) return page <= 5;
+                if (currentPage >= totalPages - 2)
+                  return page >= totalPages - 4;
+                return Math.abs(currentPage - page) <= 2;
+              })
+              .map((page) => (
+                <button
+                  key={page}
+                  onClick={() => setCurrentPage(page)}
+                  className={`px-3 py-1 border rounded ${
+                    currentPage === page
+                      ? "bg-blue-600 text-white"
+                      : "bg-white hover:bg-gray-100"
+                  }`}
+                >
+                  {page}
+                </button>
+              ))}
+
             <button
               onClick={handleNext}
               disabled={currentPage === totalPages}
@@ -74,16 +93,36 @@ export default function PatientTable() {
         <table className="w-full text-sm">
           <thead className="bg-gray-50">
             <tr>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Bệnh nhân</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Phác đồ</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Email</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Số ĐT</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Bắt đầu</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Kết thúc</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Trạng thái</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Lưu trữ lạnh</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Số trứng</th>
-              <th className="text-left py-3 px-4 font-medium text-gray-700">Số phôi</th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Bệnh nhân
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Phác đồ
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Email
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Số ĐT
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Bắt đầu
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Kết thúc
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Trạng thái
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Lưu trữ lạnh
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Số trứng
+              </th>
+              <th className="text-left py-3 px-4 font-medium text-gray-700">
+                Số phôi
+              </th>
               <th className="text-left py-3 px-4"></th>
             </tr>
           </thead>
@@ -91,7 +130,9 @@ export default function PatientTable() {
             {displayedPatients.length > 0 ? (
               displayedPatients.map((patient) => (
                 <tr key={patient.patientId} className="hover:bg-gray-50">
-                  <td className="py-3 px-4 font-medium text-gray-900">{patient.patientName}</td>
+                  <td className="py-3 px-4 font-medium text-gray-900">
+                    {patient.patientName}
+                  </td>
                   <td className="py-3 px-4">{patient.treatmentName}</td>
                   <td className="py-3 px-4">{patient.email}</td>
                   <td className="py-3 px-4">{patient.phone}</td>
@@ -102,7 +143,9 @@ export default function PatientTable() {
                       {patient.status}
                     </span>
                   </td>
-                  <td className="py-3 px-4">{patient.isFrozen ? "Có" : "Không"}</td>
+                  <td className="py-3 px-4">
+                    {patient.isFrozen ? "Có" : "Không"}
+                  </td>
                   <td className="py-3 px-4">{patient.totalEggs}</td>
                   <td className="py-3 px-4">{patient.totalEmbryos}</td>
                   <td className="py-3 px-4 text-right">

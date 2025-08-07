@@ -1,18 +1,20 @@
 import {
   CreditCardIcon,
-  DocumentTextIcon,
   CalendarIcon,
 } from "@heroicons/react/24/outline";
 import { AppointmentList } from "./AppointmentList";
 import { EggDataCard } from "./EggDataCard";
 import { EmbryoDataCard } from "./EmbryoDataCard";
 import type OrderStep from "../../models/OrderStep";
-import { renderIconByStep } from "./StepCard";
 import {
   PAYMENT_COMPLETED,
   PAYMENT_PENDING,
 } from "../../constants/PaymentStatus";
-import { STEP_EMBRYO, STEP_TAKE_EGG, STEP_TRANSFER } from "../../constants/IVFConstant";
+import {
+  STEP_EMBRYO,
+  STEP_TAKE_EGG,
+  STEP_TRANSFER,
+} from "../../constants/IVFConstant";
 import type { Order } from "../../models/Order";
 import { useEffect, useState } from "react";
 import axiosInstance from "../../apis/AxiosInstance";
@@ -21,6 +23,7 @@ import type { EggData } from "../../models/EggData";
 import AppointmentForm from "./AppointmentForm";
 import AskAcceptFrozenOrder from "./AskAcceptFrozenOrder";
 import { Link } from "react-router-dom";
+import { STEP_COMPLETED, STEP_PROGRESS } from "../../constants/StepStatus";
 
 interface StepDetailProps {
   step: OrderStep | null;
@@ -68,7 +71,7 @@ export function StepDetail({ step, order }: StepDetailProps) {
 
   if (!step) {
     return (
-      <div className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-lg">
+      <div className="bg-white border-0 rounded-lg shadow-lg">
         <div className="p-8 text-center">
           <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mx-auto mb-4">
             <CalendarIcon className="w-8 h-8 text-gray-400" />
@@ -87,20 +90,19 @@ export function StepDetail({ step, order }: StepDetailProps) {
 
   return (
     <div className="space-y-6">
-      {/* Step Details */}
-      <div className="bg-white/90 backdrop-blur-sm border-0 shadow-lg rounded-lg">
+      <div className="bg-white shadow-lg rounded-lg">
         <div className="px-6 py-4 border-b border-gray-200">
           <div className="flex items-center gap-3">
             <div
               className={`w-10 h-10 rounded-full flex items-center justify-center ${
-                step.status === "completed"
+                step.status === STEP_COMPLETED
                   ? "bg-green-500 text-white"
-                  : step.status === "active"
+                  : step.status === STEP_PROGRESS
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-500"
               }`}
             >
-              {renderIconByStep(step)}
+              {step.treatmentStep.stepOrder}
             </div>
             <div>
               <div className="text-lg font-semibold">
@@ -114,21 +116,7 @@ export function StepDetail({ step, order }: StepDetailProps) {
         </div>
         <div className="p-6 space-y-4">
           <p className="text-gray-600">{step.treatmentStep.description}</p>
-
-          {step.note && (
-            <div className="bg-blue-50 p-4 rounded-lg">
-              <div className="flex items-center gap-2 mb-2">
-                <DocumentTextIcon className="w-4 h-4 text-blue-600" />
-                <span className="font-medium text-blue-900">
-                  Ghi chú của bác sĩ
-                </span>
-              </div>
-              <p className="text-blue-800 text-sm">{step.note}</p>
-            </div>
-          )}
-
           <hr className="border-gray-200" />
-
           <div className="space-y-2">
             <div className="flex justify-between">
               <span className="text-gray-600">Chi phí:</span>
@@ -140,7 +128,6 @@ export function StepDetail({ step, order }: StepDetailProps) {
               <CreditCardIcon className="w-4 h-4 text-gray-400" />
               <span className="font-semibold text-gray-900">
                 {formatCurrency(step.totalAmount ?? 0)}{" "}
-                {/* bỏ vào giá tổng của 1 bước */}
               </span>
               {step.paymentStatus == PAYMENT_COMPLETED ? (
                 <span className="inline-flex items-center rounded-full bg-green-100 px-2.5 py-0.5 text-xs font-medium text-green-800">
@@ -159,7 +146,11 @@ export function StepDetail({ step, order }: StepDetailProps) {
           </div>
 
           {step.paymentStatus != PAYMENT_COMPLETED && (
-            <Link to={`/patient/progress/checkout`} state={{ step, order }} className="w-full inline-flex items-center justify-center rounded-md bg-gradient-to-r from-pink-500 to-purple-600 px-4 py-2 text-sm font-medium text-white shadow-sm hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 transition-colors">
+            <Link
+              to={`/patient/progress/checkout`}
+              state={{ step, order }}
+              className="inline-flex items-center justify-center rounded-md bg-green-600 hover:bg-green-700 px-4 py-2 text-sm font-medium text-white shadow-sm transition-colors"
+            >
               <CreditCardIcon className="w-4 h-4 mr-2" />
               Thanh toán ngay
             </Link>
@@ -169,21 +160,24 @@ export function StepDetail({ step, order }: StepDetailProps) {
 
       <AppointmentList appointments={step.appointments ?? []} />
 
-      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TAKE_EGG) && (
-        <EggDataCard order={order} eggs={eggData} />
-      )}
+      {order?.treatmentService?.name === "IVF" &&
+        step.treatmentStep.stepOrder === STEP_TAKE_EGG && (
+          <EggDataCard order={order} eggs={eggData} />
+        )}
 
-      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_EMBRYO) && (
-        <EmbryoDataCard embryoData={embryoData} order={order} />
-      )}
+      {order?.treatmentService?.name === "IVF" &&
+        step.treatmentStep.stepOrder === STEP_EMBRYO && (
+          <EmbryoDataCard embryoData={embryoData} order={order} />
+        )}
 
-      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TRANSFER) && (
-        <AppointmentForm order={order} step={step}/>
-      )}
+      {order?.treatmentService?.name === "IVF" &&
+        step.treatmentStep.stepOrder === STEP_TRANSFER && (
+          <AppointmentForm order={order} step={step} />
+        )}
 
-      {(order?.treatmentService?.name === "IVF" && step.treatmentStep.stepOrder === STEP_TRANSFER && !order.isFrozen) && (
-        <AskAcceptFrozenOrder order={order}/>
-      )}
+      {order?.treatmentService?.name === "IVF" &&
+        step.treatmentStep.stepOrder === STEP_TRANSFER &&
+        !order.isFrozen && <AskAcceptFrozenOrder order={order} />}
     </div>
   );
 }

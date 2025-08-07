@@ -23,7 +23,6 @@ import {
   STEP_TAKE_EGG,
 } from "../../../constants/IVFConstant";
 import type { Order } from "../../../models/Order";
-import { renderIconByStep } from "../../progress/StepCard";
 import { useState } from "react";
 import EggInputForm from "./EggInputForm";
 import axiosInstance from "../../../apis/AxiosInstance";
@@ -129,7 +128,17 @@ export default function OrderStepCard({
             >
               <div className="flex items-start justify-between">
                 <div className="flex space-x-4">
-                  <div>{renderIconByStep(step)}</div>
+                  <div
+                    className={`rounded-full h-10 flex items-center px-4 justify-center ${
+                      step.status === STEP_COMPLETED
+                        ? "bg-green-500 text-white"
+                        : step.status === STEP_PROGRESS
+                        ? "bg-blue-500 text-white"
+                        : "bg-gray-200 text-gray-500"
+                    }`}
+                  >
+                    {step.treatmentStep.stepOrder}
+                  </div>
                   <div>
                     <div className="flex items-center space-x-2">
                       <h3 className="text-lg font-semibold">
@@ -316,16 +325,16 @@ export default function OrderStepCard({
             const fetchPres = async () => {
               const payload = {
                 orderId: data.orderId,
-                prescriptionItems: data.prescriptionItems
-              }
+                prescriptionItems: data.prescriptionItems,
+              };
               try {
-                await axiosInstance.post(`/prescriptions`, payload); 
-              } catch(error) {
-                console.log(error)
+                await axiosInstance.post(`/prescriptions`, payload);
+              } catch (error) {
+                console.log(error);
               }
-            }
+            };
 
-            fetchPres()
+            fetchPres();
           }}
         />
       )}

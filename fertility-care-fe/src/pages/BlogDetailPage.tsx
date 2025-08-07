@@ -1,6 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { XMarkIcon } from "@heroicons/react/24/solid";
 import type { Blog } from "../models/Blog";
-import { convertTimeAgoLabel } from "../functions/CommonFunction";
 import { DEFAULT_AVATAR } from "../constants/ApplicationConstant";
 
 interface BlogDetailPageProps {
@@ -39,7 +39,7 @@ export default function BlogDetailPage({
             )}
 
             <div>
-              <div className="flex items-center justify-between mb-4">
+              {/* <div className="flex items-center justify-between mb-4">
                 <span className="px-3 py-1 text-xs font-medium text-teal-700 bg-teal-50 rounded-full">
                   {blog.category}
                 </span>
@@ -59,7 +59,7 @@ export default function BlogDetailPage({
                   </svg>
                   {convertTimeAgoLabel(blog.createdAt)}
                 </div>
-              </div>
+              </div> */}
 
               <h1 className="text-3xl font-bold text-gray-900 mb-4">
                 {blog.title}

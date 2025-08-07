@@ -16,7 +16,7 @@ import Swal from "sweetalert2";
 import { useLocation, useNavigate } from "react-router-dom";
 import axiosInstance from "../../apis/AxiosInstance";
 import {
-  calculateCompletedPercentage,
+  // calculateCompletedPercentage,
   convertFullName,
 } from "../../functions/CommonFunction";
 import { getScheduleSlotTime } from "../../apis/DoctorService";
@@ -25,7 +25,7 @@ import { useCompetenceAuth } from "../../contexts/CompetenceAuthContext";
 import OrderStepCard from "../../components/dashboard/doctor/OrderStepCard";
 import SelectedCardDetail from "../../components/dashboard/doctor/SelectedCardDetail";
 import AppointmentForm from "../../components/dashboard/doctor/AppointmentForm";
-import ProgressStep from "../../components/dashboard/doctor/ProgressStep";
+// import ProgressStep from "../../components/dashboard/doctor/ProgressStep";
 import type { Order } from "../../models/Order";
 import TreatmentReportModal from "../../components/dashboard/doctor/TreatmentReportModal";
 import Footer from "../../components/Footer";
@@ -149,6 +149,9 @@ export default function FollowUpPatientProgressPage() {
         icon: "success",
         draggable: true,
       });
+
+      const result = await axiosInstance.get(`/steps/${orderId}`);
+      setOrderSteps(result.data.data);
 
       setShowAppointmentForm(false);
       setNewAppointment({
@@ -302,8 +305,7 @@ export default function FollowUpPatientProgressPage() {
             Báo cáo về quá trình
           </button>
         </div>
-
-        {/* Progress overview */}
+        {/* 
         <div className="mb-6 rounded-lg bg-white p-6 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -320,9 +322,8 @@ export default function FollowUpPatientProgressPage() {
             </div>
           </div>
 
-          {/* Progress steps */}
           <ProgressStep orderSteps={orderSteps} />
-        </div>
+        </div> */}
 
         {/* Treatment steps */}
         {order && (

@@ -1,19 +1,21 @@
-import { useState } from "react"
-import type OrderStepPayment from "../../../models/OrderStepPayment"
-import { FaFilter } from "react-icons/fa"
-import { convertName, convertFullName, formatCurrency } from '../../../functions/CommonFunction';
+import { useState } from "react";
+import type OrderStepPayment from "../../../models/OrderStepPayment";
+import { FaFilter } from "react-icons/fa";
+import { convertName, convertFullName, formatCurrency } from "../../../functions/CommonFunction";
 import { PAYMENT_COMPLETED, PAYMENT_PENDING } from "../../../constants/PaymentStatus";
 import { TbListDetails } from "react-icons/tb";
 import type { Appointment } from "../../../models/Appointment";
+import { ITEMS_PER_PAGE } from "../../../constants/ApplicationConstant";
 
 interface PaymentTableProps {
-    payments: OrderStepPayment[]
+  payments: OrderStepPayment[];
 }
 
 export const PaymentTable = ({ payments }: PaymentTableProps) => {
   const [selectedPayment, setSelectedPayment] = useState<OrderStepPayment>();
   const [search, setSearch] = useState("");
   const [showFilter, setShowFilter] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
 
   const filtered = payments.filter((p) =>
     p.patient.profile?.firstName?.toLowerCase().includes(search.toLowerCase()) ||
@@ -22,9 +24,60 @@ export const PaymentTable = ({ payments }: PaymentTableProps) => {
     p.paymentCode.toLowerCase().includes(search.toLowerCase())
   );
 
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const paginated = filtered.slice(
+    (currentPage - 1) * ITEMS_PER_PAGE,
+    currentPage * ITEMS_PER_PAGE
+  );
+
   const sumExtraFeeByOrderStep = (appointments: Appointment[]) => {
     return appointments.map(x => x.extraFee ?? 0).reduce((a, b) => (a ?? 0) + (b ?? 0), 0);
-  }
+  };
+
+  const renderPagination = () => (
+    <div className="p-4 flex items-center justify-between border-t bg-gray-50">
+      <p className="text-sm text-gray-500">Trang {currentPage} / {totalPages || 1}</p>
+      <div className="flex gap-2">
+        <button
+          disabled={currentPage === 1}
+          onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+          className={`px-3 py-2 text-sm font-medium rounded-lg border ${
+            currentPage === 1
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              : "text-gray-700 border-gray-300 hover:bg-gray-100"
+          }`}
+        >
+          ← Trước
+        </button>
+
+        {[...Array(totalPages)].map((_, i) => (
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i + 1)}
+            className={`px-3 py-2 text-sm rounded-lg border ${
+              currentPage === i + 1
+                ? "bg-indigo-500 text-white border-indigo-500"
+                : "text-gray-700 border-gray-300 hover:bg-gray-100"
+            }`}
+          >
+            {i + 1}
+          </button>
+        ))}
+
+        <button
+          disabled={currentPage === totalPages}
+          onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+          className={`px-3 py-2 text-sm font-medium rounded-lg border ${
+            currentPage === totalPages
+              ? "text-gray-400 border-gray-200 cursor-not-allowed"
+              : "text-gray-700 border-gray-300 hover:bg-gray-100"
+          }`}
+        >
+          Sau →
+        </button>
+      </div>
+    </div>
+  );
 
   return (
     <div className="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden p-6">
@@ -37,7 +90,10 @@ export const PaymentTable = ({ payments }: PaymentTableProps) => {
             placeholder="Tìm tên bệnh nhân / mã thanh toán..."
             className="border rounded-md px-4 py-2 w-72 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1); // Reset về trang đầu khi tìm
+            }}
           />
           <button
             onClick={() => setShowFilter((s) => !s)}
@@ -78,10 +134,10 @@ export const PaymentTable = ({ payments }: PaymentTableProps) => {
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-100">
-            {filtered.map((pay) => (
+            {paginated.map((pay) => (
               <tr key={pay.id} className="hover:bg-gray-50">
                 <td className="px-4 py-3">{pay.id}</td>
-                <td className="px-4 py-3">{convertName(pay.patient.profile??{})}</td>
+                <td className="px-4 py-3">{convertName(pay.patient.profile ?? {})}</td>
                 <td className="px-4 py-3">{pay.treatmentServiceName}</td>
                 <td className="px-4 py-3">{pay.orderStep.treatmentStep.stepName}</td>
                 <td className="px-4 py-3">{pay.totalAmount.toLocaleString()}₫</td>
@@ -115,20 +171,23 @@ export const PaymentTable = ({ payments }: PaymentTableProps) => {
         </table>
       </div>
 
+      {/* PAGINATION */}
+      {renderPagination()}
+
       {/* DETAIL CARD */}
       {selectedPayment && (
         <div className="mt-8 bg-gray-50 border rounded p-6">
           <h4 className="text-lg font-semibold mb-4">📄 Chi tiết thanh toán</h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-gray-700">
             <div><strong>ID:</strong> {selectedPayment.id}</div>
-            <div><strong>Bệnh nhân:</strong> {convertFullName(selectedPayment.patient.profile??{})}</div>
+            <div><strong>Bệnh nhân:</strong> {convertFullName(selectedPayment.patient.profile ?? {})}</div>
             <div><strong>Gói điều trị:</strong> {selectedPayment.treatmentServiceName}</div>
             <div><strong>Bước:</strong> {selectedPayment.orderStep.treatmentStep.stepOrder} - {selectedPayment.orderStep.treatmentStep.stepName}</div>
             <div><strong>Mã thanh toán:</strong> {selectedPayment.paymentCode}</div>
             <div><strong>Mã giao dịch:</strong> {selectedPayment.transactionCode}</div>
             <div><strong>Tổng tiền:</strong> {formatCurrency(selectedPayment.totalAmount)}</div>
             <div><strong>Giá cơ bản:</strong> {formatCurrency(selectedPayment.orderStep.treatmentStep.amount)}</div>
-            <div><strong>Chi phí thêm:</strong> {formatCurrency(sumExtraFeeByOrderStep(selectedPayment.orderStep.appointments??[]))}</div>
+            <div><strong>Chi phí thêm:</strong> {formatCurrency(sumExtraFeeByOrderStep(selectedPayment.orderStep.appointments ?? []))}</div>
             <div><strong>Phương thức:</strong> {selectedPayment.paymentMethod}</div>
             <div><strong>Ngày thanh toán:</strong> {selectedPayment.paymentDate}</div>
             <div><strong>Trạng thái:</strong> {selectedPayment.paymentStatus}</div>

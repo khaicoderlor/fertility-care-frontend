@@ -1,6 +1,6 @@
 import axiosInstance from "./AxiosInstance";
 
-export const getDoctors = async (Page: number = 1, PageSize: number = 3) => {
+export const getDoctors = async (Page: number = 1, PageSize: number = 1000) => {
   const response = await axiosInstance.get("/doctors", {
     params: {
       Page,

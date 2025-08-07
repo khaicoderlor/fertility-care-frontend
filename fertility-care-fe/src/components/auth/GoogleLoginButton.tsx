@@ -14,7 +14,7 @@ export const GoogleLoginButton = () => {
 
   const handleSuccess = async (
     credentialResponse: GoogleCredentialResponse
-  ) => {
+  ) =>   {
     try {
       console.log(credentialResponse);
       const res = await axiosInstance.post("/auth/google-login", {

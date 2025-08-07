@@ -20,19 +20,19 @@ export default function AskAcceptFrozenOrder({ order }: AskAcceptFrozenOrderProp
   return (
     <div className="flex flex-col items-center gap-4 p-6 bg-white rounded-2xl shadow-md max-w-md mx-auto">
       <h2 className="text-xl font-semibold text-gray-800 text-center">
-        Bạn có đồng ý lưu trữ phôi đông lạnh không?
+        Bạn có đồng ý lưu trữ phôi đông lạnh sau khi chuyển phôi lần đầu tiên không?
       </h2>
 
       <div className="flex gap-4">
         <button
           onClick={() => handleAcceptingFrozen(true)}
-          className="px-5 py-2 rounded-xl bg-green-500 text-white font-medium hover:bg-green-600 transition"
+          className="px-5 py-2 rounded-md bg-green-500 text-white font-medium hover:bg-green-600 transition"
         >
           Đồng ý
         </button>
         <button
           onClick={() => handleAcceptingFrozen(false)}
-          className="px-5 py-2 rounded-xl bg-red-500 text-white font-medium hover:bg-red-600 transition"
+          className="px-5 py-2 rounded-md bg-red-500 text-white font-medium hover:bg-red-600 transition"
         >
           Từ chối
         </button>

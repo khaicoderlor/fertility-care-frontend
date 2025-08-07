@@ -56,6 +56,11 @@ export default function AppointmentForm({
                     date: e.target.value,
                   })
                 }
+                min={(() => {
+                  const now = new Date();
+                  now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                  return now.toISOString().split("T")[0];
+                })()}
                 className="w-full rounded-md border border-gray-300 p-2 text-sm"
               />
             </div>

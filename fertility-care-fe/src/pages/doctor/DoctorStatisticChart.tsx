@@ -1,11 +1,4 @@
 "use client";
-
-import {
-  UsersIcon,
-  CalendarDaysIcon,
-  StarIcon,
-} from "@heroicons/react/24/outline";
-import StatCard from "../../components/dashboard/doctor/StatCard";
 import PatientAppointmentChart, {
   type PatientData,
 } from "../../components/dashboard/doctor/PatientAppointmentChart";
@@ -92,16 +85,16 @@ export default function DoctorStatisticChartPage() {
     g();
   }, [doctorId]);
 
-  const getChangeType = (s: number): "increase" | "decrease" => {
-    if (s < 0) {
-      return "decrease";
-    } else return "increase";
-  };
+  // const getChangeType = (s: number): "increase" | "decrease" => {
+  //   if (s < 0) {
+  //     return "decrease";
+  //   } else return "increase";
+  // };
 
   return (
     <div className="space-y-6">
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      {/* <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <StatCard
           title="Tổng bệnh nhân"
           value={doctorStatisticOverall?.totalPatients ?? 0}
@@ -134,7 +127,7 @@ export default function DoctorStatisticChartPage() {
           icon={<StarIcon className="w-6 h-6 text-white" />}
           color="bg-yellow-500"
         />
-      </div>
+      </div> */}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

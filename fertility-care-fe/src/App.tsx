@@ -1,6 +1,4 @@
 import { Route, Routes } from "react-router-dom";
-import HomePage from "./pages/HomePage";
-import BookingPage from "./pages/order/BookingPage";
 import { AuthProvider } from "./contexts/AuthContext";
 import LoginPage from "./pages/auth/LoginPage";
 import PrivateRoute from "./routes/PrivateRoute";
@@ -32,17 +30,20 @@ import Service from "./pages/Service";
 import TreatmentRoadmapPage from "./pages/TreatmentRoadmapPage";
 import BlogsPage from "./pages/BlogPage";
 import { PatientFeedbacks } from "./pages/patient/PatientFeedbacks";
+import { HomePage } from "./pages/tests/HomePage";
+import BookingPage from "./pages/tests/BookingPage";
+import JourneyTreatmentPage from "./pages/tests/JourneyTreatmentPage";
 
 function App() {
   return (
     // <AuthProvider>
-    // <Routes>
-    //       <Route path="/" element={<HomePage />} />
-    //       <Route path="/login" element={<LoginPage />} />
-    //       <Route path="/competence/login" element={<RoleLoginPage />} />
-    //       <Route path="/services" element={<Service />}/>
-    //       <Route path="/blogs" element={<BlogsPage />}/>
-    // </Routes>
+    //   <Routes>
+    //     <Route path="/" element={<HomePage />} />
+    //     <Route path="/login" element={<LoginPage />} />
+    //     <Route path="/competence/login" element={<RoleLoginPage />} />
+    //     <Route path="/services" element={<Service />} />
+    //     <Route path="/blogs" element={<BlogsPage />} />
+    //   </Routes>
     // </AuthProvider>
     <AuthProvider>
       <CompetenceAuthProvider>
@@ -51,6 +52,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/competence/login" element={<RoleLoginPage />} />
           <Route path="/services" element={<Service />} />
+          <Route path="/journey" element={<JourneyTreatmentPage/>}/>
           <Route path="/blogs" element={<BlogsPage />} />
           <Route path="/patient" element={<PatientDashboardPage />}>
             <Route index element={<ProfilePage />} />
@@ -102,9 +104,9 @@ function App() {
           <Route
             path="/follow-up/patient/progress"
             element={
-              <PrivateRoute>
+              // <PrivateRoute>
                 <FollowUpPatientProgressPage />
-              </PrivateRoute>
+              // </PrivateRoute>
             }
           />
 
@@ -137,6 +139,7 @@ function App() {
         </Routes>
       </CompetenceAuthProvider>
     </AuthProvider>
+    // <BookingPage/>
   );
 }
 

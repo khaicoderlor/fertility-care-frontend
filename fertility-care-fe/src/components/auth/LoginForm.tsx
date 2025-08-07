@@ -96,13 +96,7 @@ export const LoginForm = () => {
       </div>
 
       <div className="flex justify-between items-center text-sm text-gray-600">
-        <label className="flex items-center">
-          <input
-            type="checkbox"
-            className="mr-2 rounded border-gray-300 text-indigo-600"
-          />
-          Ghi nhớ đăng nhập
-        </label>
+        
         <a href="#" className="text-indigo-500 hover:underline">
           Quên mật khẩu?
         </a>

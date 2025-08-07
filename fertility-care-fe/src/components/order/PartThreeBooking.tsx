@@ -20,15 +20,16 @@ export default function PartThreeBooking({
       <div className="max-w-4xl mx-auto">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Select Your Fertility Specialist
+            Chọn bác sĩ đi cùng bạn trong hành trình điều trị hiếm muộn
           </h2>
           <p className="text-lg text-gray-600">
-            Our specialists have extensive experience in treatments. Select the
-            doctor you'd like to consult with.
+            Các chuyên gia của chúng tôi có kinh nghiệm dày dặn trong điều trị.
+            Hãy chọn bác sĩ bạn muốn tư vấn.
           </p>
         </div>
 
-        <div className="space-y-6 shadow-lg border border-gray-100 rounded-lg p-6 gap-6">
+        {/* Scrollable list */}
+        <div className="max-h-[400px] overflow-y-auto space-y-6 shadow-lg border border-gray-100 rounded-lg p-6 gap-6">
           {doctors.map((doctor) => (
             <div
               key={doctor.id}
@@ -53,7 +54,7 @@ export default function PartThreeBooking({
                   <div className="flex items-start justify-between">
                     <div>
                       <h3 className="text-xl font-semibold text-gray-900">
-                        Dr.{convertFullName(doctor.profile)}
+                        BS.{convertFullName(doctor.profile)}
                       </h3>
                       <p className="text-blue-600 font-medium">
                         {doctor.specialization}
@@ -74,7 +75,6 @@ export default function PartThreeBooking({
             </div>
           ))}
         </div>
-        
       </div>
     </section>
   );

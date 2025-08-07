@@ -7,12 +7,10 @@ import type { EmbryoTransferredReportResponse } from "../../../models/EmbryoTran
 import type { Order } from "../../../models/Order";
 import type { Patient } from "../../../models/Patient";
 import { TbReportAnalytics } from "react-icons/tb";
-import { FaBoxOpen, FaCheck } from "react-icons/fa";
+import {  FaCheck } from "react-icons/fa";
 import type { PatientSideAdminPage } from "./PatientTable";
 import axiosInstance from "../../../apis/AxiosInstance";
 import { formatCurrency } from "../../../functions/CommonFunction";
-import { IoCloseCircleSharp } from "react-icons/io5";
-import Swal from "sweetalert2";
 import {
   STEP_COMPLETED,
   STEP_PLANNED,
@@ -25,6 +23,7 @@ import {
 } from "../../../constants/PaymentStatus";
 import { ITEMS_PER_PAGE } from "../../../constants/ApplicationConstant";
 import { getStatusOrder } from "../doctor/RecentPatientsTable";
+import { ORDER_CLOSED, ORDER_COMPLETED } from "../../../constants/OrderStatus";
 
 export interface PatientOrderSideAdmin {
   patient: Patient;
@@ -60,59 +59,59 @@ export const ReportProgressPatient = ({
     setSelectedOrderReport(response.data.data);
   };
 
-  const handleClosedOrder = async (order: Order) => {
-    const result = await Swal.fire({
-      title: "Xác nhận đóng đơn hàng?",
-      text: "Bạn sẽ không thể hoàn tác sau khi thực hiện!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy bỏ",
-    });
+  // const handleClosedOrder = async (order: Order) => {
+  //   const result = await Swal.fire({
+  //     title: "Xác nhận đóng đơn hàng?",
+  //     text: "Bạn sẽ không thể hoàn tác sau khi thực hiện!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Đồng ý",
+  //     cancelButtonText: "Hủy bỏ",
+  //   });
 
-    if (result.isConfirmed) {
-      try {
-        const response = await axiosInstance.patch(
-          `/orders/${order.id}/closed`
-        );
-        if (response.data?.data) {
-          Swal.fire("Thành công!", "Đơn hàng đã được đóng.", "success");
-        }
-      } catch (error) {
-        console.error("Lỗi khi đóng đơn hàng:", error);
-        Swal.fire("Lỗi!", "Không thể đóng đơn hàng.", "error");
-      }
-    }
-  };
+  //   if (result.isConfirmed) {
+  //     try {
+  //       const response = await axiosInstance.patch(
+  //         `/orders/${order.id}/closed`
+  //       );
+  //       if (response.data?.data) {
+  //         Swal.fire("Thành công!", "Đơn hàng đã được đóng.", "success");
+  //       }
+  //     } catch (error) {
+  //       console.error("Lỗi khi đóng đơn hàng:", error);
+  //       Swal.fire("Lỗi!", "Không thể đóng đơn hàng.", "error");
+  //     }
+  //   }
+  // };
 
-  const handleUnClosedOrder = async (order: Order) => {
-    const result = await Swal.fire({
-      title: "Xác nhận mở lại đơn hàng?",
-      text: "Bạn sẽ không thể hoàn tác sau khi thực hiện!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Đồng ý",
-      cancelButtonText: "Hủy bỏ",
-    });
+  // const handleUnClosedOrder = async (order: Order) => {
+  //   const result = await Swal.fire({
+  //     title: "Xác nhận mở lại đơn hàng?",
+  //     text: "Bạn sẽ không thể hoàn tác sau khi thực hiện!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Đồng ý",
+  //     cancelButtonText: "Hủy bỏ",
+  //   });
 
-    if (result.isConfirmed) {
-      try {
-        const response = await axiosInstance.patch(
-          `/orders/${order.id}/unclosed`
-        );
-        if (response.data?.data) {
-          Swal.fire("Thành công!", "Đơn hàng đã được mở lại.", "success");
-        }
-      } catch (error) {
-        console.error("Lỗi khi đóng mở hàng:", error);
-        Swal.fire("Lỗi!", "Không thể mở đơn hàng.", "error");
-      }
-    }
-  };
+  //   if (result.isConfirmed) {
+  //     try {
+  //       const response = await axiosInstance.patch(
+  //         `/orders/${order.id}/unclosed`
+  //       );
+  //       if (response.data?.data) {
+  //         Swal.fire("Thành công!", "Đơn hàng đã được mở lại.", "success");
+  //       }
+  //     } catch (error) {
+  //       console.error("Lỗi khi đóng mở hàng:", error);
+  //       Swal.fire("Lỗi!", "Không thể mở đơn hàng.", "error");
+  //     }
+  //   }
+  // };
 
   const getStepStatus = (
     stepIndex: number,
@@ -226,9 +225,9 @@ export const ReportProgressPatient = ({
                       <td className="px-6 py-4">
                         <span
                           className={`px-2 py-1 rounded-full text-xs font-semibold ${
-                            ord.status === "COMPLETED"
+                            ord.status === ORDER_COMPLETED
                               ? "bg-green-100 text-green-700"
-                              : ord.status === "CANCELED"
+                              : ord.status === ORDER_CLOSED
                               ? "bg-red-100 text-red-700"
                               : "bg-yellow-100 text-yellow-700"
                           }`}
@@ -248,7 +247,7 @@ export const ReportProgressPatient = ({
                         </span>
                       </td>
                       <td className="px-6 py-4 text-gray-800 font-semibold">
-                        💰 {ord.totalAmount?.toLocaleString()}₫
+                        {ord.totalAmount?.toLocaleString()}₫
                       </td>
                       <td className="px-6 py-4 text-gray-700">
                         {ord.startDate}
@@ -265,7 +264,7 @@ export const ReportProgressPatient = ({
                           >
                             <TbReportAnalytics className="w-5 h-5" />
                           </button>
-                          <button
+                          {/* <button
                             className="p-2 rounded-md text-green-600 hover:bg-green-100"
                             onClick={() => handleUnClosedOrder(ord)}
                             title="Mở lại đơn"
@@ -278,7 +277,7 @@ export const ReportProgressPatient = ({
                             title="Đóng đơn"
                           >
                             <IoCloseCircleSharp className="w-5 h-5" />
-                          </button>
+                          </button> */}
                         </div>
                       </td>
                     </tr>
@@ -289,7 +288,7 @@ export const ReportProgressPatient = ({
           </div>
         </div>
 
-        <div className="flex justify-center mt-6 items-center gap-1 flex-wrap">
+        <div className="flex justify-center mt-6 items-center gap-1 flex-wrap mb-5">
           {/* Trang trước */}
           <button
             onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

@@ -10,7 +10,6 @@ import {
   CreditCardIcon,
   HeartIcon,
 } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartIconSolid } from "@heroicons/react/24/solid";
 import type { Patient } from "../../models/Patient";
 import { useLocation } from "react-router-dom";
 
@@ -31,7 +30,7 @@ export default function SideBarPatient({ patient }: SideBarProps) {
 
   return (
     <div
-      className={` inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
+      className={`mb-5 inset-y-0 left-0 z-50 bg-white shadow-xl transform transition-all duration-300 ease-in-out lg:translate-x-0 lg:static lg:inset-0 ${
         sidebarCollapsed ? "w-16" : "w-64"
       } translate-x-0`}
     >
@@ -66,18 +65,7 @@ export default function SideBarPatient({ patient }: SideBarProps) {
           </button>
         </div>
 
-        {/* Logo */}
-        {!sidebarCollapsed && (
-          <div className="flex items-center gap-3 px-4 py-3 border-b">
-            <div className="w-8 h-8 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center">
-              <HeartIconSolid className="w-5 h-5 text-white" />
-            </div>
-            <div>
-              <p className="text-xs text-gray-600">Your fertility journey</p>
-            </div>
-          </div>
-        )}
-
+      
         {/* Navigation */}
         <div className="flex-1 overflow-y-auto">
           {!sidebarCollapsed && (
@@ -87,6 +75,8 @@ export default function SideBarPatient({ patient }: SideBarProps) {
               </div>
             </div>
           )}
+          <hr className="max-w-full border-gray-300"/>
+
           <nav className={`${sidebarCollapsed ? "px-2" : "px-4"} space-y-1`}>
             <Link
               to="/patient/profile"
